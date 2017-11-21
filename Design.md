@@ -2,9 +2,9 @@
 
 Maria Sottile and Ge (Jessica) Ma
 
-What we know about the JSON files
+What we know from the JSON files:
 
-```
+```assembly
 RESTAURANTS
 open: boolean (???)
 url: string url to yelp profile
@@ -44,3 +44,28 @@ name: string
 average stars: number (average stars given)
 ```
 
+| Yelp Types | Supertype (?) | Fields (name: type)                      |
+| ---------- | ------------- | ---------------------------------------- |
+| Restaurant | Business      | profileURL: URL <br />location: Point<br />neighborhood: Set[String]<br />businessID: ID<br />name: String<br />categories: Set[String]<br />nearbySchools(?): Set[String]<br />state: String<br />stars: double<br />address: Address <br />reviewCount: int<br />photoURL: URL<br />priceRange: int |
+| YelpReview | Review        | businessID: ID<br />votes: Map[String, Integer]<br />reviewID: ID<br />content: String<br />stars: double<br />userID: ID<br />date: Date |
+| YelpUser   | User          | url: URL<br />votes: Map[String, Integer]<br />reviewCount: int<br />userID: ID<br />name: String<br />averageStars: double |
+
+Custom datatypes:
+
+- Point: has fields for x and y coordinates
+- ID: a string
+- Address: has String address, String state, String city
+
+| Supertype | Fields                                   |
+| --------- | ---------------------------------------- |
+| Business  | businessID: ID<br />name: String<br />category: Set[String] |
+| Review**  | reviewID: ID<br />object: Business (?)<br />businessID: ID<br />content: String<br />userID: ID<br />date: Date |
+| User      | userID: ID<br />name: <br />reviewCount: int |
+
+*Will you complain about this
+
+**Should we make this more general? i.e. able to be review of a product, service, movie etc.
+
+STATE YOUR ASSUMPTIONS: ALL BUSINESS ARE REVIEWABLE, ALL USERS ARE REVIEWERS
+
+OUR PHILOSOPHY: MINIMUM EXTRANESS
