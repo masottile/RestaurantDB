@@ -44,11 +44,11 @@ name: string
 average stars: number (average stars given)
 ```
 
-| Yelp Types | Supertype (?) | Fields (name: type)                      |
-| ---------- | ------------- | ---------------------------------------- |
-| Restaurant | Business      | profileURL: URL <br />location: Point<br />neighborhood: Set[String]<br />businessID: ID<br />name: String<br />categories: Set[String]<br />nearbySchools(?): Set[String]<br />state: String<br />stars: double<br />address: Address <br />reviewCount: int<br />photoURL: URL<br />priceRange: int |
-| YelpReview | Review        | businessID: ID<br />votes: Map[String, Integer]<br />reviewID: ID<br />content: String<br />stars: double<br />userID: ID<br />date: Date |
-| YelpUser   | User          | url: URL<br />votes: Map[String, Integer]<br />reviewCount: int<br />userID: ID<br />name: String<br />averageStars: double |
+| Yelp Types | Supertype (?) | Fields (name: type)                      | RIs and AFtions                          |
+| ---------- | ------------- | ---------------------------------------- | ---------------------------------------- |
+| Restaurant | Business      | profileURL: URL <br />location: Point<br />neighborhood: Set[String]<br />businessID: ID<br />name: String<br />categories: Set[String]<br />nearbySchools(?): Set[String]<br />state: String<br />stars: double<br />address: Address <br />reviewCount: int<br />photoURL: URL<br />priceRange: int | nothing is null<br />??ask about RI in general<br />AF(r) taken from JSON fields |
+| YelpReview | Review        | businessID: ID<br />votes: Map[String, Integer]<br />reviewID: ID<br />content: String<br />stars: double<br />userID: ID<br />date: Date |                                          |
+| YelpUser   | User          | url: URL<br />votes: Map[String, Integer]<br />reviewCount: int<br />userID: ID<br />name: String<br />averageStars: double |                                          |
 
 Custom datatypes:
 
@@ -62,10 +62,28 @@ Custom datatypes:
 | Review**  | reviewID: ID<br />object: Business (?)<br />businessID: ID<br />content: String<br />userID: ID<br />date: Date |
 | User      | userID: ID<br />name: <br />reviewCount: int |
 
-*Will you complain about this
+*Is this okay?
 
 **Should we make this more general? i.e. able to be review of a product, service, movie etc.
 
 STATE YOUR ASSUMPTIONS: ALL BUSINESS ARE REVIEWABLE, ALL USERS ARE REVIEWERS
 
-OUR PHILOSOPHY: MINIMUM EXTRANESS
+OUR PHILOSOPHY: MINIMIZE EXTRANESS
+
+## Methods
+
+- hella get methods (so many, all of them)
+- creator methods
+- TBD as our creativity flourishes
+
+
+## The database as a whole
+
+- fields will be the set of Restaurant, Review, and User
+- store the filenames as Strings
+- other methods
+  - N highest rated restaurants
+  - best reviews of a given restaurant
+  - best reviews in general
+  - best reviewer
+  - much more to come with Part V!! get hyped!!
