@@ -11,7 +11,7 @@ import java.util.function.ToDoubleBiFunction;
 import com.google.gson.*;
 
 public class YelpDB implements MP5Db<YelpRestaurant> {
-	
+
 	private Set<YelpRestaurant> restaurantSet = new HashSet<YelpRestaurant>();
 	private Set<YelpUser> userSet = new HashSet<YelpUser>();
 	private Set<YelpReview> reviewSet = new HashSet<YelpReview>();
@@ -20,13 +20,13 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	 * Creator method for YelpDB
 	 * 
 	 * @param restaurantFile
-	 * 			json file name containing all the restaurants
+	 *            json file name containing all the restaurants
 	 * @param reviewFile
-	 * 			json file name containing all the reviews
+	 *            json file name containing all the reviews
 	 * @param userFile
-	 * 			json file name containing all the users
+	 *            json file name containing all the users
 	 * @throws FileNotFoundException
-	 * 			if the method cannot find files from the given file names
+	 *             if the method cannot find files from the given file names
 	 */
 	public YelpDB(String restaurantFile, String reviewFile, String userFile) throws FileNotFoundException {
 
@@ -40,34 +40,34 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 			JsonObject obj = (JsonObject) new JsonParser().parse(restaurantScan.nextLine());
 			restaurantSet.add(gson.fromJson(obj, YelpRestaurant.class));
 		}
-		
+
 		while (reviewScan.hasNext()) {
 			JsonObject obj = (JsonObject) new JsonParser().parse(reviewScan.nextLine());
 			reviewSet.add(gson.fromJson(obj, YelpReview.class));
 		}
-		
+
 		while (userScan.hasNext()) {
 			JsonObject obj = (JsonObject) new JsonParser().parse(userScan.nextLine());
 			userSet.add(gson.fromJson(obj, YelpUser.class));
 		}
-		
+
 		restaurantScan.close();
 		reviewScan.close();
 		userScan.close();
 	}
-	
+
 	public Set<YelpRestaurant> getRestaurants() {
 		return new HashSet<YelpRestaurant>(restaurantSet);
 	}
-	
-	public Set<YelpUser> getUsers(){
+
+	public Set<YelpUser> getUsers() {
 		return new HashSet<YelpUser>(userSet);
 	}
-	
-	public Set<YelpReview> getReviews(){
+
+	public Set<YelpReview> getReviews() {
 		return new HashSet<YelpReview>(reviewSet);
 	}
- 
+
 	@Override
 	public Set<YelpRestaurant> getMatches(String queryString) {
 		// TODO Auto-generated method stub
@@ -115,5 +115,17 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public Set<YelpRestaurant> getRestaurantSet() {
+			return this.restaurantSet;
+	}
+	
+	public Set<YelpReview> getReviewSet() {
+		return this.reviewSet;
+}
+	
+	public Set<YelpUser> getUserSet() {
+		return this.userSet;
+}
 
 }
