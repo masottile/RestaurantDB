@@ -10,43 +10,68 @@ import java.util.Set;
 import java.util.function.ToDoubleBiFunction;
 import com.google.gson.*;
 
-public class YelpDB implements MP5Db {
-	// TODO: change these to something more useful like a Map<Name, Restaurant>
-	public Set<YelpRestaurant> resSet = new HashSet<YelpRestaurant>();
-	public Set<YelpUser> userSet = new HashSet<YelpUser>();
-	public Set<YelpReview> revSet = new HashSet<YelpReview>();
+public class YelpDB implements MP5Db<YelpRestaurant> {
+	
+	private Set<YelpRestaurant> restaurantSet = new HashSet<YelpRestaurant>();
+	private Set<YelpUser> userSet = new HashSet<YelpUser>();
+	private Set<YelpReview> reviewSet = new HashSet<YelpReview>();
 
-	public YelpDB(String restaurantList, String reviewList, String userList) throws FileNotFoundException {
+	/**
+	 * Creator method for YelpDB
+	 * 
+	 * @param restaurantFile
+	 * 			json file name containing all the restaurants
+	 * @param reviewFile
+	 * 			json file name containing all the reviews
+	 * @param userFile
+	 * 			json file name containing all the users
+	 * @throws FileNotFoundException
+	 * 			if the method cannot find files from the given file names
+	 */
+	public YelpDB(String restaurantFile, String reviewFile, String userFile) throws FileNotFoundException {
 
 		Gson gson = new Gson();
-		// TODO: change it to a relative path - need to look at build path vs. folder
-		// path, change to something like ../../../tests maybe?
-		String fixThis = "C:/Users/jessw/f17-mp5-gejessicama_masottile/data/";
 
-		Scanner restScan = new Scanner(new File(fixThis + restaurantList));
-		Scanner userScan = new Scanner(new File(fixThis + userList));
-		Scanner revScan = new Scanner(new File(fixThis + reviewList));
+		Scanner restaurantScan = new Scanner(new File(restaurantFile));
+		Scanner reviewScan = new Scanner(new File(reviewFile));
+		Scanner userScan = new Scanner(new File(userFile));
 
-		while (restScan.hasNext()) {
-			JsonObject obj = (JsonObject) new JsonParser().parse(restScan.nextLine());
-			resSet.add(gson.fromJson(obj, YelpRestaurant.class));
+		while (restaurantScan.hasNext()) {
+			JsonObject obj = (JsonObject) new JsonParser().parse(restaurantScan.nextLine());
+			restaurantSet.add(gson.fromJson(obj, YelpRestaurant.class));
 		}
-
+		
+		while (reviewScan.hasNext()) {
+			JsonObject obj = (JsonObject) new JsonParser().parse(reviewScan.nextLine());
+			reviewSet.add(gson.fromJson(obj, YelpReview.class));
+		}
+		
 		while (userScan.hasNext()) {
 			JsonObject obj = (JsonObject) new JsonParser().parse(userScan.nextLine());
 			userSet.add(gson.fromJson(obj, YelpUser.class));
 		}
-
-		while (revScan.hasNext()) {
-			JsonObject obj = (JsonObject) new JsonParser().parse(revScan.nextLine());
-			revSet.add(gson.fromJson(obj, YelpReview.class));
-		}
-
+		
+		restaurantScan.close();
+		reviewScan.close();
+		userScan.close();
 	}
-
+	
+	public Set<YelpRestaurant> getRestaurants() {
+		return new HashSet<YelpRestaurant>(restaurantSet);
+	}
+	
+	public Set<YelpUser> getUsers(){
+		return new HashSet<YelpUser>(userSet);
+	}
+	
+	public Set<YelpReview> getReviews(){
+		return new HashSet<YelpReview>(reviewSet);
+	}
+ 
 	@Override
-	public Set getMatches(String queryString) {
+	public Set<YelpRestaurant> getMatches(String queryString) {
 		// TODO Auto-generated method stub
+		// Complete for part 4??? or something like that
 		return null;
 	}
 
