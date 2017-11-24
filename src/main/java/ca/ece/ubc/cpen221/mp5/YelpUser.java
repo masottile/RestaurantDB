@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.Map;
 
 public class YelpUser {
+	// TODO: Add all getter/setter methods
 
 	String url;
 	Votes votes;

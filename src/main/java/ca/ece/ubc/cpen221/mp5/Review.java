@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class Review {
 
+	// TODO: Make this extendable for YelpReview
 	String businessID;
 	String reviewID;
 	String content;

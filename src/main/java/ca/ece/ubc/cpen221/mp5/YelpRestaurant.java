@@ -1,7 +1,7 @@
 package ca.ece.ubc.cpen221.mp5;
 
-public class YelpRestaurant{
-	
+public class YelpRestaurant {
+	// TODO: Add all getter/setter methods
 	boolean open;
 	String url;
 	double longitude;
@@ -19,31 +19,35 @@ public class YelpRestaurant{
 	String[] schools;
 	double latitude;
 	int price;
-	
+
+	Point location;
+
+	YelpRestaurant() {
+		location = new Point(latitude, longitude);
+	}
+
 	public String getUrl() {
 		return url;
 	}
-	
+
 	public double getLongitude() {
 		return longitude;
 	}
-	
+
 	public double getLatitude() {
 		return latitude;
 	}
-	
+
 	public String getBusinessID() {
 		return business_id;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
-	
-	public String[] getCategories(){
+
+	public String[] getCategories() {
 		return categories;
 	}
 
-	
 }
-

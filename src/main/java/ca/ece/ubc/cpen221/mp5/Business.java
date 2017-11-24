@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Business {
-	
+	// TODO: Make this extendable for YelpRestaurant
 	private String businessID;
 	private String name;
 	private Set<String> category;
