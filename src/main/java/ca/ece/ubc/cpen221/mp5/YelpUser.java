@@ -3,17 +3,14 @@ package ca.ece.ubc.cpen221.mp5;
 import java.net.URL;
 import java.util.Map;
 
-public class YelpUser extends User {
+public class YelpUser {
 
-	private URL url;
-	protected Map<String, Integer> votes;
-	int reviewCount;
-	double averageStars;
+	String url;
+	Votes votes;
+	int review_count;
+	String type;
+	String user_id;
+	String name;
+	double average_stars;
 
-	YelpUser(String name, String ID) {
-		super(name, ID);
-	}
-
-	
-	
 }

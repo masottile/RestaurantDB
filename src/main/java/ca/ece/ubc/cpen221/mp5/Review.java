@@ -17,7 +17,7 @@ public class Review {
 	}
 
 	private String createReviewID() {
-		String newID = randomIDgenerator;
+		String newID = "o";
 		return newID;
 	}
 

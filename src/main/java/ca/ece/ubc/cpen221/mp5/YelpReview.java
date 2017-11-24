@@ -2,13 +2,14 @@ package ca.ece.ubc.cpen221.mp5;
 
 import java.util.Map;
 
-public class YelpReview extends Review {
+public class YelpReview {
 
-	Map<String, Integer> votes;
+	String type;
+	String business_id;
+	Votes votes;
+	String text;
 	double stars;
-	
-	YelpReview(String content) {
-		super(content);
-	}
+	String user_id;
+	String date;
 
 }
