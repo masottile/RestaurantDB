@@ -2,9 +2,11 @@ package ca.ece.ubc.cpen221.mp5;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.function.ToDoubleBiFunction;
@@ -15,6 +17,10 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	private Set<YelpRestaurant> restaurantSet = new HashSet<YelpRestaurant>();
 	private Set<YelpUser> userSet = new HashSet<YelpUser>();
 	private Set<YelpReview> reviewSet = new HashSet<YelpReview>();
+	
+	private Map<String, YelpRestaurant> restaurantMap = new HashMap<String, YelpRestaurant>();
+	private Map<String, YelpUser> userMap = new HashMap<String, YelpUser>();
+	private Map<String, YelpReview> reviewMap = new HashMap<String, YelpReview>();
 
 	/**
 	 * Creator method for YelpDB
@@ -38,17 +44,20 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 		while (restaurantScan.hasNext()) {
 			JsonObject obj = (JsonObject) new JsonParser().parse(restaurantScan.nextLine());
-			restaurantSet.add(gson.fromJson(obj, YelpRestaurant.class));
+			YelpRestaurant yr = gson.fromJson(obj, YelpRestaurant.class);
+			restaurantMap.put(yr.getBusinessID(),yr);
 		}
 
 		while (reviewScan.hasNext()) {
 			JsonObject obj = (JsonObject) new JsonParser().parse(reviewScan.nextLine());
-			reviewSet.add(gson.fromJson(obj, YelpReview.class));
+			YelpReview yr = gson.fromJson(obj, YelpReview.class);
+			reviewMap.put(yr.getReviewID(), yr);
 		}
 
 		while (userScan.hasNext()) {
 			JsonObject obj = (JsonObject) new JsonParser().parse(userScan.nextLine());
-			userSet.add(gson.fromJson(obj, YelpUser.class));
+			YelpUser yu = gson.fromJson(obj, YelpUser.class);
+			userMap.put(yu.getUserID(),yu);
 		}
 
 		restaurantScan.close();
@@ -119,8 +128,22 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	}
 
 	@Override
-	public ToDoubleBiFunction getPredictorFunction(String user) {
+	public ToDoubleBiFunction<MP5Db<YelpRestaurant>, String> getPredictorFunction(String user) {
+		
 		// TODO Auto-generated method stub
+		Map<Double,Integer> starsToPrice = new HashMap<Double,Integer>();
+		double starsMean = 0;
+		double priceMean = 0;
+		
+		// first make a set of points of all their reviews, 
+		for(YelpReview yr: reviewSet){
+			if(yr.getUserID().equals(user)) {
+				starsToPrice.put(yr., arg1)
+			}
+		}
+		//then preform least squares regression 
+		//then make a function to return that takes a resutaurant id and a database
+		
 		return null;
 	}
 	
