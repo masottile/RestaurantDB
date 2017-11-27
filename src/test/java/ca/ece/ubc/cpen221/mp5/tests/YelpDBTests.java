@@ -15,19 +15,25 @@ import ca.ece.ubc.cpen221.mp5.YelpDB;
 // TODO: Write useful tests
 
 public class YelpDBTests {
+	
+	private static Gson gson = new Gson();
+	private static String preFix = "data/";
+	private YelpDB aiya;
 
 	@Test
 	public void test0() throws FileNotFoundException {
 
-		Gson gson = new Gson();
-		String preFix = "data/";
-		YelpDB aiya = new YelpDB(preFix + "restaurants.json", preFix + "reviews.json", preFix + "users.json");
+		aiya = new YelpDB(preFix + "restaurants.json", preFix + "reviews.json", preFix + "users.json");
 		assertEquals(135, aiya.getRestaurants().size());
 		assertEquals(8556, aiya.getUsers().size());
 		assertEquals(17396, aiya.getReviews().size());
-		// problem(?): creates Json as JsonArray which I don't like... not actually sure
-		// if that'll be an issue later on...
-		System.out.println(gson.toJson(aiya.getRestaurants()));
+		
+		//System.out.println(gson.toJson(aiya.getRestaurants()));
+	}
+	
+	@Test
+	public void test1() {
+		
 	}
 
 }
