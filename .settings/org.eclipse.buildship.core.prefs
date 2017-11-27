@@ -1,3 +1,5 @@
+
 connection.gradle.distribution=GRADLE_DISTRIBUTION(VERSION(4.3-rc-3))
+#Sun Nov 26 18:41:33 PST 2017
 connection.project.dir=
 eclipse.preferences.version=1

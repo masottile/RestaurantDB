@@ -2,6 +2,7 @@ package ca.ece.ubc.cpen221.mp5;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -14,13 +15,13 @@ import com.google.gson.*;
 
 public class YelpDB implements MP5Db<YelpRestaurant> {
 
-	private Set<YelpRestaurant> restaurantSet = new HashSet<YelpRestaurant>();
-	private Set<YelpUser> userSet = new HashSet<YelpUser>();
 	private Set<YelpReview> reviewSet = new HashSet<YelpReview>();
 	
 	private Map<String, YelpRestaurant> restaurantMap = new HashMap<String, YelpRestaurant>();
 	private Map<String, YelpUser> userMap = new HashMap<String, YelpUser>();
 	private Map<String, YelpReview> reviewMap = new HashMap<String, YelpReview>();
+
+	private List<YelpRestaurant> restaurantList = new ArrayList<YelpRestaurant>(restaurantMap.values());
 
 	/**
 	 * Creator method for YelpDB
@@ -45,7 +46,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		while (restaurantScan.hasNext()) {
 			JsonObject obj = (JsonObject) new JsonParser().parse(restaurantScan.nextLine());
 			YelpRestaurant yr = gson.fromJson(obj, YelpRestaurant.class);
-			restaurantMap.put(yr.getBusinessID(),yr);
+			restaurantMap.put(yr.getBusinessID(), yr);
 		}
 
 		while (reviewScan.hasNext()) {
@@ -57,7 +58,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		while (userScan.hasNext()) {
 			JsonObject obj = (JsonObject) new JsonParser().parse(userScan.nextLine());
 			YelpUser yu = gson.fromJson(obj, YelpUser.class);
-			userMap.put(yu.getUserID(),yu);
+			userMap.put(yu.getUserID(), yu);
 		}
 
 		restaurantScan.close();
@@ -69,22 +70,23 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	 * @return copy of restaurantSet
 	 */
 	public Set<YelpRestaurant> getRestaurants() {
-		return new HashSet<YelpRestaurant>(restaurantSet);
+		return new HashSet<YelpRestaurant>(restaurantMap.values());
 	}
 
 	/**
 	 * @return copy of reviewSet
 	 */
 	public Set<YelpReview> getReviews() {
-		return new HashSet<YelpReview>(reviewSet);
+		return new HashSet<YelpReview>(reviewMap.values());
 	}
 
 	/**
 	 * @return copy of userSet
 	 */
 	public Set<YelpUser> getUsers() {
-		return new HashSet<YelpUser>(userSet);
+		return new HashSet<YelpUser>(userMap.values());
 	}
+
 	@Override
 	public Set<YelpRestaurant> getMatches(String queryString) {
 		// TODO Auto-generated method stub
@@ -92,9 +94,16 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		return null;
 	}
 
+	/**
+	 * Creates a JSON string in the same format as voronoi.json Calls on kMeansList
+	 * method which takes in k and creates a List of clusters
+	 * 
+	 * @param k
+	 *            number of clusters
+	 * @return String in JSON format
+	 */
 	@Override
 	public String kMeansClusters_json(int k) {
-		// TODO Check this, also very important part: actually write kMeansList method
 		List<Set<YelpRestaurant>> source = this.kMeansList(k);
 		Set<kMeans> toBeJson = new HashSet<kMeans>();
 
@@ -110,64 +119,90 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 	public List<Set<YelpRestaurant>> kMeansList(int k) {
 		List<Set<YelpRestaurant>> kMeansList = new LinkedList<Set<YelpRestaurant>>();
-		Set<Point> centroidSet = new HashSet<Point>();
-		boolean firstTime = true;// only do initial centroid thing once
-		if (firstTime) {
-			for (int i = 0; i < k; i++) {
-				// TODO: dank method to pick initial centroids. should be somewhat based on
-				// max/min x/y values so to minimize steps needed
-				centroidSet.add(new Point(1, 2));
-			}
-			firstTime = false;
+		Map<Point, Set<YelpRestaurant>> centroidMap = new HashMap<Point, Set<YelpRestaurant>>();
+
+		// I'm just going to set the centroids as the first five restaurants. hope this
+		// isn't an issue. will ensure all clusters of size k are the same ones, if
+		// that's what we want. this is fairly easy to change if needed. can just use
+		// random int generator, my only concern is duplicates but I'm sure we can avoid
+		// that too
+		for (int i = 0; i < k; i++) {
+			centroidMap.put(restaurantList.get(i).getLocation(), new HashSet<YelpRestaurant>());
 		}
 
-		// TODO: finish this method...
+		Map<Point, Set<YelpRestaurant>> mapOfThing = recursiveThing(centroidMap);
+		for (Point p : mapOfThing.keySet()) {
+			kMeansList.add(mapOfThing.get(p));
+		}
 
 		return kMeansList;
+	}
+
+	private Map<Point, Set<YelpRestaurant>> recursiveThing(Map<Point, Set<YelpRestaurant>> clusterMap) {
+
+		Map<Point, Set<YelpRestaurant>> mapOfThing = new HashMap<Point, Set<YelpRestaurant>>();
+		boolean madeChanges = false;
+
+		// loop to find shortest distance and map the thing
+		for (YelpRestaurant res : restaurantList) {
+			for (Point p : clusterMap.keySet()) {
+				res.location.distanceTo(p);
+
+				// change madeChanges boolean once a re-mapping has been done
+				// if madeChanges = still false, return the existing map
+			}
+
+		}
+
+		// loop to recalcuate the centroids
+
+		if (madeChanges) {
+			return mapOfThing;
+		} else {
+			return recursiveThing(mapOfThing);
+		}
 
 	}
 
 	@Override
 	public ToDoubleBiFunction<MP5Db<YelpRestaurant>, String> getPredictorFunction(String user) {
-		// TODO
-		
+
 		YelpUser yUser = userMap.get(user);
-		
-		Map<Double,Integer> starsToPrice = new HashMap<Double,Integer>();
-		//TODO map doesn't work make set of points (duplicate keys)
-		
+
+		Map<Double, Integer> starsToPrice = new HashMap<Double, Integer>();
+		// TODO map doesn't work make set of points (duplicate keys)
+
 		double tempStars;
 		int tempPrice;
 		double starsMean = 0;
 		double priceMean = 0;
-		
-		//Picks out the reviews made by the given user and saves data on price of restaurant and stars given
-		for(YelpReview yr: reviewSet){
-			if(yr.getUserID().equals(user)) {
+
+		// Picks out the reviews made by the given user and saves data on price of
+		// restaurant and stars given
+		for (YelpReview yr : reviewSet) {
+			if (yr.getUserID().equals(user)) {
 				tempStars = yr.getStars();
 				tempPrice = restaurantMap.get(yr.getRestaurantID()).getPrice();
-				starsToPrice.put(tempStars,tempPrice);
+				starsToPrice.put(tempStars, tempPrice);
 				starsMean += tempStars;
 				priceMean += tempPrice;
 			}
 		}
-		
+
 		starsMean = starsMean / yUser.getReviewCount();
 		priceMean = priceMean / yUser.getReviewCount();
-		
-		//calculates least squares
-		
-		
-		
-		//then perform least squares regression 
-		//then make a function to return that takes a resutaurant id and a database
-		
+
+		// calculates least squares
+
+		// then perform least squares regression
+		// then make a function to return that takes a resutaurant id and a database
+
 		return null;
 	}
-	
+
 	private class kMeans {
 		// Makes it easier to convert to JSON in correct format later
-		//TODO make sure this is a necessary addition
+		// TODO make sure this is a necessary addition
 		private double x;
 		private double y;
 		private String name;
@@ -179,6 +214,10 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 			this.y = y;
 			this.name = name;
 			this.cluster = cluster;
+		}
+
+		private double getWeight() {
+			return this.weight;
 		}
 	}
 
