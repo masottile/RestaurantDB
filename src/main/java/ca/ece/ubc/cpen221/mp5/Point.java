@@ -10,13 +10,18 @@ public class Point {
 	}
 
 	public double getX() {
-		return this.x;
+		return x;
 	}
 
 	public double getY() {
-		return this.y;
+		return y;
 	}
 
+	/**
+	 * @param p
+	 * 		a point that is not null
+	 * @return the distance from this to p
+	 */
 	public double distanceTo(Point p) {
 		double xDiffsq = Math.pow(this.x - p.x, 2);
 		double yDiffsq = Math.pow(this.y - p.y, 2);

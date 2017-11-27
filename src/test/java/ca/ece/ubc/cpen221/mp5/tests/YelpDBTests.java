@@ -15,6 +15,10 @@ import ca.ece.ubc.cpen221.mp5.YelpDB;
 // TODO: Write useful tests
 
 public class YelpDBTests {
+	
+	private static Gson gson = new Gson();
+	private static String preFix = "data/";
+	private YelpDB aiya;
 
 	@Test
 	public void test0() throws FileNotFoundException {
@@ -37,6 +41,7 @@ public class YelpDBTests {
 		YelpDB aiya = new YelpDB(preFix + "restaurants.json", preFix + "reviews.json", preFix + "users.json");
 		// System.out.println(aiya.restaurantList.size());
 		System.out.print(aiya.kMeansClusters_json(5));
+
 	}
 
 }

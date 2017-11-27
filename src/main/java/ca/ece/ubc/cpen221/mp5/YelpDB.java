@@ -94,7 +94,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	@Override
 	public Set<YelpRestaurant> getMatches(String queryString) {
 		// TODO Auto-generated method stub
-		// Complete for part 4??? or something like that
+		// Complete for part 5??? or something like that
 		return null;
 	}
 
@@ -209,24 +209,25 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	public ToDoubleBiFunction<MP5Db<YelpRestaurant>, String> getPredictorFunction(String user) {
 
 		YelpUser yUser = userMap.get(user);
-
-		Map<Double, Integer> starsToPrice = new HashMap<Double, Integer>();
-		// TODO map doesn't work make set of points (duplicate keys)
-
-		double tempStars;
-		int tempPrice;
-		double starsMean = 0;
+		Set<Point> priceAndStars = new HashSet<Point>();
+		
+		ToDoubleBiFunction<MP5Db<YelpRestaurant>, String> returnFunction;
+		
 		double priceMean = 0;
+		double starsMean = 0;
+		double sxx = 0, syy = 0, sxy = 0;
+		double b, a;
 
 		// Picks out the reviews made by the given user and saves data on price of
 		// restaurant and stars given
 		for (YelpReview yr : reviewSet) {
 			if (yr.getUserID().equals(user)) {
-				tempStars = yr.getStars();
-				tempPrice = restaurantMap.get(yr.getRestaurantID()).getPrice();
-				starsToPrice.put(tempStars, tempPrice);
-				starsMean += tempStars;
+				double tempPrice = restaurantMap.get(yr.getRestaurantID()).getPrice();
+				double tempStars = yr.getStars();
 				priceMean += tempPrice;
+				starsMean += tempStars;
+				
+				priceAndStars.add(new Point(tempPrice, tempStars));
 			}
 		}
 
@@ -234,9 +235,19 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		priceMean = priceMean / yUser.getReviewCount();
 
 		// calculates least squares
-
-		// then perform least squares regression
-		// then make a function to return that takes a resutaurant id and a database
+		for (Point p: priceAndStars) {
+			sxx += Math.pow(p.getX(), 2);
+			syy += Math.pow(p.getY(),2);
+			sxy += p.getX()*p.getY();
+		}
+		
+		b = sxy/sxx;
+		a = starsMean - b * priceMean;
+		
+		returnFunction = (dataBase, restaurantID) -> {
+			int price = ((YelpDB) dataBase).restaurantMap.get(restaurantID).getPrice();
+			return b*price + a;
+		};
 
 		return null;
 	}
