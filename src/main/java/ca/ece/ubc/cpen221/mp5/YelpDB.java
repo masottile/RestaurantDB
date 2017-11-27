@@ -3,6 +3,7 @@ package ca.ece.ubc.cpen221.mp5;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -16,12 +17,13 @@ import com.google.gson.*;
 public class YelpDB implements MP5Db<YelpRestaurant> {
 
 	private Set<YelpReview> reviewSet = new HashSet<YelpReview>();
-	
+	private final int MAX_ITERATIONS = 50;
+
 	private Map<String, YelpRestaurant> restaurantMap = new HashMap<String, YelpRestaurant>();
 	private Map<String, YelpUser> userMap = new HashMap<String, YelpUser>();
 	private Map<String, YelpReview> reviewMap = new HashMap<String, YelpReview>();
 
-	private List<YelpRestaurant> restaurantList = new ArrayList<YelpRestaurant>(restaurantMap.values());
+	public List<YelpRestaurant> restaurantList;
 
 	/**
 	 * Creator method for YelpDB
@@ -64,6 +66,8 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		restaurantScan.close();
 		reviewScan.close();
 		userScan.close();
+
+		this.restaurantList = new ArrayList<YelpRestaurant>(restaurantMap.values());
 	}
 
 	/**
@@ -117,51 +121,88 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 	}
 
+	/*
+	 * I'm just going to set the centroids as the first k restaurants. hope this
+	 * isn't an issue. will ensure all clusters of size k are the same ones, if
+	 * that's what we want. this is fairly easy to change if needed. can just use
+	 * random int generator, my only concern is duplicates but I'm sure we can avoid
+	 * that too
+	 */
 	public List<Set<YelpRestaurant>> kMeansList(int k) {
 		List<Set<YelpRestaurant>> kMeansList = new LinkedList<Set<YelpRestaurant>>();
-		Map<Point, Set<YelpRestaurant>> centroidMap = new HashMap<Point, Set<YelpRestaurant>>();
+		ArrayList<Point> initialCentroids = new ArrayList<Point>();
 
-		// I'm just going to set the centroids as the first five restaurants. hope this
-		// isn't an issue. will ensure all clusters of size k are the same ones, if
-		// that's what we want. this is fairly easy to change if needed. can just use
-		// random int generator, my only concern is duplicates but I'm sure we can avoid
-		// that too
+		// pick initial centroids
 		for (int i = 0; i < k; i++) {
-			centroidMap.put(restaurantList.get(i).getLocation(), new HashSet<YelpRestaurant>());
+			initialCentroids.add(restaurantList.get(i).getLocation());
 		}
+		// map initial centroids
+		Map<Point, Set<YelpRestaurant>> initialMap = mapToClosestCentroid(initialCentroids);
+		Map<Point, Set<YelpRestaurant>> kMeansMap = reEvaluate(initialMap, 0);
 
-		Map<Point, Set<YelpRestaurant>> mapOfThing = recursiveThing(centroidMap);
-		for (Point p : mapOfThing.keySet()) {
-			kMeansList.add(mapOfThing.get(p));
+		// convert to list of clusters
+		for (Point p : kMeansMap.keySet()) {
+			kMeansList.add(kMeansMap.get(p));
 		}
-
 		return kMeansList;
 	}
 
-	private Map<Point, Set<YelpRestaurant>> recursiveThing(Map<Point, Set<YelpRestaurant>> clusterMap) {
+	private Map<Point, Set<YelpRestaurant>> mapToClosestCentroid(ArrayList<Point> centroids) {
+		Map<Point, Set<YelpRestaurant>> mapping = new HashMap<Point, Set<YelpRestaurant>>();
 
-		Map<Point, Set<YelpRestaurant>> mapOfThing = new HashMap<Point, Set<YelpRestaurant>>();
-		boolean madeChanges = false;
+		// initialize map with the list of centroids
+		for (int i = 0; i < centroids.size(); i++) {
+			mapping.put(centroids.get(i), new HashSet<YelpRestaurant>());
+		}
 
-		// loop to find shortest distance and map the thing
 		for (YelpRestaurant res : restaurantList) {
-			for (Point p : clusterMap.keySet()) {
-				res.location.distanceTo(p);
+			Map<YelpRestaurant, Point> findCentroid = new HashMap<YelpRestaurant, Point>();
+			// arbitrarily map it to the first centroid
+			findCentroid.put(res, centroids.get(0));
 
-				// change madeChanges boolean once a re-mapping has been done
-				// if madeChanges = still false, return the existing map
+			// see if any other centroids are closer
+			for (int i = 1; i < centroids.size(); i++) {
+				if (res.distanceTo(centroids.get(i)) < res.distanceTo(findCentroid.get(res))) {
+					findCentroid.replace(res, centroids.get(i));
+				}
 			}
-
+			// map restaurant to its closest centroid
+			Point theCentroid = findCentroid.get(res);
+			mapping.get(theCentroid).add(res);
 		}
+		return mapping;
+	}
 
-		// loop to recalcuate the centroids
+	private Map<Point, Set<YelpRestaurant>> reEvaluate(Map<Point, Set<YelpRestaurant>> inputMap, int count) {
+		ArrayList<Point> newCentroids = new ArrayList<Point>();
+		boolean noNewCentroids = true;
+		count++;
 
-		if (madeChanges) {
-			return mapOfThing;
-		} else {
-			return recursiveThing(mapOfThing);
+		// calculate new Centroids
+		for (Point p : inputMap.keySet()) {
+			double totalX = 0.0;
+			double totalY = 0.0;
+			for (YelpRestaurant res : inputMap.get(p)) {
+				totalX = totalX + res.latitude;
+				totalY = totalY + res.longitude;
+			}
+			double newX = totalX / inputMap.size();
+			double newY = totalY / inputMap.size();
+			Point newCent = new Point(newX, newY);
+
+			if (!inputMap.keySet().contains(newCent)) {
+				noNewCentroids = false;
+			}
+			newCentroids.add(newCent);
 		}
-
+		// if there were no new centroids, the input map was good
+		if (noNewCentroids || count == MAX_ITERATIONS)
+			return inputMap;
+		// do the process again
+		else {
+			Map<Point, Set<YelpRestaurant>> newMap = mapToClosestCentroid(newCentroids);
+			return reEvaluate(newMap, count);
+		}
 	}
 
 	@Override

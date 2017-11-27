@@ -25,6 +25,10 @@ public class YelpRestaurant {
 
 	protected Point location;
 
+	public double distanceTo(Point p) {
+		return this.location.distanceTo(p);
+	}
+
 	public YelpRestaurant() {
 		location = new Point(latitude, longitude);
 	}
@@ -56,7 +60,7 @@ public class YelpRestaurant {
 	public String[] getCategories() {
 		return categories;
 	}
-	
+
 	public int getPrice() {
 		return price;
 	}

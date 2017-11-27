@@ -19,15 +19,24 @@ public class YelpDBTests {
 	@Test
 	public void test0() throws FileNotFoundException {
 
-		Gson gson = new Gson();
 		String preFix = "data/";
 		YelpDB aiya = new YelpDB(preFix + "restaurants.json", preFix + "reviews.json", preFix + "users.json");
+
 		assertEquals(135, aiya.getRestaurants().size());
 		assertEquals(8556, aiya.getUsers().size());
 		assertEquals(17396, aiya.getReviews().size());
-		// problem(?): creates Json as JsonArray which I don't like... not actually sure
-		// if that'll be an issue later on...
-		System.out.println(gson.toJson(aiya.getRestaurants()));
+
+		// Gson gson = new Gson();
+		// System.out.println(gson.toJson(aiya.getRestaurants()));
+	}
+
+	@Test
+	public void test1() throws FileNotFoundException {
+
+		String preFix = "data/";
+		YelpDB aiya = new YelpDB(preFix + "restaurants.json", preFix + "reviews.json", preFix + "users.json");
+		// System.out.println(aiya.restaurantList.size());
+		System.out.print(aiya.kMeansClusters_json(5));
 	}
 
 }
