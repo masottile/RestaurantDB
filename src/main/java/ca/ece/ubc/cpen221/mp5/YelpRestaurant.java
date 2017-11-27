@@ -56,5 +56,9 @@ public class YelpRestaurant {
 	public String[] getCategories() {
 		return categories;
 	}
+	
+	public int getPrice() {
+		return price;
+	}
 
 }
