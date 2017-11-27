@@ -2,6 +2,9 @@ package ca.ece.ubc.cpen221.mp5;
 
 public class YelpRestaurant {
 	// TODO: Add all getter/setter methods
+
+	// since YelpRestaurant doesn't have any subclasses do we want to just change
+	// this to private?
 	private boolean open;
 	protected String url;
 	protected double longitude;
@@ -20,10 +23,14 @@ public class YelpRestaurant {
 	protected double latitude;
 	protected int price;
 
-	private Point location;
+	protected Point location;
 
 	public YelpRestaurant() {
 		location = new Point(latitude, longitude);
+	}
+
+	public Point getLocation() {
+		return this.location;
 	}
 
 	public String getUrl() {
