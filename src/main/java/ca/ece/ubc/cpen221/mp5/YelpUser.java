@@ -20,4 +20,8 @@ public class YelpUser {
 		return user_id;
 	}
 	
+	public int getReviewCount() {
+		return review_count;
+	}
+	
 }

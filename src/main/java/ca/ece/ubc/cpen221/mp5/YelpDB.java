@@ -129,19 +129,37 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 	@Override
 	public ToDoubleBiFunction<MP5Db<YelpRestaurant>, String> getPredictorFunction(String user) {
+		// TODO
 		
-		// TODO Auto-generated method stub
+		YelpUser yUser = userMap.get(user);
+		
 		Map<Double,Integer> starsToPrice = new HashMap<Double,Integer>();
+		//TODO map doesn't work make set of points (duplicate keys)
+		
+		double tempStars;
+		int tempPrice;
 		double starsMean = 0;
 		double priceMean = 0;
 		
-		// first make a set of points of all their reviews, 
+		//Picks out the reviews made by the given user and saves data on price of restaurant and stars given
 		for(YelpReview yr: reviewSet){
 			if(yr.getUserID().equals(user)) {
-				starsToPrice.put(yr., arg1)
+				tempStars = yr.getStars();
+				tempPrice = restaurantMap.get(yr.getRestaurantID()).getPrice();
+				starsToPrice.put(tempStars,tempPrice);
+				starsMean += tempStars;
+				priceMean += tempPrice;
 			}
 		}
-		//then preform least squares regression 
+		
+		starsMean = starsMean / yUser.getReviewCount();
+		priceMean = priceMean / yUser.getReviewCount();
+		
+		//calculates least squares
+		
+		
+		
+		//then perform least squares regression 
 		//then make a function to return that takes a resutaurant id and a database
 		
 		return null;

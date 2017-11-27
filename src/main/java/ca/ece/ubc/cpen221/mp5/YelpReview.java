@@ -14,7 +14,7 @@ public class YelpReview {
 	private String user_id;
 	private String date;
 	
-	public String getRetaurantID() {
+	public String getRestaurantID() {
 		return business_id;
 	}
 	
@@ -24,6 +24,10 @@ public class YelpReview {
 	
 	public String getUserID() {
 		return user_id;
+	}
+	
+	public double getStars() {
+		return stars;
 	}
 
 }
