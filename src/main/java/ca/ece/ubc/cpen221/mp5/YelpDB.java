@@ -76,7 +76,6 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	public Set<YelpUser> getUsers() {
 		return new HashSet<YelpUser>(userSet);
 	}
-
 	@Override
 	public Set<YelpRestaurant> getMatches(String queryString) {
 		// TODO Auto-generated method stub
@@ -141,6 +140,5 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 			this.cluster = cluster;
 		}
 	}
-
 
 }
