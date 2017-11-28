@@ -105,6 +105,55 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		// Complete for part 5??? or something like that
 		return null;
 	}
+	
+	@Override
+	public ToDoubleBiFunction<MP5Db<YelpRestaurant>, String> getPredictorFunction(String user) {
+
+		YelpUser yUser = userMap.get(user);
+		Set<Point> priceAndStars = new HashSet<Point>();
+
+		ToDoubleBiFunction<MP5Db<YelpRestaurant>, String> returnFunction;
+
+		double priceMean = 0;
+		double starsMean = 0;
+		double sxx = 0, syy = 0, sxy = 0;
+		double b, a;
+		int count = 0;
+
+		// Picks out the reviews made by the given user and saves data on price of
+		// restaurant and stars given
+		for (YelpReview yr : reviewSet) {
+			if (yr.getUserID().equals(user)) {
+				double tempPrice = restaurantMap.get(yr.getRestaurantID()).getPrice();
+				double tempStars = yr.getStars();
+				priceMean += tempPrice;
+				starsMean += tempStars;
+
+				priceAndStars.add(new Point(tempPrice, tempStars));
+				count ++;
+			}
+		}
+
+		starsMean = starsMean / count;// gotta check it isn't zero
+		priceMean = priceMean / count;
+
+		// calculates least squares
+		for (Point p : priceAndStars) {
+			sxx += Math.pow(p.getX(), 2);
+			syy += Math.pow(p.getY(), 2);
+			sxy += p.getX() * p.getY();
+		}
+
+		b = sxy / sxx;
+		a = starsMean - b * priceMean;
+
+		returnFunction = (dataBase, restaurantID) -> {
+			int price = ((YelpDB) dataBase).restaurantMap.get(restaurantID).getPrice();
+			return b * price + a;
+		};
+
+		return returnFunction;
+	}
 
 	/**
 	 * Creates a JSON string in the same format as voronoi.json Calls on kMeansList
@@ -207,53 +256,6 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 			// return reEvaluate(newMap, count);
 
 		}
-	}
-
-	@Override
-	public ToDoubleBiFunction<MP5Db<YelpRestaurant>, String> getPredictorFunction(String user) {
-
-		YelpUser yUser = userMap.get(user);
-		Set<Point> priceAndStars = new HashSet<Point>();
-
-		ToDoubleBiFunction<MP5Db<YelpRestaurant>, String> returnFunction;
-
-		double priceMean = 0;
-		double starsMean = 0;
-		double sxx = 0, syy = 0, sxy = 0;
-		double b, a;
-
-		// Picks out the reviews made by the given user and saves data on price of
-		// restaurant and stars given
-		for (YelpReview yr : reviewSet) {
-			if (yr.getUserID().equals(user)) {
-				double tempPrice = restaurantMap.get(yr.getRestaurantID()).getPrice();
-				double tempStars = yr.getStars();
-				priceMean += tempPrice;
-				starsMean += tempStars;
-
-				priceAndStars.add(new Point(tempPrice, tempStars));
-			}
-		}
-
-		starsMean = starsMean / yUser.getReviewCount();
-		priceMean = priceMean / yUser.getReviewCount();
-
-		// calculates least squares
-		for (Point p : priceAndStars) {
-			sxx += Math.pow(p.getX(), 2);
-			syy += Math.pow(p.getY(), 2);
-			sxy += p.getX() * p.getY();
-		}
-
-		b = sxy / sxx;
-		a = starsMean - b * priceMean;
-
-		returnFunction = (dataBase, restaurantID) -> {
-			int price = ((YelpDB) dataBase).restaurantMap.get(restaurantID).getPrice();
-			return b * price + a;
-		};
-
-		return null;
 	}
 
 	private class kMeans {

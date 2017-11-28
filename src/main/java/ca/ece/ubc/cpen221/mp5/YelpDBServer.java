@@ -1,31 +1,76 @@
 package ca.ece.ubc.cpen221.mp5;
 
-public class YelpDBServer {
-	
-	public static void main(String[] args) {
-		
-		if(args[0].equals("4949")) {
-			runServer r1 = new runServer("Thread1");
-			//r1.start();
-		}
-	}
-	
-	private static class runServer implements Runnable{
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
 
-		private Thread t;
-		private String threadName;
+public class YelpDBServer {
+
+	private static int portNumber;
+	private static boolean isStopped = false;
+	private static YelpDB theDB;
+
+	public static void main(String[] args) {
+
+		ServerSocket serverSocket = null;
+		Socket clientSocket = null;
+
+		portNumber = Integer.parseInt(args[0]);
 		
-		public runServer(String name) {
-			threadName = name;
+		// This block tries to initialize the things with the yelpDB wrapping stuffs
+		try {
+			theDB = new YelpDB("data/restaurants.json", "data/reviews.json", "data/users.json");
+		} catch (FileNotFoundException e) {
+			System.out.println("fucked up the file names or some shit");
+		}
+
+		// This block opens up the server socket to listen at the given port number
+		try {
+			serverSocket = new ServerSocket(portNumber);
+		} catch (IOException e) {
+			System.out.println("you fucked up with creating the server");
+		}
+
+		// while the server is still running, it will listen for clients
+		while (!isStopped) {
+
+			// this block tries to accept a client request
+			try {
+				clientSocket = serverSocket.accept();
+			} catch (IOException e) {
+				System.out.println("you fucked up accepting the client");
+			}
+			// TODO is this right?
+
+			// if the client is successful, then we create a new thread to deal with
+			// whatever the fuck they want
+			new Thread(new dBRunnable(clientSocket)).start();
+
+		}
+		
+		// our server is no longer running
+		System.out.println("Server stopped");
+
+	}
+
+	private static class dBRunnable implements Runnable {
+
+		private Socket clientSocket;
+
+		public dBRunnable(Socket client) {
+			clientSocket = client;
 			System.out.println("YAY YOU");
 		}
-		   
+
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
 			System.out.println("YAY YOU");
 		}
-		
-	}
 
+	}
 }
