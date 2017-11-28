@@ -20,7 +20,7 @@ public class YelpDBTests {
 	private static String preFix = "data/";
 	private YelpDB aiya;
 
-	@Test
+/*	@Test
 	public void test0() throws FileNotFoundException {
 
 		String preFix = "data/";
@@ -32,15 +32,14 @@ public class YelpDBTests {
 
 		// Gson gson = new Gson();
 		// System.out.println(gson.toJson(aiya.getRestaurants()));
-	}
+	}*/
 
 	@Test
 	public void test1() throws FileNotFoundException {
 
 		String preFix = "data/";
 		YelpDB aiya = new YelpDB(preFix + "restaurants.json", preFix + "reviews.json", preFix + "users.json");
-		// System.out.println(aiya.restaurantList.size());
-		System.out.print(aiya.kMeansClusters_json(5));
+		System.out.println(aiya.kMeansClusters_json(5));
 
 	}
 
