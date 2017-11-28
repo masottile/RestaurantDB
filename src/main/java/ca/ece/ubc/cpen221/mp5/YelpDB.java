@@ -14,6 +14,11 @@ import java.util.Set;
 import java.util.function.ToDoubleBiFunction;
 import com.google.gson.*;
 
+import datatypes.Point;
+import datatypes.YelpRestaurant;
+import datatypes.YelpReview;
+import datatypes.YelpUser;
+
 public class YelpDB implements MP5Db<YelpRestaurant> {
 
 	private Set<YelpReview> reviewSet = new HashSet<YelpReview>();
@@ -108,17 +113,19 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	 */
 	@Override
 	public String kMeansClusters_json(int k) {
+
 		List<Set<YelpRestaurant>> source = this.kMeansList(k);
 		Set<kMeans> toBeJson = new HashSet<kMeans>();
 
 		for (int i = 0; i < source.size(); i++) {
+
 			for (YelpRestaurant r : source.get(i)) {
-				toBeJson.add(new kMeans(r.latitude, r.longitude, r.name, i));
+				toBeJson.add(new kMeans(r.getLatitude(), r.getLongitude(), r.getName(), i));
 			}
 		}
+
 		Gson gson = new Gson();
 		return gson.toJson(toBeJson);
-
 	}
 
 	/*
@@ -129,6 +136,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	 * that too
 	 */
 	public List<Set<YelpRestaurant>> kMeansList(int k) {
+		
 		List<Set<YelpRestaurant>> kMeansList = new LinkedList<Set<YelpRestaurant>>();
 		ArrayList<Point> initialCentroids = new ArrayList<Point>();
 
@@ -175,16 +183,17 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 	private Map<Point, Set<YelpRestaurant>> reEvaluate(Map<Point, Set<YelpRestaurant>> inputMap, int count) {
 		ArrayList<Point> newCentroids = new ArrayList<Point>();
+		//TODO get rid of new object
 		boolean noNewCentroids = true;
 		count++;
 
 		// calculate new Centroids
 		for (Point p : inputMap.keySet()) {
-			double totalX = 0.0;
-			double totalY = 0.0;
+			double totalX = 0;
+			double totalY = 0;
 			for (YelpRestaurant res : inputMap.get(p)) {
-				totalX = totalX + res.latitude;
-				totalY = totalY + res.longitude;
+				totalX = totalX + res.getLatitude();
+				totalY = totalY + res.getLongitude();
 			}
 			double newX = totalX / inputMap.size();
 			double newY = totalY / inputMap.size();
@@ -201,6 +210,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		// do the process again
 		else {
 			Map<Point, Set<YelpRestaurant>> newMap = mapToClosestCentroid(newCentroids);
+			// TODO get rid of new object
 			return reEvaluate(newMap, count);
 		}
 	}
@@ -210,9 +220,9 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 		YelpUser yUser = userMap.get(user);
 		Set<Point> priceAndStars = new HashSet<Point>();
-		
+
 		ToDoubleBiFunction<MP5Db<YelpRestaurant>, String> returnFunction;
-		
+
 		double priceMean = 0;
 		double starsMean = 0;
 		double sxx = 0, syy = 0, sxy = 0;
@@ -226,7 +236,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 				double tempStars = yr.getStars();
 				priceMean += tempPrice;
 				starsMean += tempStars;
-				
+
 				priceAndStars.add(new Point(tempPrice, tempStars));
 			}
 		}
@@ -235,18 +245,18 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		priceMean = priceMean / yUser.getReviewCount();
 
 		// calculates least squares
-		for (Point p: priceAndStars) {
+		for (Point p : priceAndStars) {
 			sxx += Math.pow(p.getX(), 2);
-			syy += Math.pow(p.getY(),2);
-			sxy += p.getX()*p.getY();
+			syy += Math.pow(p.getY(), 2);
+			sxy += p.getX() * p.getY();
 		}
-		
-		b = sxy/sxx;
+
+		b = sxy / sxx;
 		a = starsMean - b * priceMean;
-		
+
 		returnFunction = (dataBase, restaurantID) -> {
 			int price = ((YelpDB) dataBase).restaurantMap.get(restaurantID).getPrice();
-			return b*price + a;
+			return b * price + a;
 		};
 
 		return null;

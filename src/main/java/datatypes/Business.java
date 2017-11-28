@@ -1,4 +1,4 @@
-package ca.ece.ubc.cpen221.mp5;
+package datatypes;
 
 import java.util.HashSet;
 import java.util.Set;
