@@ -14,10 +14,8 @@ import java.util.Set;
 import java.util.function.ToDoubleBiFunction;
 import com.google.gson.*;
 
-import datatypes.Point;
-import datatypes.YelpRestaurant;
-import datatypes.YelpReview;
-import datatypes.YelpUser;
+import ca.ece.ubc.cpen221.mp5.datatypes.*;
+
 
 public class YelpDB implements MP5Db<YelpRestaurant> {
 
