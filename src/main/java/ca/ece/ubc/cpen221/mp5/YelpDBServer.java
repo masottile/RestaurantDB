@@ -1,6 +1,7 @@
 package ca.ece.ubc.cpen221.mp5;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -11,6 +12,7 @@ public class YelpDBServer {
 
 	private static int portNumber;
 	private static boolean isStopped = false;
+	private static YelpDB theDB;
 
 	public static void main(String[] args) {
 
@@ -18,6 +20,13 @@ public class YelpDBServer {
 		Socket clientSocket = null;
 
 		portNumber = Integer.parseInt(args[0]);
+		
+		// This block tries to initialize the things with the yelpDB wrapping stuffs
+		try {
+			theDB = new YelpDB("data/restaurants.json", "data/reviews.json", "data/users.json");
+		} catch (FileNotFoundException e) {
+			System.out.println("fucked up the file names or some shit");
+		}
 
 		// This block opens up the server socket to listen at the given port number
 		try {
