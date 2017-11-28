@@ -16,9 +16,9 @@ import ca.ece.ubc.cpen221.mp5.YelpDB;
 
 public class YelpDBTests {
 
-	private static Gson gson = new Gson();
-	private static String preFix = "data/";
-	private YelpDB aiya;
+	static Gson gson = new Gson();
+	static String preFix = "data/";
+	YelpDB aiya;
 
 	@Test
 	public void test0() throws FileNotFoundException {
@@ -30,8 +30,8 @@ public class YelpDBTests {
 		assertEquals(8556, aiya.getUsers().size());
 		assertEquals(17396, aiya.getReviews().size());
 
-		Gson gson = new Gson();
-		System.out.println(gson.toJson(aiya.getRestaurants()));
+		// Gson gson = new Gson();
+		// System.out.println(gson.toJson(aiya.getRestaurants()));
 	}
 
 	@Test
@@ -39,8 +39,12 @@ public class YelpDBTests {
 
 		String preFix = "data/";
 		YelpDB aiya = new YelpDB(preFix + "restaurants.json", preFix + "reviews.json", preFix + "users.json");
+		System.out.println("k-means cluster, k = 5: ");
 		System.out.println(aiya.kMeansClusters_json(5));
-
+		System.out.println("k-means cluster, k = 3: ");
+		System.out.println(aiya.kMeansClusters_json(3));
+		System.out.println("k-means cluster, k = 5: ");
+		System.out.println(aiya.kMeansClusters_json(5));
 	}
 
 }

@@ -17,8 +17,6 @@ import ca.ece.ubc.cpen221.mp5.datatypes.*;
 
 public class YelpDB implements MP5Db<YelpRestaurant> {
 
-	private static final int MAX_ITERATIONS = 50;
-
 	private Set<YelpReview> reviewSet = new HashSet<YelpReview>();
 
 	private Map<String, YelpRestaurant> restaurantMap = new HashMap<String, YelpRestaurant>();
@@ -26,9 +24,6 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	private Map<String, YelpReview> reviewMap = new HashMap<String, YelpReview>();
 
 	public List<YelpRestaurant> restaurantList;
-
-	public ArrayList<Point> centroids = new ArrayList<Point>();
-	public Map<Point, Set<YelpRestaurant>> tryMap = new HashMap<Point, Set<YelpRestaurant>>();
 
 	/**
 	 * Creator method for YelpDB
@@ -105,7 +100,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		// Complete for part 5??? or something like that
 		return null;
 	}
-	
+
 	@Override
 	public ToDoubleBiFunction<MP5Db<YelpRestaurant>, String> getPredictorFunction(String user) {
 
@@ -130,7 +125,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 				starsMean += tempStars;
 
 				priceAndStars.add(new Point(tempPrice, tempStars));
-				count ++;
+				count++;
 			}
 		}
 
@@ -166,7 +161,9 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	@Override
 	public String kMeansClusters_json(int k) {
 
-		List<Set<YelpRestaurant>> source = this.kMeansList(k);
+		kMeans kMeansCluster = new kMeans();
+		List<Set<YelpRestaurant>> source = kMeansCluster.kMeansList(k);
+
 		Set<kMeans> toBeJson = new HashSet<kMeans>();
 		Gson gson = new Gson();
 
@@ -179,104 +176,105 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		return gson.toJson(toBeJson);
 	}
 
-	public List<Set<YelpRestaurant>> kMeansList(int k) {
-
-		List<Set<YelpRestaurant>> kMeansList = new LinkedList<Set<YelpRestaurant>>();
-		// ArrayList<Point> initialCentroids = new ArrayList<Point>();
-		// getting first k restaurants, setting them as k initial centroids
-		for (int i = 0; i < k; i++) {
-			centroids.add(restaurantList.get(i).getLocation());
-		}
-		// map initial centroids
-		tryMap = mapToClosestCentroid(centroids);
-		Map<Point, Set<YelpRestaurant>> kMeansMap = reEvaluate(tryMap, 0);
-
-		// convert to list of clusters
-		for (Point p : kMeansMap.keySet()) {
-			kMeansList.add(kMeansMap.get(p));
-		}
-		return kMeansList;
-	}
-
-	private Map<Point, Set<YelpRestaurant>> mapToClosestCentroid(ArrayList<Point> centroids) {
-		tryMap.clear();
-		// initialize map with the list of centroids
-		for (int i = 0; i < centroids.size(); i++) {
-			tryMap.put(centroids.get(i), new HashSet<YelpRestaurant>());
-		}
-		for (YelpRestaurant res : restaurantList) {
-			Map<YelpRestaurant, Point> findCentroid = new HashMap<YelpRestaurant, Point>();
-
-			// arbitrarily map it to the first centroid
-			findCentroid.put(res, centroids.get(0));
-
-			// see if any other centroids are closer
-			for (int i = 0; i < centroids.size(); i++) {
-				if (res.distanceTo(centroids.get(i)) < res.distanceTo(findCentroid.get(res))) {
-					findCentroid.replace(res, centroids.get(i));
-				}
-			}
-			// map restaurant to its closest centroid
-			Point theCentroid = findCentroid.get(res);
-			tryMap.get(theCentroid).add(res);
-		}
-		return tryMap;
-	}
-
-	private Map<Point, Set<YelpRestaurant>> reEvaluate(Map<Point, Set<YelpRestaurant>> inputMap, int count) {
-	//	ArrayList<Point> newCentroids = new ArrayList<Point>();
-		boolean noNewCentroids = true;
-		count++;
-
-		// calculate new Centroids
-		for (Point p : inputMap.keySet()) {
-			double totalX = 0;
-			double totalY = 0;
-
-			for (YelpRestaurant res : inputMap.get(p)) {
-				totalX = totalX + res.getLatitude();
-				totalY = totalY + res.getLongitude();
-			}
-			Point newCent = new Point(totalX / inputMap.size(), totalY / inputMap.size());
-
-			if (!inputMap.keySet().contains(newCent)) {
-				noNewCentroids = false;
-			}
-			centroids.add(newCent);
-		}
-		// if there were no new centroids, the input map was good
-		if (noNewCentroids || count == MAX_ITERATIONS) {
-			return inputMap;
-		}
-		// do the process again
-		else {
-			tryMap = mapToClosestCentroid(centroids);
-			return reEvaluate(tryMap, count);
-			// Map<Point, Set<YelpRestaurant>> newMap = mapToClosestCentroid(newCentroids);
-			// return reEvaluate(newMap, count);
-
-		}
-	}
+	// BEGINNING OF K-MEANS NESTED CLASS
 
 	private class kMeans {
-		// Makes it easier to convert to JSON in correct format later
-		// TODO make sure this is a necessary addition
+		private static final int MAX_ITERATIONS = 50;
+		public ArrayList<Point> tryCentroids = new ArrayList<Point>();
+		public Map<Point, Set<YelpRestaurant>> tryMap = new HashMap<Point, Set<YelpRestaurant>>();
+
 		private double x;
 		private double y;
 		private String name;
 		private int cluster;
 		private final double weight = 1.0;
 
-		private kMeans(double x, double y, String name, int cluster) {
+		kMeans(double x, double y, String name, int cluster) {
 			this.x = x;
 			this.y = y;
 			this.name = name;
 			this.cluster = cluster;
 		}
 
-		private double getWeight() {
-			return this.weight;
+		public kMeans() {
+		}
+
+		public List<Set<YelpRestaurant>> kMeansList(int k) {
+
+			List<Set<YelpRestaurant>> kMeansList = new LinkedList<Set<YelpRestaurant>>();
+
+			// getting first k restaurants, setting them as k initial centroids
+			for (int i = 0; i < k; i++) {
+				tryCentroids.add(restaurantList.get(i).getLocation());
+			}
+			// map initial centroids
+			tryMap = mapToClosestCentroid(tryCentroids);
+			Map<Point, Set<YelpRestaurant>> kMeansMap = reEvaluate(tryMap, 0);
+
+			// convert to list of clusters
+			for (Point p : kMeansMap.keySet()) {
+				kMeansList.add(kMeansMap.get(p));
+			}
+			return kMeansList;
+		}
+
+		private Map<Point, Set<YelpRestaurant>> mapToClosestCentroid(ArrayList<Point> centroids) {
+			tryMap.clear();
+			// initialize map with the list of centroids
+			for (int i = 0; i < centroids.size(); i++) {
+				tryMap.put(centroids.get(i), new HashSet<YelpRestaurant>());
+			}
+			for (YelpRestaurant res : restaurantList) {
+				Map<YelpRestaurant, Point> findCentroid = new HashMap<YelpRestaurant, Point>();
+
+				// arbitrarily map it to the first centroid
+				findCentroid.put(res, centroids.get(0));
+
+				// see if any other centroids are closer
+				for (int i = 0; i < centroids.size(); i++) {
+					if (res.distanceTo(centroids.get(i)) < res.distanceTo(findCentroid.get(res))) {
+						findCentroid.replace(res, centroids.get(i));
+					}
+				}
+				// map restaurant to its closest centroid
+				Point theCentroid = findCentroid.get(res);
+				tryMap.get(theCentroid).add(res);
+			}
+			return tryMap;
+		}
+
+		private Map<Point, Set<YelpRestaurant>> reEvaluate(Map<Point, Set<YelpRestaurant>> map, int count) {
+			Map<Point, Set<YelpRestaurant>> inputMap = new HashMap<Point, Set<YelpRestaurant>>(map);
+			boolean noNewCentroids = true;
+			count++;
+
+			// calculate new Centroids
+			for (Point p : inputMap.keySet()) {
+
+				double totalX = 0;
+				double totalY = 0;
+
+				for (YelpRestaurant res : inputMap.get(p)) {
+					totalX = totalX + res.getLatitude();
+					totalY = totalY + res.getLongitude();
+				}
+				Point newCent = new Point(totalX / inputMap.size(), totalY / inputMap.size());
+
+				if (!inputMap.keySet().contains(newCent)) {
+					noNewCentroids = false;
+				}
+				tryCentroids.add(newCent);
+			}
+			// if there were no new centroids, the input map was good
+			if (noNewCentroids || count == MAX_ITERATIONS) {
+				return inputMap;
+			}
+
+			else {
+				tryMap.clear();
+				tryMap = mapToClosestCentroid(tryCentroids);
+				return reEvaluate(tryMap, count);
+			}
 		}
 	}
-
 }
