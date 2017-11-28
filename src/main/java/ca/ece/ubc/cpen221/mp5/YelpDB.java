@@ -25,6 +25,9 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 	public List<YelpRestaurant> restaurantList;
 
+	public ArrayList<Point> centroids = new ArrayList<Point>();
+	public Map<Point, Set<YelpRestaurant>> tryMap = new HashMap<Point, Set<YelpRestaurant>>();
+
 	/**
 	 * Creator method for YelpDB
 	 * 
@@ -68,6 +71,9 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		userScan.close();
 
 		this.restaurantList = new ArrayList<YelpRestaurant>(restaurantMap.values());
+		for (YelpRestaurant r : restaurantList) {
+			r.setLocation();
+		}
 	}
 
 	/**
@@ -110,35 +116,26 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	public String kMeansClusters_json(int k) {
 		List<Set<YelpRestaurant>> source = this.kMeansList(k);
 		Set<kMeans> toBeJson = new HashSet<kMeans>();
+		Gson gson = new Gson();
 
-		for (int i = 0; i < source.size(); i++) {
-			for (YelpRestaurant r : source.get(i)) {
+		for (int i = 1; i <= source.size(); i++) {
+			for (YelpRestaurant r : source.get(i - 1)) {
 				toBeJson.add(new kMeans(r.latitude, r.longitude, r.name, i));
 			}
 		}
-		Gson gson = new Gson();
 		return gson.toJson(toBeJson);
-
 	}
 
-	/*
-	 * I'm just going to set the centroids as the first k restaurants. hope this
-	 * isn't an issue. will ensure all clusters of size k are the same ones, if
-	 * that's what we want. this is fairly easy to change if needed. can just use
-	 * random int generator, my only concern is duplicates but I'm sure we can avoid
-	 * that too
-	 */
 	public List<Set<YelpRestaurant>> kMeansList(int k) {
-		List<Set<YelpRestaurant>> kMeansList = new LinkedList<Set<YelpRestaurant>>();
-		ArrayList<Point> initialCentroids = new ArrayList<Point>();
 
-		// pick initial centroids
+		List<Set<YelpRestaurant>> kMeansList = new LinkedList<Set<YelpRestaurant>>();
+		// getting first k restaurants, setting them as k initial centroids
 		for (int i = 0; i < k; i++) {
-			initialCentroids.add(restaurantList.get(i).getLocation());
+			centroids.add(restaurantList.get(i).getLocation());
 		}
 		// map initial centroids
-		Map<Point, Set<YelpRestaurant>> initialMap = mapToClosestCentroid(initialCentroids);
-		Map<Point, Set<YelpRestaurant>> kMeansMap = reEvaluate(initialMap, 0);
+		tryMap = mapToClosestCentroid(centroids);
+		Map<Point, Set<YelpRestaurant>> kMeansMap = reEvaluate(tryMap);
 
 		// convert to list of clusters
 		for (Point p : kMeansMap.keySet()) {
@@ -148,40 +145,39 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	}
 
 	private Map<Point, Set<YelpRestaurant>> mapToClosestCentroid(ArrayList<Point> centroids) {
-		Map<Point, Set<YelpRestaurant>> mapping = new HashMap<Point, Set<YelpRestaurant>>();
-
+		tryMap.clear();
 		// initialize map with the list of centroids
 		for (int i = 0; i < centroids.size(); i++) {
-			mapping.put(centroids.get(i), new HashSet<YelpRestaurant>());
+			tryMap.put(centroids.get(i), new HashSet<YelpRestaurant>());
 		}
-
 		for (YelpRestaurant res : restaurantList) {
 			Map<YelpRestaurant, Point> findCentroid = new HashMap<YelpRestaurant, Point>();
+
 			// arbitrarily map it to the first centroid
 			findCentroid.put(res, centroids.get(0));
 
 			// see if any other centroids are closer
-			for (int i = 1; i < centroids.size(); i++) {
+			for (int i = 0; i < centroids.size(); i++) {
 				if (res.distanceTo(centroids.get(i)) < res.distanceTo(findCentroid.get(res))) {
 					findCentroid.replace(res, centroids.get(i));
 				}
 			}
 			// map restaurant to its closest centroid
 			Point theCentroid = findCentroid.get(res);
-			mapping.get(theCentroid).add(res);
+			tryMap.get(theCentroid).add(res);
 		}
-		return mapping;
+		return tryMap;
 	}
 
-	private Map<Point, Set<YelpRestaurant>> reEvaluate(Map<Point, Set<YelpRestaurant>> inputMap, int count) {
-		ArrayList<Point> newCentroids = new ArrayList<Point>();
+	private Map<Point, Set<YelpRestaurant>> reEvaluate(Map<Point, Set<YelpRestaurant>> inputMap) {
+
 		boolean noNewCentroids = true;
-		count++;
 
 		// calculate new Centroids
 		for (Point p : inputMap.keySet()) {
 			double totalX = 0.0;
 			double totalY = 0.0;
+
 			for (YelpRestaurant res : inputMap.get(p)) {
 				totalX = totalX + res.latitude;
 				totalY = totalY + res.longitude;
@@ -193,15 +189,16 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 			if (!inputMap.keySet().contains(newCent)) {
 				noNewCentroids = false;
 			}
-			newCentroids.add(newCent);
+			centroids.add(newCent);
 		}
 		// if there were no new centroids, the input map was good
-		if (noNewCentroids || count == MAX_ITERATIONS)
+		if (noNewCentroids) {
 			return inputMap;
+		}
 		// do the process again
 		else {
-			Map<Point, Set<YelpRestaurant>> newMap = mapToClosestCentroid(newCentroids);
-			return reEvaluate(newMap, count);
+			tryMap = mapToClosestCentroid(centroids);
+			return reEvaluate(tryMap);
 		}
 	}
 
@@ -210,9 +207,9 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 		YelpUser yUser = userMap.get(user);
 		Set<Point> priceAndStars = new HashSet<Point>();
-		
+
 		ToDoubleBiFunction<MP5Db<YelpRestaurant>, String> returnFunction;
-		
+
 		double priceMean = 0;
 		double starsMean = 0;
 		double sxx = 0, syy = 0, sxy = 0;
@@ -226,7 +223,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 				double tempStars = yr.getStars();
 				priceMean += tempPrice;
 				starsMean += tempStars;
-				
+
 				priceAndStars.add(new Point(tempPrice, tempStars));
 			}
 		}
@@ -235,18 +232,18 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		priceMean = priceMean / yUser.getReviewCount();
 
 		// calculates least squares
-		for (Point p: priceAndStars) {
+		for (Point p : priceAndStars) {
 			sxx += Math.pow(p.getX(), 2);
-			syy += Math.pow(p.getY(),2);
-			sxy += p.getX()*p.getY();
+			syy += Math.pow(p.getY(), 2);
+			sxy += p.getX() * p.getY();
 		}
-		
-		b = sxy/sxx;
+
+		b = sxy / sxx;
 		a = starsMean - b * priceMean;
-		
+
 		returnFunction = (dataBase, restaurantID) -> {
 			int price = ((YelpDB) dataBase).restaurantMap.get(restaurantID).getPrice();
-			return b*price + a;
+			return b * price + a;
 		};
 
 		return null;

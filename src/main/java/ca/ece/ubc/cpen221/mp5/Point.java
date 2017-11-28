@@ -1,8 +1,8 @@
 package ca.ece.ubc.cpen221.mp5;
 
 public class Point {
-	private double x;
-	private double y;
+	double x;
+	double y;
 
 	Point(double x, double y) {
 		this.x = x;

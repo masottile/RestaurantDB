@@ -29,7 +29,7 @@ public class YelpRestaurant {
 		return this.location.distanceTo(p);
 	}
 
-	public YelpRestaurant() {
+	public void setLocation() {
 		location = new Point(latitude, longitude);
 	}
 
