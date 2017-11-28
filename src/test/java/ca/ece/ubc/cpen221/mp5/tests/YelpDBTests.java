@@ -15,12 +15,12 @@ import ca.ece.ubc.cpen221.mp5.YelpDB;
 // TODO: Write useful tests
 
 public class YelpDBTests {
-	
+
 	private static Gson gson = new Gson();
 	private static String preFix = "data/";
 	private YelpDB aiya;
 
-/*	@Test
+	@Test
 	public void test0() throws FileNotFoundException {
 
 		String preFix = "data/";
@@ -30,9 +30,9 @@ public class YelpDBTests {
 		assertEquals(8556, aiya.getUsers().size());
 		assertEquals(17396, aiya.getReviews().size());
 
-		// Gson gson = new Gson();
-		// System.out.println(gson.toJson(aiya.getRestaurants()));
-	}*/
+		Gson gson = new Gson();
+		System.out.println(gson.toJson(aiya.getRestaurants()));
+	}
 
 	@Test
 	public void test1() throws FileNotFoundException {

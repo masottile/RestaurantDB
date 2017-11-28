@@ -3,7 +3,6 @@ package ca.ece.ubc.cpen221.mp5;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -18,8 +17,9 @@ import ca.ece.ubc.cpen221.mp5.datatypes.*;
 
 public class YelpDB implements MP5Db<YelpRestaurant> {
 
+	private static final int MAX_ITERATIONS = 50;
+
 	private Set<YelpReview> reviewSet = new HashSet<YelpReview>();
-	private final int MAX_ITERATIONS = 50;
 
 	private Map<String, YelpRestaurant> restaurantMap = new HashMap<String, YelpRestaurant>();
 	private Map<String, YelpUser> userMap = new HashMap<String, YelpUser>();
@@ -132,7 +132,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 	public List<Set<YelpRestaurant>> kMeansList(int k) {
 
-		// List<Set<YelpRestaurant>> kMeansList = new LinkedList<Set<YelpRestaurant>>();
+		List<Set<YelpRestaurant>> kMeansList = new LinkedList<Set<YelpRestaurant>>();
 		// ArrayList<Point> initialCentroids = new ArrayList<Point>();
 		// getting first k restaurants, setting them as k initial centroids
 		for (int i = 0; i < k; i++) {
@@ -140,7 +140,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		}
 		// map initial centroids
 		tryMap = mapToClosestCentroid(centroids);
-		Map<Point, Set<YelpRestaurant>> kMeansMap = reEvaluate(tryMap);
+		Map<Point, Set<YelpRestaurant>> kMeansMap = reEvaluate(tryMap, 0);
 
 		// convert to list of clusters
 		for (Point p : kMeansMap.keySet()) {
@@ -174,12 +174,10 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		return tryMap;
 	}
 
-	private Map<Point, Set<YelpRestaurant>> reEvaluate(Map<Point, Set<YelpRestaurant>> inputMap) {
-		// private Map<Point, Set<YelpRestaurant>> reEvaluate(Map<Point,
-		// Set<YelpRestaurant>> inputMap, int count) {
-		ArrayList<Point> newCentroids = new ArrayList<Point>();
-		// TODO get rid of new object
+	private Map<Point, Set<YelpRestaurant>> reEvaluate(Map<Point, Set<YelpRestaurant>> inputMap, int count) {
+	//	ArrayList<Point> newCentroids = new ArrayList<Point>();
 		boolean noNewCentroids = true;
+		count++;
 
 		// calculate new Centroids
 		for (Point p : inputMap.keySet()) {
@@ -190,9 +188,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 				totalX = totalX + res.getLatitude();
 				totalY = totalY + res.getLongitude();
 			}
-			double newX = totalX / inputMap.size();
-			double newY = totalY / inputMap.size();
-			Point newCent = new Point(newX, newY);
+			Point newCent = new Point(totalX / inputMap.size(), totalY / inputMap.size());
 
 			if (!inputMap.keySet().contains(newCent)) {
 				noNewCentroids = false;
@@ -200,13 +196,13 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 			centroids.add(newCent);
 		}
 		// if there were no new centroids, the input map was good
-		if (noNewCentroids) {
+		if (noNewCentroids || count == MAX_ITERATIONS) {
 			return inputMap;
 		}
 		// do the process again
 		else {
 			tryMap = mapToClosestCentroid(centroids);
-			return reEvaluate(tryMap);
+			return reEvaluate(tryMap, count);
 			// Map<Point, Set<YelpRestaurant>> newMap = mapToClosestCentroid(newCentroids);
 			// return reEvaluate(newMap, count);
 
