@@ -1,10 +1,10 @@
-package ca.ece.ubc.cpen221.mp5;
+package ca.ece.ubc.cpen221.mp5.datatypes;
 
 public class Point {
 	double x;
 	double y;
 
-	Point(double x, double y) {
+	public Point(double x, double y) {
 		this.x = x;
 		this.y = y;
 	}
