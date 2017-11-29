@@ -5,17 +5,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class WelpDBServer {
+	/** Default port number where the server listens for connections. */
+	public static final int PORT = 4949;
 
 	private ServerSocket serverSocket;
-	private static int PORT_NUMBER = 5949;
-
-	public static void main(String[] args) {
-		try {
-			WelpDBServer welp = new WelpDBServer(PORT_NUMBER);
-			welp.serve();
-		} catch (IOException e) {
-		}
-	}
 
 	public WelpDBServer(int port) throws IOException {
 		serverSocket = new ServerSocket(port);
@@ -23,43 +16,47 @@ public class WelpDBServer {
 
 	public void serve() throws IOException {
 		while (true) {
-			final Socket socket = serverSocket.accept();
+			Socket socket = serverSocket.accept();
+			try {
+				handle(socket);
+			} catch (IOException ioe) {
+				System.out.println("IOException just happened");
 
-			Thread handler = new Thread(new Runnable() {
-				public void run() {
-					try {
-						try {
-							talk(socket);
-						} finally {
-							socket.close();
-						}
-					} catch (IOException e) {
-					}
-				}
-			});
-			handler.start();
+			} finally {
+				socket.close();
+			}
 		}
 	}
 
-	private void talk(Socket socket) throws IOException {
-		System.err.println("You're connected! type one word");
+	private void handle(Socket socket) throws IOException {
+		System.err.println("client connected");
+
 		BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
+
+		PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
 
 		try {
 			for (String line = in.readLine(); line != null; line = in.readLine()) {
 				System.err.println("request: " + line);
 				try {
-					System.err.println("Well, there's really not much for me to say here");
-					System.err.println("Here's whatever you inputted, printed three times: " + line + line + line);
-
+					System.err.println("Well, I took your request and tried to do something with it");
 				} catch (NumberFormatException e) {
-					System.err.println("reply: please stop");
 				}
+				out.flush();
 			}
 		} finally {
 			out.close();
 			in.close();
+		}
+	}
+
+	public static void main(String[] args) {
+		try {
+			WelpDBServer server = new WelpDBServer(PORT);
+			server.serve();
+		} catch (IOException e) {
+			System.out.println("Server creation fucked up");
+			e.printStackTrace();
 		}
 	}
 }
