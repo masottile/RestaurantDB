@@ -6,22 +6,22 @@ public class YelpRestaurant {
 	// since YelpRestaurant doesn't have any subclasses do we want to just change
 	// this to private?
 	private boolean open;
-	protected String url;
-	protected double longitude;
-	protected String[] neighborhoods;
-	protected String business_id;
-	protected String name;
-	protected String[] categories;
-	protected String state;
-	protected String type;
-	protected double stars;
-	protected String city;
-	protected String full_address;
-	protected int review_count;
-	protected String photo_url;
-	protected String[] schools;
-	protected double latitude;
-	protected int price;
+	private String url;
+	private double longitude;
+	private String[] neighborhoods;
+	private String business_id;
+	private String name;
+	private String[] categories;
+	private String state;
+	private String type;
+	private double stars;
+	private String city;
+	private String full_address;
+	private int review_count;
+	private String photo_url;
+	private String[] schools;
+	private double latitude;
+	private int price;
 
 	protected Point location;
 
