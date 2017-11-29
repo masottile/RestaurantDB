@@ -64,13 +64,10 @@ public class YelpDBTests {
 
 		for (YelpRestaurant res : aiya.restaurantList) {
 			for (int i = 0; i < centroids.size(); i++) {
-				clustersAreGood = (res.distanceTo(centroids.get(i)) < res.distanceTo(aiya.currentState.get(res)))
-						? false
-						: true;
+				clustersAreGood = (res.distanceTo(centroids.get(i)) < res.distanceTo(aiya.currentState.get(res))
+						&& i != centroids.indexOf(aiya.currentState.get(res))) ? false : true;
 			}
-
 		}
-
 		assertTrue(clustersAreGood);
 	}
 
