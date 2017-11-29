@@ -7,7 +7,10 @@ import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -45,10 +48,10 @@ public class YelpDBTests {
 		YelpDB aiya = new YelpDB(preFix + "restaurants.json", preFix + "reviews.json", preFix + "users.json");
 		System.out.println("k-means cluster, k = 5: ");
 		System.out.println(aiya.kMeansClusters_json(5));
-		System.out.println("k-means cluster, k = 3: ");
-		System.out.println(aiya.kMeansClusters_json(3));
 		System.out.println("k-means cluster, k = 5: ");
 		System.out.println(aiya.kMeansClusters_json(5));
+		System.out.println("k-means cluster, k = 3: ");
+		System.out.println(aiya.kMeansClusters_json(3));
 	}
 
 	@Test
@@ -64,11 +67,29 @@ public class YelpDBTests {
 
 		for (YelpRestaurant res : aiya.restaurantList) {
 			for (int i = 0; i < centroids.size(); i++) {
-				clustersAreGood = (res.distanceTo(centroids.get(i)) < res.distanceTo(aiya.currentState.get(res))
-						&& i != centroids.indexOf(aiya.currentState.get(res))) ? false : true;
+				if (res.distanceTo(centroids.get(i)) < res.distanceTo(aiya.currentState.get(res))
+						&& i != centroids.indexOf(aiya.currentState.get(res)))
+					clustersAreGood = false;
 			}
 		}
 		assertTrue(clustersAreGood);
+	}
+
+	@Test
+	// tests that no cluster is empty i.e. no set corresponding to a centroid is
+	// empty
+	public void test3() throws FileNotFoundException {
+
+		String preFix = "data/";
+		YelpDB aiya = new YelpDB(preFix + "restaurants.json", preFix + "reviews.json", preFix + "users.json");
+		boolean noEmpty = true;
+
+		LinkedList<Set<YelpRestaurant>> list = aiya.kMeansList(5);
+
+		for (int i = 0; i < list.size(); i++) {
+			noEmpty = (!list.get(i).isEmpty());
+		}
+		assertTrue(noEmpty);
 	}
 
 }

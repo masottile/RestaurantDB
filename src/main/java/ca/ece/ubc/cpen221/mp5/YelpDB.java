@@ -177,7 +177,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		return gson.toJson(toBeJson);
 	}
 
-	public List<Set<YelpRestaurant>> kMeansList(int k) {
+	public LinkedList<Set<YelpRestaurant>> kMeansList(int k) {
 		// TODO first check if k is bigger than the size of our restaurant set
 		if (k > restaurantMap.size())
 			throw new IllegalArgumentException();
@@ -200,7 +200,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 			// now we need to put this in the correct format
 
-			List<Set<YelpRestaurant>> kMeansList = new LinkedList<Set<YelpRestaurant>>();
+			LinkedList<Set<YelpRestaurant>> kMeansList = new LinkedList<Set<YelpRestaurant>>();
 
 			// convert to list of clusters
 			// convert to Map from a centroid to a yelpRestaurant
