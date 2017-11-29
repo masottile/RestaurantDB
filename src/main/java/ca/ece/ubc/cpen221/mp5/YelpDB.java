@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.function.ToDoubleBiFunction;
+import java.util.stream.Collectors;
+
 import com.google.gson.*;
 
 import ca.ece.ubc.cpen221.mp5.datatypes.*;
@@ -22,6 +24,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	private Map<String, YelpRestaurant> restaurantMap = new HashMap<String, YelpRestaurant>();
 	private Map<String, YelpUser> userMap = new HashMap<String, YelpUser>();
 	private Map<String, YelpReview> reviewMap = new HashMap<String, YelpReview>();
+	public Map<YelpRestaurant, Point> currentState = new HashMap<YelpRestaurant, Point>();
 
 	public List<YelpRestaurant> restaurantList;
 
@@ -161,9 +164,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	@Override
 	public String kMeansClusters_json(int k) {
 
-		kMeansToJson kMeansCluster = new kMeansToJson();
 		List<Set<YelpRestaurant>> source = kMeansList(k);
-
 		Set<kMeansToJson> toBeJson = new HashSet<kMeansToJson>();
 		Gson gson = new Gson();
 
@@ -182,7 +183,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 			throw new IllegalArgumentException();
 		else {
 
-			Map<YelpRestaurant, Point> currentState = new HashMap<YelpRestaurant, Point>();
+
 			Set<Point> centroidSet = new HashSet<Point>();
 			Set<YelpRestaurant> tempYRSet = new HashSet<YelpRestaurant>();
 			boolean reassigned = true;
@@ -196,16 +197,27 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 			// now for recursion!!
 
 			currentState = runKMeansAlgorithm(currentState, centroidSet, tempYRSet);
-			
+
 			// now we need to put this in the correct format
 
 			List<Set<YelpRestaurant>> kMeansList = new LinkedList<Set<YelpRestaurant>>();
-			List<Point> centroidList = new LinkedList<Point>(centroidSet);
 
 			// convert to list of clusters
-			/*for (Point p : kMeansMap.keySet()) {
+			// convert to Map from a centroid to a yelpRestaurant
+			
+			Map<Point, Set<YelpRestaurant>> kMeansMap = new HashMap<Point, Set<YelpRestaurant>>();
+			for (Point p : currentState.values()) {
+				if (!kMeansMap.containsKey(p))
+					kMeansMap.put(p, new HashSet<YelpRestaurant>());
+			}
+
+			for (YelpRestaurant res : currentState.keySet()) {
+				kMeansMap.get(currentState.get(res)).add(res);
+			}
+
+			for (Point p : kMeansMap.keySet()) {
 				kMeansList.add(kMeansMap.get(p));
-			}*/
+			}
 			return kMeansList;
 		}
 	}
@@ -339,9 +351,6 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	}
 
 	private class kMeansToJson {
-		private static final int MAX_ITERATIONS = 50;
-		public ArrayList<Point> tryCentroids = new ArrayList<Point>();
-		public Map<Point, Set<YelpRestaurant>> tryMap = new HashMap<Point, Set<YelpRestaurant>>();
 
 		private double x;
 		private double y;
