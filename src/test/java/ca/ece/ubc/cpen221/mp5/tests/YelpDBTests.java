@@ -52,15 +52,14 @@ public class YelpDBTests {
 	}
 
 	@Test
-	//tests that no restaurant is closer to another centroid
+	// tests that no restaurant is closer to another centroid
 	public void test2() throws FileNotFoundException {
 
 		String preFix = "data/";
 		YelpDB aiya = new YelpDB(preFix + "restaurants.json", preFix + "reviews.json", preFix + "users.json");
 		boolean clustersAreGood = true;
-		final int clusterSize = 5;
 
-		aiya.kMeansClusters_json(clusterSize);
+		aiya.kMeansClusters_json(5);
 		List<Point> centroids = new ArrayList<Point>();
 
 		for (YelpRestaurant res : aiya.restaurantList) {
