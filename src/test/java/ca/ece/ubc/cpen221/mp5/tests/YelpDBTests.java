@@ -92,4 +92,19 @@ public class YelpDBTests {
 		assertTrue(noEmpty);
 	}
 
+	@Test
+	// tests that if k > number of restaurants, throw an exception
+	public void test4() throws FileNotFoundException {
+
+		String preFix = "data/";
+		YelpDB aiya = new YelpDB(preFix + "restaurants.json", preFix + "reviews.json", preFix + "users.json");
+
+		try {
+			aiya.kMeansList(136);
+			fail();
+		} catch (IllegalArgumentException e) {
+		}
+
+	}
+
 }

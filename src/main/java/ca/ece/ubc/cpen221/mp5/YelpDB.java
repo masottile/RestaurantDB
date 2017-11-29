@@ -183,7 +183,6 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 			throw new IllegalArgumentException();
 		else {
 
-
 			Set<Point> centroidSet = new HashSet<Point>();
 			Set<YelpRestaurant> tempYRSet = new HashSet<YelpRestaurant>();
 			boolean reassigned = true;
@@ -204,7 +203,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 			// convert to list of clusters
 			// convert to Map from a centroid to a yelpRestaurant
-			
+
 			Map<Point, Set<YelpRestaurant>> kMeansMap = new HashMap<Point, Set<YelpRestaurant>>();
 			for (Point p : currentState.values()) {
 				if (!kMeansMap.containsKey(p))
@@ -363,9 +362,6 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 			this.y = y;
 			this.name = name;
 			this.cluster = cluster;
-		}
-
-		public kMeansToJson() {
 		}
 
 	}
