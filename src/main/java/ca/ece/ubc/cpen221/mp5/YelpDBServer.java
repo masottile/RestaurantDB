@@ -30,7 +30,7 @@ public class YelpDBServer {
 	}
 	
 	private void listen() {
-		
+		//this listens for a new client 
 	}
 	/*
 	 * private static ServerSocket serverSocket; private Socket clientSocket;
