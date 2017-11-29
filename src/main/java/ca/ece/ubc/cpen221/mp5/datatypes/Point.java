@@ -32,4 +32,5 @@ public class Point {
 	public boolean equals(Point p) {
 		return this.getX() == p.getX() && this.getY() == p.getY();
 	}
+	
 }

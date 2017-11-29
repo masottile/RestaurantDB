@@ -227,7 +227,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 				findCentroid.put(res, centroids.get(0));
 
 				// see if any other centroids are closer
-				for (int i = 0; i < centroids.size(); i++) {
+				for (int i =1; i < centroids.size(); i++) {
 					if (res.distanceTo(centroids.get(i)) < res.distanceTo(findCentroid.get(res))) {
 						findCentroid.replace(res, centroids.get(i));
 					}
