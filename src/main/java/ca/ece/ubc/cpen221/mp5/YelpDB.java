@@ -218,12 +218,8 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 			return kMeansList;
 		}
 
-		private Map<Point, Set<YelpRestaurant>> mapToClosestCentroid(ArrayList<Point> centroids) {
-			tryMap.clear();
+		private Map<YelpRestaurant, Point> mapToClosestCentroid(ArrayList<Point> centroids) {
 			// initialize map with the list of centroids
-			for (int i = 0; i < centroids.size(); i++) {
-				tryMap.put(centroids.get(i), new HashSet<YelpRestaurant>());
-			}
 			for (YelpRestaurant res : restaurantList) {
 				Map<YelpRestaurant, Point> findCentroid = new HashMap<YelpRestaurant, Point>();
 
