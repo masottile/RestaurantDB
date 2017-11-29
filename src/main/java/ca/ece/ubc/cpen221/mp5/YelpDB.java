@@ -162,7 +162,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	public String kMeansClusters_json(int k) {
 
 		kMeansToJson kMeansCluster = new kMeansToJson();
-		List<Set<YelpRestaurant>> source = kMeansCluster.kMeansList(k);
+		List<Set<YelpRestaurant>> source = kMeansList(k);
 
 		Set<kMeansToJson> toBeJson = new HashSet<kMeansToJson>();
 		Gson gson = new Gson();
@@ -176,8 +176,6 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		return gson.toJson(toBeJson);
 	}
 
-	// BEGINNING OF K-MEANS NESTED CLASS
-
 	public List<Set<YelpRestaurant>> kMeansList(int k) {
 		// TODO first check if k is bigger than the size of our restaurant set
 		if (k > restaurantMap.size())
@@ -185,42 +183,46 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		else {
 
 			Map<YelpRestaurant, Point> currentState = new HashMap<YelpRestaurant, Point>();
-			List<Point> centroidList = new ArrayList<Point>();
+			Set<Point> centroidSet = new HashSet<Point>();
+			Set<YelpRestaurant> tempYRSet = new HashSet<YelpRestaurant>();
 			boolean reassigned = true;
 
 			// creates initial centroid assignment
-			createInitialCentroids(k, currentState, centroidList);
+			createInitialCentroids(k, currentState, centroidSet);
 
 			// now I want to reassign all of these
-			mapToClosestCentroid(currentState, centroidList, reassigned);
+			mapToClosestCentroid(currentState, centroidSet, reassigned);
 
 			// now for recursion!!
 
-			runKMeansAlgorithm(currentState, centroidList, reassigned);
+			currentState = runKMeansAlgorithm(currentState, centroidSet, tempYRSet);
+			
+			// now we need to put this in the correct format
 
 			List<Set<YelpRestaurant>> kMeansList = new LinkedList<Set<YelpRestaurant>>();
+			List<Point> centroidList = new LinkedList<Point>(centroidSet);
 
 			// convert to list of clusters
-			for (Point p : kMeansMap.keySet()) {
+			/*for (Point p : kMeansMap.keySet()) {
 				kMeansList.add(kMeansMap.get(p));
-			}
+			}*/
 			return kMeansList;
 		}
 	}
 
-	private void createInitialCentroids(int k, Map<YelpRestaurant, Point> currentState, List<Point> centroidList) {
+	private void createInitialCentroids(int k, Map<YelpRestaurant, Point> currentState, Set<Point> centroidSet) {
 
+		// see if any other centroids are closer
+		/*
+		 * for (int i =1; i < centroids.size(); i++) { if
+		 * (res.distanceTo(centroids.get(i)) < res.distanceTo(findCentroid.get(res))) {
+		 * findCentroid.replace(res, centroids.get(i)); }
+		 */
 
-				// see if any other centroids are closer
-		/*		for (int i =1; i < centroids.size(); i++) {
-					if (res.distanceTo(centroids.get(i)) < res.distanceTo(findCentroid.get(res))) {
-						findCentroid.replace(res, centroids.get(i));
-					}*/
-					
 		// maps first k restaurants to themselves as a centroid
 		for (int i = 0; i < k; i++) {
 			currentState.put(restaurantList.get(i), restaurantList.get(i).getLocation());
-			centroidList.add(restaurantList.get(i).getLocation());
+			centroidSet.add(restaurantList.get(i).getLocation());
 		}
 		// maps rest of restaurants to the location of the first as a centroid
 		for (int i = k; i < restaurantList.size(); i++)
@@ -228,34 +230,73 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	}
 
 	// here is where we might lose centroids
-	private boolean mapToClosestCentroid(Map<YelpRestaurant, Point> currentState, List<Point> centroidList, boolean reassigned) {
+	private boolean mapToClosestCentroid(Map<YelpRestaurant, Point> currentState, Set<Point> centroidSet,
+			boolean reassigned) {
+
 		for (YelpRestaurant yr : currentState.keySet()) {
-			for (Point p : centroidList) {
+
+			for (Point p : centroidSet) {
+
 				if (yr.distanceTo(p) < yr.distanceTo(currentState.get(yr))) {
 					currentState.replace(yr, p);
 					reassigned = true;
 				}
 			}
 		}
-		
+		if (reassigned) {
+
+			for (Point p : centroidSet) {
+
+				if (!currentState.containsValue(p))
+					currentState.replace(yROfNonLonelyCentroid(currentState), p);
+			}
+		}
 		return reassigned;
 	}
 
-	private void runKMeansAlgorithm(Map<YelpRestaurant, Point> currentState, List<Point> centroidList,
-			boolean reassigned) {
+	// returns some yelp restaurant which a centroid can afford to lose
+	private YelpRestaurant yROfNonLonelyCentroid(Map<YelpRestaurant, Point> currentState) {
 
-		// Step1, recalculate centroids
+		Set<Point> centroidCount = new HashSet<Point>();
 
-		if (!inputMap.keySet().contains(newCent)) {
-			noNewCentroids = false;
+		for (Point p : currentState.values()) {
+
+			if (centroidCount.contains(p)) { // we have previously come across p, meaning more than one yelpRestaurant
+												// maps to that centroid
+				for (YelpRestaurant yr : currentState.keySet()) { // we now just want to return any yelpRestaurant that
+																	// maps to that centroid
+					if (currentState.get(yr).equals(p))
+						return yr;
+				}
+			} else // we haven't seen this centroid before, we want to acknowledge we have seen it
+				centroidCount.add(p);
 		}
+
+		// this should never happen
+		return null;
 	}
 
-	private void reCalculateCentroids(Map<YelpRestaurant, Point> currentState, List<Point> centroidList,
+	private Map<YelpRestaurant, Point> runKMeansAlgorithm(Map<YelpRestaurant, Point> currentState,
+			Set<Point> centroidSet, Set<YelpRestaurant> tempYRSet) {
+
+		// Step1, recalculate centroids
+		reCalculateCentroids(currentState, centroidSet, tempYRSet);
+
+		// Step 2, resassign and evaluate
+		if (mapToClosestCentroid(currentState, centroidSet, false))
+			// we reassigned some points
+			return runKMeansAlgorithm(currentState, centroidSet, tempYRSet);
+		else
+			// we didn't reassign any points
+			return currentState;
+
+	}
+
+	private void reCalculateCentroids(Map<YelpRestaurant, Point> currentState, Set<Point> centroidSet,
 			Set<YelpRestaurant> tempYRSet) {
 
 		// calculate new Centroids
-		for (Point p : centroidList) {
+		for (Point p : centroidSet) {
 			tempYRSet.clear();
 
 			for (YelpRestaurant yr : currentState.keySet()) {
@@ -268,22 +309,26 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 			for (YelpRestaurant yr : tempYRSet)
 				currentState.replace(yr, mean);
 		}
-		
-		centroidList = currentState.values().iterator();
-		
-		
-		// if there were no new centroids, the input map was good
-		if (noNewCentroids || count == MAX_ITERATIONS) {
-			return inputMap;
-		}
 
-		else {
-			tryMap.clear();
-			tryMap = mapToClosestCentroid(tryCentroids);
-			return reEvaluate(tryMap, count);
-		}
+		centroidSet.clear();
+		centroidSet.addAll(currentState.values()); // except this list has repeats
+
+		/*
+		 * // if there were no new centroids, the input map was good if (noNewCentroids
+		 * || count == MAX_ITERATIONS) { return inputMap; }
+		 * 
+		 * else { tryMap.clear(); tryMap = mapToClosestCentroid(tryCentroids); return
+		 * reEvaluate(tryMap, count); }
+		 */
 	}
 
+	/**
+	 * Given a set of restaurants, calculates the mean of their locations
+	 * 
+	 * @param yRSet
+	 *            has at least one element
+	 * @return the mean location
+	 */
 	private Point calculateMean(Set<YelpRestaurant> yRSet) {
 		double x = 0, y = 0;
 		for (YelpRestaurant yr : yRSet) {
