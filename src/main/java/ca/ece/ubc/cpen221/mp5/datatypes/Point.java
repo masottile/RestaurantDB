@@ -19,7 +19,7 @@ public class Point {
 
 	/**
 	 * @param p
-	 * 		a point that is not null
+	 *            a point that is not null
 	 * @return the distance from this to p
 	 */
 	public double distanceTo(Point p) {
@@ -27,5 +27,9 @@ public class Point {
 		double yDiffsq = Math.pow(this.y - p.y, 2);
 
 		return Math.sqrt(xDiffsq + yDiffsq);
+	}
+
+	public boolean equals(Point p) {
+		return this.getX() == p.getX() && this.getY() == p.getY();
 	}
 }

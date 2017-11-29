@@ -210,6 +210,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 	private void createInitialCentroids(int k, Map<YelpRestaurant, Point> currentState, List<Point> centroidList) {
 
+
 		// maps first k restaurants to themselves as a centroid
 		for (int i = 0; i < k; i++) {
 			currentState.put(restaurantList.get(i), restaurantList.get(i).getLocation());
