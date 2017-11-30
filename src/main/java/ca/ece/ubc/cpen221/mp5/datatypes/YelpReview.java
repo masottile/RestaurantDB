@@ -1,9 +1,6 @@
 package ca.ece.ubc.cpen221.mp5.datatypes;
 
-import java.util.Map;
-
 public class YelpReview {
-	// TODO: Add all getter/setter methods
 	
 	private String type;
 	private String business_id;
@@ -30,4 +27,23 @@ public class YelpReview {
 		return stars;
 	}
 
+	public void setReviewID(String ID) {
+		review_id=ID;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public Votes getVotes() {
+		return votes;
+	}
+
+	public String getType() {
+		return type;
+	}
 }

@@ -27,6 +27,11 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 	public List<YelpRestaurant> restaurantList = new ArrayList<YelpRestaurant>();
 
+	long IDcount = 0;
+
+	Gson gson;
+	JsonParser parser;
+
 	/**
 	 * Creator method for YelpDB
 	 * 
@@ -41,14 +46,15 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	 */
 	public YelpDB(String restaurantFile, String reviewFile, String userFile) throws FileNotFoundException {
 
-		Gson gson = new Gson();
+		gson = new Gson();
+		parser = new JsonParser();
 
 		Scanner restaurantScan = new Scanner(new File(restaurantFile));
 		Scanner reviewScan = new Scanner(new File(reviewFile));
 		Scanner userScan = new Scanner(new File(userFile));
 
 		while (restaurantScan.hasNext()) {
-			JsonObject obj = (JsonObject) new JsonParser().parse(restaurantScan.nextLine());
+			JsonObject obj = (JsonObject) parser.parse(restaurantScan.nextLine());
 			YelpRestaurant yr = gson.fromJson(obj, YelpRestaurant.class);
 			restaurantList.add(yr);
 			yr.setLocation();
@@ -56,43 +62,84 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		}
 
 		while (reviewScan.hasNext()) {
-			JsonObject obj = (JsonObject) new JsonParser().parse(reviewScan.nextLine());
+			JsonObject obj = (JsonObject) parser.parse(reviewScan.nextLine());
 			YelpReview yr = gson.fromJson(obj, YelpReview.class);
 			reviewMap.put(yr.getReviewID(), yr);
 		}
 
 		while (userScan.hasNext()) {
-			JsonObject obj = (JsonObject) new JsonParser().parse(userScan.nextLine());
+			JsonObject obj = (JsonObject) parser.parse(userScan.nextLine());
 			YelpUser yu = gson.fromJson(obj, YelpUser.class);
 			userMap.put(yu.getUserID(), yu);
 		}
-
 		restaurantScan.close();
 		reviewScan.close();
 		userScan.close();
-
-		/*
-		 * this.restaurantList = new ArrayList<YelpRestaurant>(restaurantMap.values());
-		 * for (YelpRestaurant r : restaurantList) { r.setLocation(); }
-		 */
 	}
 
+	// BEGINNING OF SERVER FUNCTIONS FOR PART 4
+
+	public String getNewID() {
+		IDcount++;
+		return "Bitch#" + Long.toString(IDcount);
+	}
+
+	// TODO: do we even need this?
+	public String newBusinessURL(String ID) {
+		return "http://www.yelp.com/biz/" + ID;
+	}
+
+	// TODO: write test
+	public String newUserURL(String ID) {
+		return "http://www.yelp.com/user_details?userid=" + ID;
+	}
+
+	// TODO: write test
+	public String getRestNameFromId(String businessID) {
+		return restaurantMap.get(businessID).getName();
+	}
+
+	// TODO: write test
+	public void addRestaurant(String s) {
+		YelpRestaurant yr = gson.fromJson((JsonObject) parser.parse(s), YelpRestaurant.class);
+		yr.setBusinessID(getNewID());
+		restaurantMap.put(yr.getBusinessID(), yr);
+		restaurantList.add(yr);
+	}
+
+	// TODO: write test
+	public String addUser(String s) {
+		YelpUser user = gson.fromJson((JsonObject) parser.parse(s), YelpUser.class);
+		user.setUserID(getNewID());
+		user.setUrl(newUserURL(user.getUserID()));
+		userMap.put(user.getUserID(), user);
+		return gson.toJson(user);
+	}
+
+	// TODO: write test
+	public void addReview(String s) {
+		YelpReview rev = gson.fromJson((JsonObject) parser.parse(s), YelpReview.class);
+		rev.setReviewID(getNewID());
+		reviewMap.put(rev.getReviewID(), rev);
+	}
+	// END OF SERVER FUNCTIONS FOR PART 4
+
 	/**
-	 * @return copy of restaurantSet
+	 * @return set of restaurants
 	 */
 	public Set<YelpRestaurant> getRestaurants() {
 		return new HashSet<YelpRestaurant>(restaurantMap.values());
 	}
 
 	/**
-	 * @return copy of reviewSet
+	 * @return set of reviews
 	 */
 	public Set<YelpReview> getReviews() {
 		return new HashSet<YelpReview>(reviewMap.values());
 	}
 
 	/**
-	 * @return copy of userSet
+	 * @return set of users
 	 */
 	public Set<YelpUser> getUsers() {
 		return new HashSet<YelpUser>(userMap.values());
@@ -100,8 +147,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 	@Override
 	public Set<YelpRestaurant> getMatches(String queryString) {
-		// TODO Auto-generated method stub
-		// Complete for part 5??? or something like that
+		// TODO Complete for part 5??? or something like that
 		return null;
 	}
 
@@ -179,7 +225,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	}
 
 	public LinkedList<Set<YelpRestaurant>> kMeansList(int k) {
-		// TODO first check if k is bigger than the size of our restaurant set
+		// check if k is out of bounds
 		if (k > restaurantMap.size())
 			throw new IllegalArgumentException();
 		else {
@@ -195,11 +241,9 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 			mapToClosestCentroid(currentState, centroidSet, reassigned);
 
 			// now for recursion!!
-
 			currentState = runKMeansAlgorithm(currentState, centroidSet, tempYRSet);
 
 			// now we need to put this in the correct format
-
 			LinkedList<Set<YelpRestaurant>> kMeansList = new LinkedList<Set<YelpRestaurant>>();
 
 			// convert to list of clusters
@@ -237,9 +281,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 			boolean reassigned) {
 
 		for (YelpRestaurant yr : currentState.keySet()) {
-
 			for (Point p : centroidSet) {
-
 				if (yr.distanceTo(p) < yr.distanceTo(currentState.get(yr))) {
 					currentState.replace(yr, p);
 					reassigned = true;
@@ -247,9 +289,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 			}
 		}
 		if (reassigned) {
-
 			for (Point p : centroidSet) {
-
 				if (!currentState.containsValue(p))
 					currentState.replace(yROfNonLonelyCentroid(currentState), p);
 			}
@@ -261,9 +301,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	private YelpRestaurant yROfNonLonelyCentroid(Map<YelpRestaurant, Point> currentState) {
 
 		Set<Point> centroidCount = new HashSet<Point>();
-
 		for (Point p : currentState.values()) {
-
 			if (centroidCount.contains(p)) { // we have previously come across p, meaning more than one yelpRestaurant
 												// maps to that centroid
 				for (YelpRestaurant yr : currentState.keySet()) { // we now just want to return any yelpRestaurant that
@@ -274,7 +312,6 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 			} else // we haven't seen this centroid before, we want to acknowledge we have seen it
 				centroidCount.add(p);
 		}
-
 		// this should never happen
 		return null;
 	}
@@ -284,7 +321,6 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 		// Step1, recalculate centroids
 		reCalculateCentroids(currentState, centroidSet, tempYRSet);
-
 		// Step 2, resassign and evaluate
 		if (mapToClosestCentroid(currentState, centroidSet, false))
 			// we reassigned some points
@@ -315,10 +351,6 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 		centroidSet.clear();
 		centroidSet.addAll(currentState.values()); // except this list has repeats
-
-		/*
-		 * // if there were no new centroids, the input map was good if (noNewCentroids
-		 */
 	}
 
 	/**

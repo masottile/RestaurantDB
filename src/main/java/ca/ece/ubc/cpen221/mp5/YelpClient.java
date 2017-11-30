@@ -17,14 +17,16 @@ public class YelpClient {
 	 * specified port.
 	 */
 	public YelpClient(String hostname, int port) throws IOException {
+
+		// QUESTION: SHOULD I DO A "THIS.GETREPLY"?
 		socket = new Socket(hostname, port);
 		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
 	}
 
-	public void sendRequest(int x) throws IOException {
-		out.print(x + "\n");
-		out.flush(); // important! make sure x actually gets sent
+	public void sendRequest(String s) throws IOException {
+		out.print(s + "\n");
+		out.flush(); // important! make sure s actually gets sent
 	}
 
 	public String getReply() throws IOException {
@@ -32,12 +34,7 @@ public class YelpClient {
 		if (reply == null) {
 			throw new IOException("o fok");
 		}
-
-		try {
-			return reply;
-		} catch (NumberFormatException nfe) {
-			throw new IOException("dafuq is this reply: " + reply);
-		}
+		return reply;
 	}
 
 	/**
@@ -56,17 +53,15 @@ public class YelpClient {
 	public static void main(String[] args) {
 		try {
 			YelpClient client = new YelpClient("localhost", YelpDBServer.YELP_PORT);
+			client.sendRequest("GETRESTAURANT 93sW9Y_3rJQn305_n8epng");// Racha Cafe
+			client.sendRequest("GETRESTAURANT MjHULXYJDc9XMM2r24oddg");// Berkeley Floor Cafe
+			client.sendRequest(
+					"ADDRESTAURANT {\"open\": true, \"longitude\": -420.000, \"neighborhoods\": [\"Telegraph Ave\", \"UC Campus Area\"], \"name\": \"Da Cribbb\", \"categories\": [\"Korean\", \"Restaurants\"], \"state\": \"CA\", \"type\": \"business\", \"stars\": 3.5, \"city\": \"Berkeley\", \"full_address\": \"2521 Durant Ave\\nSte F\\nTelegraph Ave\\nBerkeley, CA 94704\", \"schools\": [\"University of California at Berkeley\"], \"latitude\": 66.00, \"price\": 2}\r\n"
+							+ "");
+			client.sendRequest("ADDUSER {\"name\": \"Kenny G.\"}");
 
-			for (int x = 1; x <= 5; ++x) {
-				client.sendRequest(x);
-				System.out.println("What's the square of " + x + "?");
-			}
-
-			// collect the replies
-			for (int x = 1; x <= 5; ++x) {
-				String y = client.getReply();
-				System.out.println("It's " + y);
-			}
+			client.sendRequest(
+					"ADDREVIEW {\"type\": \"review\", \"business_id\": \"1CBs84C-a-cuA3vncXVSAw\", \"text\": \"I'm sick o dis shit\", \"stars\": 2, \"user_id\": \"90wm_01FAIqhcgV_mPON9Q\", \"date\": \"2006-07-26\"}");
 
 			client.close();
 		} catch (IOException e) {

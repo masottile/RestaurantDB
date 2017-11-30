@@ -36,6 +36,10 @@ public class YelpRestaurant {
 	public Point getLocation() {
 		return this.location;
 	}
+	
+	public void setBusinessID (String ID) {
+		business_id = ID;
+	}
 
 	public String getUrl() {
 		return url;
@@ -63,6 +67,22 @@ public class YelpRestaurant {
 
 	public int getPrice() {
 		return price;
+	}
+
+	public String[] getNeighborhoods() {
+		return neighborhoods;
+	}
+
+	public boolean isOpen() {
+		return open;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public String getType() {
+		return type;
 	}
 
 }
