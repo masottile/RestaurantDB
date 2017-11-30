@@ -110,7 +110,7 @@ public class LeastSquaresTests {
 			ToDoubleBiFunction<MP5Db<YelpRestaurant>, String> predictorFn = theStuff.getPredictorFunction(userID);
 
 			assertEquals(1.7, predictorFn.applyAsDouble(theStuff, "gclB3ED6uk6viWlolSb_uA"), TOLERANCE);
-			assertEquals(6.2, predictorFn.applyAsDouble(aiya, "XD5ybqI0BHcTj5cLQyIPLA"), TOLERANCE);
+			assertEquals(5, predictorFn.applyAsDouble(aiya, "XD5ybqI0BHcTj5cLQyIPLA"), TOLERANCE);
 
 		} catch (FileNotFoundException e) {
 			fail();
