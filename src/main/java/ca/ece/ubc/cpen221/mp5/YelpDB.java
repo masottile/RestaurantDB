@@ -18,7 +18,7 @@ import ca.ece.ubc.cpen221.mp5.datatypes.*;
 
 public class YelpDB implements MP5Db<YelpRestaurant> {
 
-	private Set<YelpReview> reviewSet = new HashSet<YelpReview>();
+	// private Set<YelpReview> reviewSet = new HashSet<YelpReview>();
 
 	private Map<String, YelpRestaurant> restaurantMap = new HashMap<String, YelpRestaurant>();
 	private Map<String, YelpUser> userMap = new HashMap<String, YelpUser>();
@@ -147,7 +147,9 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 	@Override
 	public Set<YelpRestaurant> getMatches(String queryString) {
-		// TODO Complete for part 5??? or something like that
+		// TODO Auto-generated method stub
+		// example query string
+		// in(Telegraph Ave) && (category(Chinese) || category(Italian)) && price <= 2
 		return null;
 	}
 
@@ -167,8 +169,9 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 		// Picks out the reviews made by the given user and saves data on price of
 		// restaurant and stars given
-		for (YelpReview yr : reviewSet) {
+		for (YelpReview yr : reviewMap.values()) {
 			if (yr.getUserID().equals(user)) {
+
 				double tempPrice = restaurantMap.get(yr.getRestaurantID()).getPrice();
 				double tempStars = yr.getStars();
 				priceMean += tempPrice;
@@ -179,25 +182,35 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 			}
 		}
 
-		starsMean = starsMean / count;// gotta check it isn't zero
-		priceMean = priceMean / count;
+		if (count == 0)
+			throw new IllegalArgumentException();
+		else {
 
-		// calculates least squares
-		for (Point p : priceAndStars) {
-			sxx += Math.pow(p.getX(), 2);
-			syy += Math.pow(p.getY(), 2);
-			sxy += p.getX() * p.getY();
+			priceMean = priceMean / count;
+			starsMean = starsMean / count;
+
+			// calculates least squares
+			for (Point p : priceAndStars) {
+				sxx += Math.pow(p.getX() - priceMean, 2);
+				syy += Math.pow(p.getY() - starsMean, 2);
+				sxy += (p.getX() - priceMean) * (p.getY() - starsMean);
+			}
+
+			if (sxx == 0)
+				throw new IllegalArgumentException();
+			else {
+
+				b = sxy / sxx;
+				a = starsMean - b * priceMean;
+
+				returnFunction = (dataBase, restaurantID) -> {
+					int price = ((YelpDB) dataBase).restaurantMap.get(restaurantID).getPrice();
+					return b * price + a;
+				};
+
+				return returnFunction;
+			}
 		}
-
-		b = sxy / sxx;
-		a = starsMean - b * priceMean;
-
-		returnFunction = (dataBase, restaurantID) -> {
-			int price = ((YelpDB) dataBase).restaurantMap.get(restaurantID).getPrice();
-			return b * price + a;
-		};
-
-		return returnFunction;
 	}
 
 	/**
