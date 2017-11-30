@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.function.ToDoubleBiFunction;
-import java.util.stream.Collectors;
 
 import com.google.gson.*;
 
@@ -26,7 +25,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	private Map<String, YelpReview> reviewMap = new HashMap<String, YelpReview>();
 	public Map<YelpRestaurant, Point> currentState = new HashMap<YelpRestaurant, Point>();
 
-	public List<YelpRestaurant> restaurantList;
+	public List<YelpRestaurant> restaurantList = new ArrayList<YelpRestaurant>();
 
 	/**
 	 * Creator method for YelpDB
@@ -51,6 +50,8 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		while (restaurantScan.hasNext()) {
 			JsonObject obj = (JsonObject) new JsonParser().parse(restaurantScan.nextLine());
 			YelpRestaurant yr = gson.fromJson(obj, YelpRestaurant.class);
+			restaurantList.add(yr);
+			yr.setLocation();
 			restaurantMap.put(yr.getBusinessID(), yr);
 		}
 
@@ -70,10 +71,10 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		reviewScan.close();
 		userScan.close();
 
-		this.restaurantList = new ArrayList<YelpRestaurant>(restaurantMap.values());
-		for (YelpRestaurant r : restaurantList) {
-			r.setLocation();
-		}
+		/*
+		 * this.restaurantList = new ArrayList<YelpRestaurant>(restaurantMap.values());
+		 * for (YelpRestaurant r : restaurantList) { r.setLocation(); }
+		 */
 	}
 
 	/**
@@ -210,11 +211,9 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 				if (!kMeansMap.containsKey(p))
 					kMeansMap.put(p, new HashSet<YelpRestaurant>());
 			}
-
 			for (YelpRestaurant res : currentState.keySet()) {
 				kMeansMap.get(currentState.get(res)).add(res);
 			}
-
 			for (Point p : kMeansMap.keySet()) {
 				kMeansList.add(kMeansMap.get(p));
 			}
@@ -223,13 +222,6 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	}
 
 	private void createInitialCentroids(int k, Map<YelpRestaurant, Point> currentState, Set<Point> centroidSet) {
-
-		// see if any other centroids are closer
-		/*
-		 * for (int i =1; i < centroids.size(); i++) { if
-		 * (res.distanceTo(centroids.get(i)) < res.distanceTo(findCentroid.get(res))) {
-		 * findCentroid.replace(res, centroids.get(i)); }
-		 */
 
 		// maps first k restaurants to themselves as a centroid
 		for (int i = 0; i < k; i++) {
@@ -327,10 +319,6 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 		/*
 		 * // if there were no new centroids, the input map was good if (noNewCentroids
-		 * || count == MAX_ITERATIONS) { return inputMap; }
-		 * 
-		 * else { tryMap.clear(); tryMap = mapToClosestCentroid(tryCentroids); return
-		 * reEvaluate(tryMap, count); }
 		 */
 	}
 

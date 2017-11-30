@@ -36,22 +36,23 @@ public class YelpDBTests {
 		assertEquals(135, aiya.getRestaurants().size());
 		assertEquals(8556, aiya.getUsers().size());
 		assertEquals(17396, aiya.getReviews().size());
-
-		// Gson gson = new Gson();
-		// System.out.println(gson.toJson(aiya.getRestaurants()));
 	}
 
 	@Test
+	// outputting some voronoi stuff
 	public void test1() throws FileNotFoundException {
 
 		String preFix = "data/";
 		YelpDB aiya = new YelpDB(preFix + "restaurants.json", preFix + "reviews.json", preFix + "users.json");
-		System.out.println("k-means cluster, k = 5: ");
-		System.out.println(aiya.kMeansClusters_json(5));
-		System.out.println("k-means cluster, k = 5: ");
-		System.out.println(aiya.kMeansClusters_json(5));
-		System.out.println("k-means cluster, k = 3: ");
-		System.out.println(aiya.kMeansClusters_json(3));
+
+		assertEquals(5, aiya.kMeansList(5).size());
+
+		// System.out.println("k-means cluster, k = 5: ");
+		// System.out.println(aiya.kMeansClusters_json(5));
+		// System.out.println("k-means cluster, k = 5: ");
+		// System.out.println(aiya.kMeansClusters_json(5));
+		// System.out.println("k-means cluster, k = 3: ");
+		// System.out.println(aiya.kMeansClusters_json(3));
 	}
 
 	@Test
@@ -105,6 +106,23 @@ public class YelpDBTests {
 		} catch (IllegalArgumentException e) {
 		}
 
+	}
+
+	@Test
+	// testing the yROfNonLonelyCentroid or something like that
+	public void test5() throws FileNotFoundException {
+
+		String preFix = "data/";
+		YelpDB aiya = new YelpDB(preFix + "leastLonelyRestTest.json", preFix + "reviews.json", preFix + "users.json");
+
+		boolean noEmpty = true;
+
+		LinkedList<Set<YelpRestaurant>> list = aiya.kMeansList(3);
+
+		for (int i = 0; i < list.size(); i++) {
+			noEmpty = (!list.get(i).isEmpty());
+		}
+		assertTrue(noEmpty);
 	}
 
 }
