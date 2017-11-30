@@ -5,7 +5,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonSyntaxException;
 
 public class YelpDBServer {
 	/** Default port number where the server listens for connections. */
@@ -70,14 +69,14 @@ public class YelpDBServer {
 
 		try {
 			for (String line = in.readLine(); line != null; line = in.readLine()) {
-
-				String[] message = line.split(" ", 2);
-
 				try {
+					String[] message = line.split(" ", 2);
 					String function = message[0];
-					String info = message[1];
+					String info = message[message.length - 1];
 
-					if (function.equals("GETRESTAURANT")) {
+					switch (function) {
+
+					case "GETRESTAURANT":
 						try {
 							String name = yelp.getRestNameFromId(info);
 							System.err.println("Name of " + info + " is: " + name);
@@ -86,21 +85,28 @@ public class YelpDBServer {
 							System.err.println("ERR: NO_SUCH_RESTAURANT");
 							out.println("ERR: NO_SUCH_RESTAURANT");
 						}
-					} else if (function.equals("ADDRESTAURANT")) {
-						yelp.addRestaurant(info);
-						System.err.println("Added the restaurant!");
-					} else if (function.equals("ADDUSER")) {
+						break;
+
+					case "ADDUSER":
 						System.err.println(yelp.addUser(info));
 						out.println(yelp.addUser(info));
 						System.err.println("Added the user!");
-					} else if (function.equals("ADDREVIEW")) {
+						break;
+
+					case "ADDRESTAURANT":
+						yelp.addRestaurant(info);
+						System.err.println("Added the restaurant!");
+						break;
+
+					case "ADDREVIEW":
 						yelp.addReview(info);
 						System.err.println("Added the review!");
-					} else {
+						break;
+
+					default:
 						System.err.println("ERR: ILLEGAL_REQUEST");
 						out.println("ERR: ILLEGAL_REQUEST");
 					}
-
 				} catch (JsonParseException e) {
 					System.err.println("ERR: INVALID_STRING");
 					out.println("ERR: INVALID_STRING");
@@ -123,7 +129,7 @@ public class YelpDBServer {
 			YelpDBServer server = new YelpDBServer(YELP_PORT);
 			server.serve();
 		} catch (IOException e) {
-			System.out.println("main function not working");
+			System.out.println("ERROR CREATING SERVER: CHECK PORTS MAYBE");
 		}
 	}
 }
