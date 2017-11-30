@@ -100,7 +100,8 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	@Override
 	public Set<YelpRestaurant> getMatches(String queryString) {
 		// TODO Auto-generated method stub
-		// Complete for part 5??? or something like that
+		// example query string
+		// in(Telegraph Ave) && (category(Chinese) || category(Italian)) && price <= 2
 		return null;
 	}
 
