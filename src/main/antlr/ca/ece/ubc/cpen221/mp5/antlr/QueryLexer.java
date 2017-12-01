@@ -1,4 +1,6 @@
 // Generated from Query.g4 by ANTLR 4.7
+package ca.ece.ubc.cpen221.mp5.antlr;
+
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;

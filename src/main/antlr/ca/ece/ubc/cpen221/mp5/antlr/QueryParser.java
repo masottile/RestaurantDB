@@ -1,3 +1,4 @@
+package ca.ece.ubc.cpen221.mp5.antlr;
 // Generated from Query.g4 by ANTLR 4.7
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
