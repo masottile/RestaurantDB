@@ -18,7 +18,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 	compile 'com.google.code.gson:gson:2.2.4'
 	antlr "org.antlr:antlr4:4.7"
-	//compile "org.antlr:antlr4-runtime:4.5.1"
+	compile "org.antlr:antlr4-runtime:4.7"
 	
 }
 
