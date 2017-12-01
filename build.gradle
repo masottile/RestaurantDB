@@ -5,6 +5,7 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'jacoco'
 apply plugin: 'com.github.kt3k.coveralls'
+apply plugin: 'antlr'
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -16,6 +17,9 @@ dependencies {
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
 	compile 'com.google.code.gson:gson:2.2.4'
+	antlr "org.antlr:antlr4:4.5"
+	compile "org.antlr:antlr4-runtime:4.5.1"
+	
 }
 
 test.testLogging {
