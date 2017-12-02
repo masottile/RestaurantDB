@@ -4,13 +4,13 @@ grammar Query;
 query : andExpr | orExpr | atom ;
 orExpr : andExpr (OR andExpr)* ;
 andExpr : atom (AND atom)* ;
-atom : IN | CATEGORY | RATING | PRICE | NAME | LPAREN orExpr RPAREN ;
+atom : in | category | rating | price | name | LPAREN orExpr RPAREN ;
 
-IN : 'in' TEXT;
-CATEGORY : 'category' TEXT;
-NAME : 'name' TEXT;
-RATING : 'rating' WS? INEQ WS? NUM ;
-PRICE : 'price' WS? INEQ WS? NUM ;
+in : 'in' TEXT;
+category : 'category' TEXT;
+name : 'name' TEXT;
+rating : 'rating' INEQ NUM ;
+price : 'price' INEQ NUM ;
 
 // Lexer rules have to to with making tokens
 LPAREN : '(' ;
