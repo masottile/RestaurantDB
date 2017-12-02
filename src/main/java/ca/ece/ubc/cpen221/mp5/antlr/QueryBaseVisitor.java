@@ -1,5 +1,5 @@
 // Generated from Query.g4 by ANTLR 4.7
-package ca.ece.ubc.cpen221.mp5;
+package ca.ece.ubc.cpen221.mp5.antlr;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -11,7 +11,8 @@ import java.util.stream.Stream;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 import org.antlr.v4.runtime.tree.RuleNode;
 
-import ca.ece.ubc.cpen221.mp5.QueryParser.*;
+import ca.ece.ubc.cpen221.mp5.YelpDB;
+import ca.ece.ubc.cpen221.mp5.antlr.QueryParser.*;
 import ca.ece.ubc.cpen221.mp5.datatypes.YelpRestaurant;
 
 /**
