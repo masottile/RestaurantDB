@@ -8,7 +8,7 @@ import ca.ece.ubc.cpen221.mp5.*;
 
 public class ServerTests {
 
-	@Test
+	/*@Test
 	public void test0() throws IOException {
 		YelpDBServer yelp = new YelpDBServer(4000);
 		yelp.serve();
@@ -43,5 +43,5 @@ public class ServerTests {
 
 	@Test
 	public void test7() {
-	}
+	}*/
 }
