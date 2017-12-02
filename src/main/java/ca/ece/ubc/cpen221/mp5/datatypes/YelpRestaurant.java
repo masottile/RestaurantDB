@@ -27,7 +27,7 @@ public class YelpRestaurant {
 		stars = ((stars * review_count) + rating) / (review_count + 1);
 		review_count++;
 	}
-	
+
 	public double distanceTo(Point p) {
 		return this.location.distanceTo(p);
 	}
@@ -76,36 +76,12 @@ public class YelpRestaurant {
 		return neighborhoods;
 	}
 
-	public boolean isOpen() {
-		return open;
-	}
-
-	public String getState() {
-		return state;
-	}
-
-	public String getType() {
-		return type;
-	}
-
 	public double getStars() {
 		return stars;
 	}
 
-	public String getCity() {
-		return city;
-	}
-
-	public String getFullAddress() {
-		return full_address;
-	}
-
 	public int getReviewCount() {
 		return review_count;
-	}
-
-	public String getPhotoUrl() {
-		return photo_url;
 	}
 
 	public String[] getSchools() {

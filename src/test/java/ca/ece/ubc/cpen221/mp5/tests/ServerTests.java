@@ -10,25 +10,18 @@ public class ServerTests {
 
 	@Test
 	public void test0() {
-		/*
-		 * @Test public void test0() throws IOException { YelpDBServer yelp = new
-		 * YelpDBServer(4000); yelp.serve(); Client client1 = new Client("localhost",
-		 * 4000); client1.sendRequest("GETRESTAURANT 93sW9Y_3rJQn305_n8epng");
-		 * assertEquals(client1.getReply(), "Racha Cafe"); >>>>>>> origin }
-		 * 
-		 * @Test public void test1() { }
-		 * 
-		 * @Test public void test2() { }
-		 * 
-		 * @Test public void test3() { }
-		 * 
-		 * @Test public void test4() { }
-		 * 
-		 * @Test public void test5() { }
-		 * 
-		 * @Test public void test6() { }
-		 * 
-		 * @Test public void test7() { }
-		 */
+		System.out.println("Did we even get here?");
+		YelpDBServer server = new YelpDBServer(4949);
+		System.out.println("Hello???");
+		try {
+			server.serve();
+			System.out.println("tried to serve");
+			Client client = new Client("localhost", 4949);
+			System.out.println("created client");
+			client.sendRequest("GETRESTAURANT t-xuA4yR02gud00gTS2iyw");
+			System.out.println("sent request");
+		} catch (IOException e) {
+		}
+		
 	}
 }

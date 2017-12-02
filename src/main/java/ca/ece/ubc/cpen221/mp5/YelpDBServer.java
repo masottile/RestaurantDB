@@ -9,7 +9,7 @@ import com.google.gson.JsonParseException;
 import ca.ece.ubc.cpen221.mp5.datatypes.*;
 
 public class YelpDBServer {
-	// Default port number where the server listens for connections. 
+	// Default port number where the server listens for connections.
 	public static final int YELP_PORT = 4999;
 	private final YelpDB yelp;
 	private ServerSocket serverSocket;
@@ -36,11 +36,11 @@ public class YelpDBServer {
 	 * @throws IOException
 	 *             if the main server socket is broken
 	 */
-	private void serve() throws IOException {
+	public void serve() throws IOException {
 		while (true) {
 			// waits for a client to connect
 			final Socket socket = serverSocket.accept();
-			
+
 			// create a new thread to handle that client
 			Thread handler = new Thread(new Runnable() {
 				public void run() {
@@ -55,7 +55,7 @@ public class YelpDBServer {
 					}
 				}
 			});
-			
+
 			// starts a thread
 			handler.start();
 		}
@@ -98,12 +98,12 @@ public class YelpDBServer {
 						break;
 
 					case "ADDRESTAURANT":
-						out.println(yelp.addRestaurant(info));
+						System.err.println(yelp.addRestaurant(info));
 						out.flush();
 						break;
 
 					case "ADDREVIEW":
-						yelp.addReview(info);
+						System.err.println(yelp.addReview(info));
 						break;
 
 					case "GETUSERRATINGINFO":
