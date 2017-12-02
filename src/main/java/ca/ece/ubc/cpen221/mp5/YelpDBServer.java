@@ -109,6 +109,7 @@ public class YelpDBServer {
 					default:
 						System.err.println("ERR: ILLEGAL_REQUEST");
 						out.println("ERR: ILLEGAL_REQUEST");
+						break;
 					}
 				} catch (JsonParseException e) {
 					System.err.println("ERR: INVALID_STRING");

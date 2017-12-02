@@ -25,10 +25,10 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 	public List<YelpRestaurant> restaurantList = new ArrayList<YelpRestaurant>();
 
-	long IDcount = 0;
+	public long IDcount = 0;
 
-	Gson gson;
-	JsonParser parser;
+	private Gson gson;
+	private JsonParser parser;
 
 	/**
 	 * Creator method for YelpDB

@@ -5,11 +5,11 @@ import java.util.Date;
 public class Review {
 
 	// TODO: Make this extendable for YelpReview
-	String businessID;
-	String reviewID;
-	String content;
-	String userID;
-	Date date;
+	public String businessID;
+	public String reviewID;
+	public String content;
+	public String userID;
+	public Date date;
 
 	Review(String content) {
 
