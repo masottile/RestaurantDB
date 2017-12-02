@@ -165,10 +165,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	}
 
 	@Override
-	public Set<YelpRestaurant> getMatches(String queryString) throws IllegalArgumentException {
-		// example query string
-		// in(Telegraph Ave) && (category(Chinese) || category(Italian)) && price <= 2
-		// if (shits not right) throw IllegalArgumentException
+	public Set<YelpRestaurant> getMatches(String queryString){
 
 		CharStream charStream = CharStreams.fromString(queryString);
 		QueryLexer queryLexer = new QueryLexer(charStream);
