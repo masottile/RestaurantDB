@@ -75,15 +75,18 @@ public class QueryTests {
 		Set<YelpRestaurant> set1 = yelpQT1
 				.getMatches("(category(Chinese) && rating < 4) || ((category(Cafe) || category(Italian)) && price =2)");
 
+		
 		Predicate<YelpRestaurant> predicate1 = (yr -> yr.getStars() < 4
 				&& new HashSet<String>(Arrays.asList(yr.getCategories())).contains("Chinese"));
 		Predicate<YelpRestaurant> predicate2 = (yr -> new HashSet<String>(Arrays.asList(yr.getCategories()))
 				.contains("Cafe") || new HashSet<String>(Arrays.asList(yr.getCategories())).contains("Italian"));
 
+		
 		Stream<YelpRestaurant> predictedStream1 = yelpQT1.getRestaurants().stream().filter(predicate2)
-				.filter(yr -> yr.getPrice() < 4);
+				.filter(yr -> yr.getPrice() == 2);
 		Stream<YelpRestaurant> predictedStream2 = yelpQT1.getRestaurants().stream().filter(predicate1);
 
+		
 		Set<YelpRestaurant> predictedSet = predictedStream1.collect(Collectors.toCollection(HashSet::new));
 		predictedSet.addAll(predictedStream2.collect(Collectors.toCollection(HashSet::new)));
 
