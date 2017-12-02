@@ -166,18 +166,17 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 		CharStream charStream = CharStreams.fromString(queryString);
 		QueryLexer queryLexer = new QueryLexer(charStream);
+		queryLexer.removeErrorListeners();
+		queryLexer.addErrorListener(ThrowingErrorListener.INSTANCE);
 		CommonTokenStream commonTokenStream = new CommonTokenStream(queryLexer);
 		QueryParser queryParser = new QueryParser(commonTokenStream);
+		queryParser.removeErrorListeners();
+		queryParser.addErrorListener(ThrowingErrorListener.INSTANCE);
 
 		QueryParser.QueryContext queryContext = queryParser.query();
 		QueryBaseVisitor visitor = new QueryBaseVisitor(this);
 		return visitor.visitQuery(queryContext);
 
-		/*
-		 * MarkupParser.FileContext fileContext = markupParser.file(); MarkupVisitor
-		 * visitor = new MarkupVisitor(); visitor.visit(fileContext);
-		 * 
-		 */
 	}
 
 	@Override

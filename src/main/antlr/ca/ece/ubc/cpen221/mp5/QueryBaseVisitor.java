@@ -42,12 +42,12 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 	 */
 	@Override
 	public Set<YelpRestaurant> visitQuery(QueryParser.QueryContext ctx) {
-		System.out.println("query: " + ctx.getText());
-		
-		if(ctx.getChild(0) instanceof QueryParser.OrExprContext)
+		if (ctx.getChild(0) instanceof QueryParser.OrExprContext)
 			return visitOrExpr((OrExprContext) ctx.getChild(0));
+
 		else if (ctx.getChild(0) instanceof QueryParser.AndExprContext)
 			return visitAndExpr((AndExprContext) ctx.getChild(0));
+
 		else
 			return visitAtom((AtomContext) ctx.getChild(0));
 	}
@@ -57,8 +57,8 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 	 */
 	@Override
 	public Set<YelpRestaurant> visitOrExpr(QueryParser.OrExprContext ctx) {
-		System.out.println("orExpr: " + ctx.getText());
 		Set<YelpRestaurant> retSet = new HashSet<YelpRestaurant>();
+
 		for (int i = 0; i < ctx.getChildCount(); i += 2)
 			retSet.addAll(visitAndExpr((QueryParser.AndExprContext) ctx.getChild(i)));
 
@@ -70,8 +70,8 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 	 */
 	@Override
 	public Set<YelpRestaurant> visitAndExpr(QueryParser.AndExprContext ctx) {
-		System.out.println("andExpr: " + ctx.getText());
 		Set<YelpRestaurant> retSet = yelpDB.getRestaurants();
+
 		for (int i = 0; i < ctx.getChildCount(); i += 2)
 			retSet.retainAll(visitAtom((QueryParser.AtomContext) ctx.getChild(i)));
 
@@ -83,61 +83,57 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 	 */
 	@Override
 	public Set<YelpRestaurant> visitAtom(QueryParser.AtomContext ctx) {
-		System.out.println("atom: " + ctx.getText());
 		if (ctx.getChild(0) instanceof InContext)
 			return visitIn((InContext) ctx.getChild(0));
+
 		else if (ctx.getChild(0) instanceof CategoryContext)
 			return visitCategory((CategoryContext) ctx.getChild(0));
+
 		else if (ctx.getChild(0) instanceof NameContext)
 			return visitName((NameContext) ctx.getChild(0));
+
 		else if (ctx.getChild(0) instanceof PriceContext)
 			return visitPrice((PriceContext) ctx.getChild(0));
+
 		else if (ctx.getChild(0) instanceof RatingContext)
 			return visitRating((RatingContext) ctx.getChild(0));
+
 		else
 			return visitOrExpr((OrExprContext) ctx.getChild(1));
 	}
 
-	/**
-	 * 
-	 */
 	@Override
 	public Set<YelpRestaurant> visitIn(InContext ctx) {
-		System.out.println("in: " + ctx.getText());
 		String text = ctx.getChild(1).getText();
-		System.out.println(text);
 		String testText = text.substring(1, text.length() - 1);
-		System.out.println(testText);
 
 		Stream<YelpRestaurant> retStream = yelpDB.getRestaurants().stream()
 				.filter(yr -> new HashSet<String>(Arrays.asList(yr.getNeighborhoods())).contains(testText));
 		Set<YelpRestaurant> retSet = retStream.collect(Collectors.toCollection(HashSet::new));
+
 		return retSet;
 	}
 
 	@Override
 	public Set<YelpRestaurant> visitCategory(CategoryContext ctx) {
-		System.out.println("category: " + ctx.getText());
 		String text = ctx.getChild(1).getText();
-		System.out.println(text);
 		String testText = text.substring(1, text.length() - 1);
-		System.out.println(testText);
-		
+
 		Stream<YelpRestaurant> retStream = yelpDB.getRestaurants().stream()
-						.filter(yr -> new HashSet<String>(Arrays.asList(yr.getCategories())).contains(testText));
+				.filter(yr -> new HashSet<String>(Arrays.asList(yr.getCategories())).contains(testText));
 		Set<YelpRestaurant> retSet = retStream.collect(Collectors.toCollection(HashSet::new));
+
 		return retSet;
 	}
 
 	@Override
 	public Set<YelpRestaurant> visitName(NameContext ctx) {
 		String text = ctx.getChild(1).getText();
-		System.out.println(text);
 		String testText = text.substring(1, text.length() - 1);
-		System.out.println(testText);
-		Stream<YelpRestaurant> retStream = yelpDB.getRestaurants().stream()
-				.filter(yr -> yr.getName().equals(testText));
+
+		Stream<YelpRestaurant> retStream = yelpDB.getRestaurants().stream().filter(yr -> yr.getName().equals(testText));
 		Set<YelpRestaurant> retSet = retStream.collect(Collectors.toCollection(HashSet::new));
+
 		return retSet;
 	}
 
@@ -167,9 +163,8 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 			predicate = (yr -> yr.getStars() == rating);
 			break;
 		}
-		
-		Stream<YelpRestaurant> retStream = yelpDB.getRestaurants().stream()
-				.filter(predicate);
+
+		Stream<YelpRestaurant> retStream = yelpDB.getRestaurants().stream().filter(predicate);
 		Set<YelpRestaurant> retSet = retStream.collect(Collectors.toCollection(HashSet::new));
 		return retSet;
 	}
@@ -199,34 +194,9 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 			predicate = (yr -> yr.getPrice() == price);
 			break;
 		}
-		
-		Stream<YelpRestaurant> retStream = yelpDB.getRestaurants().stream()
-				.filter(predicate);
+
+		Stream<YelpRestaurant> retStream = yelpDB.getRestaurants().stream().filter(predicate);
 		Set<YelpRestaurant> retSet = retStream.collect(Collectors.toCollection(HashSet::new));
 		return retSet;
-	}
-	
-	@Override
-	public Set<YelpRestaurant> defaultResult() {
-		return new HashSet<YelpRestaurant>();
-	}
-	
-	@Override
-	public Set<YelpRestaurant> aggregateResult(Set<YelpRestaurant> aggregate, Set<YelpRestaurant> nextResult){
-		aggregate.addAll(nextResult);
-		return  nextResult;
-	}
-	@Override
-	protected boolean shouldVisitNextChild(RuleNode node, Set<YelpRestaurant> currentResult) {
-		return true;
-		
-	}
-
-	private boolean ArrayContains(String[] arr, String s) {
-		for (String str : arr) {
-			if (str.equals(s))
-				return true;
-		}
-		return false;
 	}
 }
