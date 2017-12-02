@@ -48,11 +48,24 @@ public class QueryTests {
 	public void test02() {
 		Set<YelpRestaurant> result = yelpQT1.getMatches("category(Chinese) && price < 2");
 
-		Stream<YelpRestaurant> predictedStream = yelpQT1.getRestaurants().stream().filter(yr -> yr.getPrice() < 2)
-				.filter(yr -> new HashSet<String>(Arrays.asList(yr.getCategories())).contains("Chinese"));
+		Stream<YelpRestaurant> predictedStream = yelpQT1.getRestaurants().stream()
+				.filter(yr -> yr.getPrice() < 2 && new HashSet<String>(Arrays.asList(yr.getCategories())).contains("Chinese"));
 		Set<YelpRestaurant> predictedSet = predictedStream.collect(Collectors.toCollection(HashSet::new));
 
 		assertEquals(1, predictedSet.size());
+		assertEquals(predictedSet, result);
+	}
+	
+	@Test
+	public void test03() {
+		Set<YelpRestaurant> result = yelpQT1.getMatches("category(Chinese) || price < 2");
+
+		Stream<YelpRestaurant> predictedStream = yelpQT1.getRestaurants().stream()
+				.filter(yr -> yr.getPrice() < 2 || new HashSet<String>(Arrays.asList(yr.getCategories())).contains("Chinese"));
+				
+		Set<YelpRestaurant> predictedSet = predictedStream.collect(Collectors.toCollection(HashSet::new));
+
+		assertEquals(7, predictedSet.size());
 		assertEquals(predictedSet, result);
 	}
 
