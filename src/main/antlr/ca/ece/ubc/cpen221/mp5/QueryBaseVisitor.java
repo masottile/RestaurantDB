@@ -8,8 +8,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.abego.treelayout.internal.util.java.lang.string.StringUtil;
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 import ca.ece.ubc.cpen221.mp5.QueryParser.*;

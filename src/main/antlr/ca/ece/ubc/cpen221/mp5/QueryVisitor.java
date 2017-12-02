@@ -1,11 +1,8 @@
 // Generated from Query.g4 by ANTLR 4.7
 package ca.ece.ubc.cpen221.mp5;
-import java.util.Set;
 
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
-import ca.ece.ubc.cpen221.mp5.datatypes.YelpRestaurant;
 
 /**
  * This interface defines a complete generic visitor for a parse tree produced
