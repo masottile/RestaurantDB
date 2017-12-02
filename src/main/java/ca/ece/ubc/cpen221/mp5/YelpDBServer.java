@@ -6,7 +6,7 @@ import java.net.Socket;
 
 import com.google.gson.JsonParseException;
 
-import ca.ece.ubc.cpen221.mp5.datatypes.YelpUser;
+import ca.ece.ubc.cpen221.mp5.datatypes.*;
 
 public class YelpDBServer {
 	// Default port number where the server listens for connections. 
@@ -20,9 +20,13 @@ public class YelpDBServer {
 	 * @param port
 	 *            0 <= port <= 65535
 	 */
-	public YelpDBServer(int port) throws IOException {
-		serverSocket = new ServerSocket(port);
+	public YelpDBServer(int port) {
 		yelp = new YelpDB("data/restaurants.json", "data/reviews.json", "data/users.json");
+		try {
+			serverSocket = new ServerSocket(port);
+		} catch (IOException e) {
+			System.out.println("ERROR CREATING SERVER. Suggestion: check ports");
+		}
 
 	}
 
@@ -79,44 +83,43 @@ public class YelpDBServer {
 					switch (function) {
 					case "GETRESTAURANT":
 						try {
-							String name = yelp.getRestNameFromId(info);
-							System.err.println("Name of " + info + " is: " + name);
-							out.print(name);
+							out.print(yelp.getRestNameFromId(info));
+							out.flush();
 						} catch (NullPointerException e) {
-							System.err.println("ERR: NO_SUCH_RESTAURANT");
 							out.println("ERR: NO_SUCH_RESTAURANT");
+							out.flush();
 						}
 						break;
+
 					case "ADDUSER":
 						String s = yelp.addUser(info);
 						System.err.println(s);
 						out.println(s);
-						System.err.println("Added the user!");
 						break;
 
 					case "ADDRESTAURANT":
-						yelp.addRestaurant(info);
-						System.err.println("Added the restaurant!");
+						out.println(yelp.addRestaurant(info));
+						out.flush();
 						break;
 
 					case "ADDREVIEW":
 						yelp.addReview(info);
-						System.err.println("Added the review!");
 						break;
-						
-					case "GETUSERINFO":
+
+					case "GETUSERRATINGINFO":
 						YelpUser user = yelp.userMap.get(info);
-						System.err.println("Average stars: " + user.getAverageStars());
-						System.err.println("Number of reviews: " + user.getReviewCount());
+						out.println(user.getAverageStars());
+						out.flush();
 						break;
 
 					case "QUERY":
-						System.err.println(yelp.getMatches(info));
+						out.println(yelp.getMatchesToJson(yelp.getMatches(info)));
+						out.flush();
 						break;
 
 					default:
-						System.err.println("ERR: ILLEGAL_REQUEST");
 						out.println("ERR: ILLEGAL_REQUEST");
+						out.flush();
 						break;
 					}
 				} catch (JsonParseException e) {
@@ -141,7 +144,7 @@ public class YelpDBServer {
 			YelpDBServer server = new YelpDBServer(YELP_PORT);
 			server.serve();
 		} catch (IOException e) {
-			System.out.println("ERROR CREATING SERVER: CHECK PORTS MAYBE");
+			System.out.println("ERROR CREATING SERVER. Suggestion: check ports");
 		}
 	}
 }

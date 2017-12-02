@@ -137,7 +137,13 @@ public class QueryTests {
 	}
 
 	@Test
-	// invalid input
+	public void test5() {
+
+		// System.out.println(yelp.getMatches("(in(UC Campus Area) || in(Telegraph Ave))
+		// && category(Chinese)").size());
+		// invalid input
+	}
+
 	public void test4() {
 		try {
 			yelp.getMatches("in UC Berkeley Area & Chinese");

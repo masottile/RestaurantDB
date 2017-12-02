@@ -26,18 +26,18 @@ public class CMDYelpClient {
 
 	public void sendRequest(String s) throws IOException {
 		out.print(s + "\n");
-		out.flush(); // v important
+		out.flush();
 	}
 
 	public void sendLastRequest(String s) throws IOException {
 		out.print(s);
-		out.flush(); // v important
+		out.flush();
 	}
 
 	public String getReply() throws IOException {
 		String reply = in.readLine();
 		if (reply == null) {
-			throw new IOException("No reply? k.");
+			throw new IOException();
 		}
 		return reply;
 	}
@@ -71,8 +71,8 @@ public class CMDYelpClient {
 
 			while (true) {
 				System.err.println("What's your next request?");
-
 				String s = sc.nextLine();
+
 				if (s.equals("last one")) {
 					System.err.println("Okay, send one last request: ");
 					client.sendLastRequest(sc.nextLine());
@@ -80,19 +80,16 @@ public class CMDYelpClient {
 					client.close();
 					break;
 				}
-
 				if (s.equals("bye")) {
 					System.err.println("Bye bye!");
 					sc.close();
 					client.close();
 					break;
 				}
-
 				client.sendRequest(s);
 			}
 
 		} catch (IOException e) {
-			System.err.println("You foked it up somehow, dunno how");
 			e.printStackTrace();
 		}
 	}

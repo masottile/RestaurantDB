@@ -23,6 +23,11 @@ public class YelpRestaurant {
 
 	protected Point location;
 
+	public void addReview(double rating) {
+		stars = ((stars * review_count) + rating) / (review_count + 1);
+		review_count++;
+	}
+	
 	public double distanceTo(Point p) {
 		return this.location.distanceTo(p);
 	}
@@ -81,10 +86,6 @@ public class YelpRestaurant {
 
 	public String getType() {
 		return type;
-	}
-
-	public void addReview() {
-		review_count++;
 	}
 
 	public double getStars() {

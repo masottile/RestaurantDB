@@ -64,7 +64,7 @@ public class Client {
 			Client client = new Client("localhost", YelpDBServer.YELP_PORT);
 			client.sendRequest("GETRESTAURANT 93sW9Y_3rJQn305_n8epng");// Racha Cafe
 			client.sendRequest("GETRESTAURANT MjHULXYJDc9XMM2r24oddg");// Berkeley Floor Cafe
-			client.sendRequest("ADDUSER {\"name\": \"De Silva C.\", \"review_count\": 5}");
+			client.sendRequest("ADDUSER {\"name\": \"De Silva C.\"}");
 			client.sendRequest(
 					"ADDREVIEW {\"type\": \"review\", \"business_id\": \"1CBs84C-a-cuA3vncXVSAw\", \"text\": \"I'm sick o dis shit\", \"stars\": 2, \"user_id\": \"90wm_01FAIqhcgV_mPON9Q\", \"date\": \"2006-07-26\"}");
 			client.sendRequest("ADDUSER {\"review_count\": 5, \"name\": \"De Silva C.\"}");
