@@ -1,8 +1,6 @@
 package ca.ece.ubc.cpen221.mp5.datatypes;
 
 public class YelpRestaurant {
-	// TODO: Add all getter/setter methods
-
 	// since YelpRestaurant doesn't have any subclasses do we want to just change
 	// this to private?
 	private boolean open;
@@ -17,8 +15,8 @@ public class YelpRestaurant {
 	private double stars;
 	private String city;
 	private String full_address;
-	private int review_count;
-	private String photo_url;
+	private int review_count = 0;
+	private String photo_url = "";
 	private String[] schools;
 	private double latitude;
 	private int price;
@@ -36,8 +34,8 @@ public class YelpRestaurant {
 	public Point getLocation() {
 		return this.location;
 	}
-	
-	public void setBusinessID (String ID) {
+
+	public void setBusinessID(String ID) {
 		business_id = ID;
 	}
 
@@ -83,6 +81,34 @@ public class YelpRestaurant {
 
 	public String getType() {
 		return type;
+	}
+
+	public void addReview() {
+		review_count++;
+	}
+
+	public double getStars() {
+		return stars;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public String getFull_address() {
+		return full_address;
+	}
+
+	public int getReview_count() {
+		return review_count;
+	}
+
+	public String getPhoto_url() {
+		return photo_url;
+	}
+
+	public String[] getSchools() {
+		return schools;
 	}
 
 }

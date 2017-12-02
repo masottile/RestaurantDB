@@ -50,6 +50,11 @@ public class CMDYelpClient {
 	 *             if close fails
 	 */
 	public void close() throws IOException {
+
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+		}
 		in.close();
 		out.close();
 		socket.close();
@@ -72,11 +77,12 @@ public class CMDYelpClient {
 					break;
 				}
 
-				if (sc.nextLine() == "bye")
+				if (sc.nextLine() == "bye") {
+					sc.close();
+					client.close();
 					break;
+				}
 			}
-
-			sc.close();
 
 		} catch (IOException e) {
 			System.err.println("You foked it up somehow, dunno how");

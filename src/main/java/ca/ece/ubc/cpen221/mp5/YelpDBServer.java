@@ -58,7 +58,6 @@ public class YelpDBServer {
 	 *            socket where client is connected
 	 * @throws IOException
 	 *             if connection encounters an error
-	 * @throws BitchWhereException
 	 */
 	private void handle(Socket socket) throws IOException {
 		YelpDB yelp = new YelpDB("data/restaurants.json", "data/reviews.json", "data/users.json");
@@ -103,6 +102,10 @@ public class YelpDBServer {
 						System.err.println("Added the review!");
 						break;
 
+					case "QUERY":
+						System.err.println(yelp.getMatches(info));
+						break;
+
 					default:
 						System.err.println("ERR: ILLEGAL_REQUEST");
 						out.println("ERR: ILLEGAL_REQUEST");
@@ -122,7 +125,7 @@ public class YelpDBServer {
 	}
 
 	/**
-	 * Start WelpDB on the default port
+	 * Start YelpDBServer on the default port
 	 */
 	public static void main(String[] args) {
 		try {

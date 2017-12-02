@@ -18,8 +18,6 @@ import ca.ece.ubc.cpen221.mp5.datatypes.*;
 
 public class YelpDB implements MP5Db<YelpRestaurant> {
 
-	// private Set<YelpReview> reviewSet = new HashSet<YelpReview>();
-
 	private Map<String, YelpRestaurant> restaurantMap = new HashMap<String, YelpRestaurant>();
 	private Map<String, YelpUser> userMap = new HashMap<String, YelpUser>();
 	private Map<String, YelpReview> reviewMap = new HashMap<String, YelpReview>();
@@ -121,6 +119,8 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		YelpReview rev = gson.fromJson((JsonObject) parser.parse(s), YelpReview.class);
 		rev.setReviewID(getNewID());
 		reviewMap.put(rev.getReviewID(), rev);
+		restaurantMap.get(rev.getRestaurantID()).addReview();
+		userMap.get(rev.getUserID()).addReview();
 	}
 	// END OF SERVER FUNCTIONS FOR PART 4
 
@@ -156,14 +156,13 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	@Override
 	public ToDoubleBiFunction<MP5Db<YelpRestaurant>, String> getPredictorFunction(String user) {
 
-		YelpUser yUser = userMap.get(user);
 		Set<Point> priceAndStars = new HashSet<Point>();
 
 		ToDoubleBiFunction<MP5Db<YelpRestaurant>, String> returnFunction;
 
 		double priceMean = 0;
 		double starsMean = 0;
-		double sxx = 0, syy = 0, sxy = 0;
+		double sxx = 0, sxy = 0;
 		double b, a;
 		int count = 0;
 
@@ -192,7 +191,6 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 			// calculates least squares
 			for (Point p : priceAndStars) {
 				sxx += Math.pow(p.getX() - priceMean, 2);
-				syy += Math.pow(p.getY() - starsMean, 2);
 				sxy += (p.getX() - priceMean) * (p.getY() - starsMean);
 			}
 
@@ -205,7 +203,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 				returnFunction = (dataBase, restaurantID) -> {
 					int price = ((YelpDB) dataBase).restaurantMap.get(restaurantID).getPrice();
-					return Math.min(5, Math.max(1,b * price + a));
+					return Math.min(5, Math.max(1, b * price + a));
 				};
 
 				return returnFunction;
@@ -383,11 +381,15 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	}
 
 	private class kMeansToJson {
-
+		@SuppressWarnings("unused")
 		private double x;
+		@SuppressWarnings("unused")
 		private double y;
+		@SuppressWarnings("unused")
 		private String name;
+		@SuppressWarnings("unused")
 		private int cluster;
+		@SuppressWarnings("unused")
 		private final double weight = 1.0;
 
 		kMeansToJson(double x, double y, String name, int cluster) {
@@ -396,6 +398,5 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 			this.name = name;
 			this.cluster = cluster;
 		}
-
 	}
 }

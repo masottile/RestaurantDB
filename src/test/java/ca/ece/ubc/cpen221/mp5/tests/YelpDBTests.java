@@ -60,7 +60,7 @@ public class YelpDBTests {
 		YelpDB aiya = new YelpDB(preFix + "restaurants.json", preFix + "reviews.json", preFix + "users.json");
 		boolean clustersAreGood = true;
 
-		aiya.kMeansClusters_json(5);
+		aiya.kMeansClusters_json(45);
 		List<Point> centroids = new ArrayList<Point>();
 
 		for (YelpRestaurant res : aiya.restaurantList) {
@@ -82,7 +82,7 @@ public class YelpDBTests {
 		YelpDB aiya = new YelpDB(preFix + "restaurants.json", preFix + "reviews.json", preFix + "users.json");
 		boolean noEmpty = true;
 
-		LinkedList<Set<YelpRestaurant>> list = aiya.kMeansList(5);
+		LinkedList<Set<YelpRestaurant>> list = aiya.kMeansList(45);
 
 		for (int i = 0; i < list.size(); i++) {
 			noEmpty = (!list.get(i).isEmpty());

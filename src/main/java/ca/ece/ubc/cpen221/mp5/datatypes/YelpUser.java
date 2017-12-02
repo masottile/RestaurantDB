@@ -1,12 +1,6 @@
 package ca.ece.ubc.cpen221.mp5.datatypes;
 
-import java.net.URL;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 public class YelpUser {
-	// TODO: Add all getter/setter methods
 	private String url;
 	private Votes votes = new Votes();
 	private int review_count = 0;
@@ -33,6 +27,26 @@ public class YelpUser {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public void addReview() {
+		review_count++;
+	}
+
+	public double getAverage_stars() {
+		return average_stars;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public Votes getVotes() {
+		return votes;
 	}
 
 }

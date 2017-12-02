@@ -51,6 +51,11 @@ public class YelpClient {
 	 *             if close fails
 	 */
 	public void close() throws IOException {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		in.close();
 		out.close();
 		socket.close();
