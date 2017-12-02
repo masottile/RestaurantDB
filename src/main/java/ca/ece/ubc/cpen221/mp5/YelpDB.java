@@ -16,9 +16,16 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import ca.ece.ubc.cpen221.mp5.datatypes.*;
+import ca.ece.ubc.cpen221.mp5.*;
+import ca.ece.ubc.cpen221.mp5.antlr.QueryBaseVisitor;
+import ca.ece.ubc.cpen221.mp5.antlr.QueryLexer;
+import ca.ece.ubc.cpen221.mp5.antlr.QueryParser;
+import ca.ece.ubc.cpen221.mp5.antlr.ThrowingErrorListener;
 
 public class YelpDB implements MP5Db<YelpRestaurant> {
 
@@ -164,8 +171,12 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 		CharStream charStream = CharStreams.fromString(queryString);
 		QueryLexer queryLexer = new QueryLexer(charStream);
+		queryLexer.removeErrorListeners();
+		queryLexer.addErrorListener(ThrowingErrorListener.INSTANCE);
 		CommonTokenStream commonTokenStream = new CommonTokenStream(queryLexer);
 		QueryParser queryParser = new QueryParser(commonTokenStream);
+		queryParser.removeErrorListeners();
+		queryParser.addErrorListener(ThrowingErrorListener.INSTANCE);
 
 		QueryParser.QueryContext queryContext = queryParser.query();
 		QueryBaseVisitor visitor = new QueryBaseVisitor(this);

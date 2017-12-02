@@ -1,10 +1,11 @@
 // Generated from Query.g4 by ANTLR 4.7
-package ca.ece.ubc.cpen221.mp5;
+package ca.ece.ubc.cpen221.mp5.antlr;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.*;
+
 import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
