@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
+import org.antlr.v4.runtime.tree.RuleNode;
 
 import ca.ece.ubc.cpen221.mp5.QueryParser.*;
 import ca.ece.ubc.cpen221.mp5.datatypes.YelpRestaurant;
@@ -41,7 +42,14 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 	 */
 	@Override
 	public Set<YelpRestaurant> visitQuery(QueryParser.QueryContext ctx) {
-		return visitChildren(ctx);
+		System.out.println("query: " + ctx.getText());
+		
+		if(ctx.getChild(0) instanceof QueryParser.OrExprContext)
+			return visitOrExpr((OrExprContext) ctx.getChild(0));
+		else if (ctx.getChild(0) instanceof QueryParser.AndExprContext)
+			return visitAndExpr((AndExprContext) ctx.getChild(0));
+		else
+			return visitAtom((AtomContext) ctx.getChild(0));
 	}
 
 	/**
@@ -49,6 +57,7 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 	 */
 	@Override
 	public Set<YelpRestaurant> visitOrExpr(QueryParser.OrExprContext ctx) {
+		System.out.println("orExpr: " + ctx.getText());
 		Set<YelpRestaurant> retSet = new HashSet<YelpRestaurant>();
 		for (int i = 0; i < ctx.getChildCount(); i += 2)
 			retSet.addAll(visitAndExpr((QueryParser.AndExprContext) ctx.getChild(i)));
@@ -61,6 +70,7 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 	 */
 	@Override
 	public Set<YelpRestaurant> visitAndExpr(QueryParser.AndExprContext ctx) {
+		System.out.println("andExpr: " + ctx.getText());
 		Set<YelpRestaurant> retSet = yelpDB.getRestaurants();
 		for (int i = 0; i < ctx.getChildCount(); i += 2)
 			retSet.retainAll(visitAtom((QueryParser.AtomContext) ctx.getChild(i)));
@@ -73,10 +83,19 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 	 */
 	@Override
 	public Set<YelpRestaurant> visitAtom(QueryParser.AtomContext ctx) {
-		if (ctx.getChildCount() == 1)
-			return visitChildren(ctx);
+		System.out.println("atom: " + ctx.getText());
+		if (ctx.getChild(0) instanceof InContext)
+			return visitIn((InContext) ctx.getChild(0));
+		else if (ctx.getChild(0) instanceof CategoryContext)
+			return visitCategory((CategoryContext) ctx.getChild(0));
+		else if (ctx.getChild(0) instanceof NameContext)
+			return visitName((NameContext) ctx.getChild(0));
+		else if (ctx.getChild(0) instanceof PriceContext)
+			return visitPrice((PriceContext) ctx.getChild(0));
+		else if (ctx.getChild(0) instanceof RatingContext)
+			return visitRating((RatingContext) ctx.getChild(0));
 		else
-			return visitOrExpr((QueryParser.OrExprContext) ctx.getChild(1));
+			return visitOrExpr((OrExprContext) ctx.getChild(1));
 	}
 
 	/**
@@ -84,24 +103,28 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 	 */
 	@Override
 	public Set<YelpRestaurant> visitIn(InContext ctx) {
+		System.out.println("in: " + ctx.getText());
 		String text = ctx.getChild(1).getText();
+		System.out.println(text);
+		String testText = text.substring(1, text.length() - 1);
+		System.out.println(testText);
 
 		Stream<YelpRestaurant> retStream = yelpDB.getRestaurants().stream()
-				.filter(yr -> ArrayContains(yr.getNeighborhoods(), text.substring(1, text.length() - 1)));
+				.filter(yr -> new HashSet<String>(Arrays.asList(yr.getNeighborhoods())).contains(testText));
 		Set<YelpRestaurant> retSet = retStream.collect(Collectors.toCollection(HashSet::new));
 		return retSet;
 	}
 
 	@Override
 	public Set<YelpRestaurant> visitCategory(CategoryContext ctx) {
+		System.out.println("category: " + ctx.getText());
 		String text = ctx.getChild(1).getText();
-		int length = text.length();
-		System.err.println(text);
-		String testText = text.replaceAll("(|)|\'", "").trim();
-		System.err.println(testText);
+		System.out.println(text);
+		String testText = text.substring(1, text.length() - 1);
+		System.out.println(testText);
 		
 		Stream<YelpRestaurant> retStream = yelpDB.getRestaurants().stream()
-				.filter(yr -> new HashSet<String>(Arrays.asList(yr.getCategories())).contains(testText));
+						.filter(yr -> new HashSet<String>(Arrays.asList(yr.getCategories())).contains(testText));
 		Set<YelpRestaurant> retSet = retStream.collect(Collectors.toCollection(HashSet::new));
 		return retSet;
 	}
@@ -109,8 +132,11 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 	@Override
 	public Set<YelpRestaurant> visitName(NameContext ctx) {
 		String text = ctx.getChild(1).getText();
+		System.out.println(text);
+		String testText = text.substring(1, text.length() - 1);
+		System.out.println(testText);
 		Stream<YelpRestaurant> retStream = yelpDB.getRestaurants().stream()
-				.filter(yr -> yr.getName().equals(text.substring(1, text.length() - 1)));
+				.filter(yr -> yr.getName().equals(testText));
 		Set<YelpRestaurant> retSet = retStream.collect(Collectors.toCollection(HashSet::new));
 		return retSet;
 	}
@@ -120,7 +146,7 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 
 		String text = ctx.getChild(2).getText();
 		String ineq = ctx.getChild(1).getText();
-		double rating = Double.parseDouble(text.substring(1, text.length() - 1));
+		double rating = Double.parseDouble(text);
 
 		Predicate<YelpRestaurant> predicate;
 
@@ -152,25 +178,25 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 	public Set<YelpRestaurant> visitPrice(PriceContext ctx) {
 		String text = ctx.getChild(2).getText();
 		String ineq = ctx.getChild(1).getText();
-		double rating = Double.parseDouble(text.substring(1, text.length() - 1));
+		double price = Double.parseDouble(text);
 
 		Predicate<YelpRestaurant> predicate;
 
 		switch (ineq) {
 		case ">":
-			predicate = (yr -> yr.getPrice() > rating);
+			predicate = (yr -> yr.getPrice() > price);
 			break;
 		case ">=":
-			predicate = (yr -> yr.getPrice() >= rating);
+			predicate = (yr -> yr.getPrice() >= price);
 			break;
 		case "<":
-			predicate = (yr -> yr.getPrice() < rating);
+			predicate = (yr -> yr.getPrice() < price);
 			break;
 		case "<=":
-			predicate = (yr -> yr.getPrice() <= rating);
+			predicate = (yr -> yr.getPrice() <= price);
 			break;
 		default:
-			predicate = (yr -> yr.getPrice() == rating);
+			predicate = (yr -> yr.getPrice() == price);
 			break;
 		}
 		
@@ -188,7 +214,12 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 	@Override
 	public Set<YelpRestaurant> aggregateResult(Set<YelpRestaurant> aggregate, Set<YelpRestaurant> nextResult){
 		aggregate.addAll(nextResult);
-		return  aggregate;
+		return  nextResult;
+	}
+	@Override
+	protected boolean shouldVisitNextChild(RuleNode node, Set<YelpRestaurant> currentResult) {
+		return true;
+		
 	}
 
 	private boolean ArrayContains(String[] arr, String s) {

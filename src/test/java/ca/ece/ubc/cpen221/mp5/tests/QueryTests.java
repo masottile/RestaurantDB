@@ -20,20 +20,43 @@ public class QueryTests {
 
 	YelpDB yelpQT1 = new YelpDB("data/QueryTest1.json", "data/reviews.json", "data/users.json");
 	YelpDB yelp = new YelpDB("data/restaurants.json", "data/reviews.json", "data/users.json");
-	
-	@Test
+
+	/*@Test
 	public void test00() {
 		Set<YelpRestaurant> result = yelpQT1.getMatches("category(Chinese)");
-		
+
 		Stream<YelpRestaurant> predictedStream = yelpQT1.getRestaurants().stream()
 				.filter(yr -> new HashSet<String>(Arrays.asList(yr.getCategories())).contains("Chinese"));
 		Set<YelpRestaurant> predictedSet = predictedStream.collect(Collectors.toCollection(HashSet::new));
-		
+
 		assertEquals(3, predictedSet.size());
-		assertEquals(predictedSet,result);
+		assertEquals(predictedSet, result);
 	}
-/*
+
 	@Test
+	public void test01() {
+		Set<YelpRestaurant> result = yelpQT1.getMatches("price < 2");
+
+		Stream<YelpRestaurant> predictedStream = yelpQT1.getRestaurants().stream().filter(yr -> yr.getPrice() < 2);
+		Set<YelpRestaurant> predictedSet = predictedStream.collect(Collectors.toCollection(HashSet::new));
+
+		assertEquals(5, predictedSet.size());
+		assertEquals(predictedSet, result);
+	}//*/
+
+	@Test
+	public void test02() {
+		Set<YelpRestaurant> result = yelpQT1.getMatches("category(Chinese) && price < 2");
+
+		Stream<YelpRestaurant> predictedStream = yelpQT1.getRestaurants().stream().filter(yr -> yr.getPrice() < 2)
+				.filter(yr -> new HashSet<String>(Arrays.asList(yr.getCategories())).contains("Chinese"));
+		Set<YelpRestaurant> predictedSet = predictedStream.collect(Collectors.toCollection(HashSet::new));
+
+		assertEquals(1, predictedSet.size());
+		assertEquals(predictedSet, result);
+	}
+
+	/*@Test
 	// results found by hand
 	public void test0() {
 		Set<YelpRestaurant> set1 = yelpQT1
@@ -49,11 +72,11 @@ public class QueryTests {
 		assertEquals(ans.length, set1.size());
 		assertTrue(isGood);
 	}
-/*
+
 	@Test
 	// Test an impossible case
 	public void test1() {
-		Set<YelpRestaurant> set1 = yelpQT1.getMatches("rating < 4 && rating > 2");
+		Set<YelpRestaurant> set1 = yelpQT1.getMatches("rating > 4 && rating < 2");
 		assertTrue(set1.isEmpty());
 	}
 
@@ -83,35 +106,26 @@ public class QueryTests {
 	@Test
 	// just another normal test
 	public void test3() {
-		Set<YelpRestaurant> set1 = yelpQT1
-				.getMatches("(in(UC Campus Area) || in(Telegraph Ave)) && category(Chinese)");
+		Set<YelpRestaurant> set1 = yelpQT1.getMatches("(in(UC Campus Area) || in(Telegraph Ave)) && category(Chinese)");
 		String[] ans = { "Peking Express", "Sun Hong Kong Restaurant", "Happy Valley" };
 		Set<String> resultNames = new HashSet<String>(Arrays.asList(ans));
 		boolean isGood = true;
 
-/*		for (YelpRestaurant yr : set1) {
+		for (YelpRestaurant yr : set1) {
 			if (!resultNames.contains(yr.getName()))
 				isGood = false;
 
 		}
 		assertEquals(ans.length, set1.size());
 		assertTrue(isGood);
-	}//*/
+	}
 
-	/*@Test
-	// invalid input
-	public void test4() {
-		try {
-			yelp.getMatches("in UC Berkeley Area & Chinese");
-			//fail();
-		} catch (IllegalArgumentException e) {
-		}
-	}*/
 
 	@Test
 	public void test5() {
-		System.out.println(yelp.getMatches("(in(UC Campus Area) || in(Telegraph Ave)) && category(Chinese)").size());
-		
+		// System.out.println(yelp.getMatches("(in(UC Campus Area) || in(Telegraph Ave))
+		// && category(Chinese)").size());
+
 	}
 
 	@Test
@@ -120,5 +134,5 @@ public class QueryTests {
 
 	@Test
 	public void test7() {
-	}
+	}//*/
 }
