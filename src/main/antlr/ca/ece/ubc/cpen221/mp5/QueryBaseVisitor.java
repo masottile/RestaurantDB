@@ -36,11 +36,6 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 		return null;
 	}
 
-	@Override
-	public Set<YelpRestaurant> visitChildren(ParserRuleContext cxt) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	// ParserRuleContext has a list<ParseTrees> children as part of spec
 
 	/**
