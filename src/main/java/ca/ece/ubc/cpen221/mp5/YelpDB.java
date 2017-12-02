@@ -12,6 +12,11 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.function.ToDoubleBiFunction;
 
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+
 import com.google.gson.*;
 
 import ca.ece.ubc.cpen221.mp5.datatypes.*;
@@ -143,7 +148,23 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	public Set<YelpRestaurant> getMatches(String queryString) {
 		// example query string
 		// in(Telegraph Ave) && (category(Chinese) || category(Italian)) && price <= 2
-		return null;
+		
+		CharStream charStream = CharStreams.fromString(queryString);
+		QueryLexer queryLexer = new QueryLexer(charStream);
+		CommonTokenStream commonTokenStream = new CommonTokenStream(queryLexer);
+	    QueryParser queryParser = new QueryParser(commonTokenStream);
+	    
+	    QueryParser.QueryContext queryContext = queryParser.query();
+	    QueryBaseVisitor visitor = new QueryBaseVisitor(this);
+	    return visitor.visitQuery(queryContext);
+	        
+	    /*
+	     * MarkupParser.FileContext fileContext = markupParser.file();                
+        	MarkupVisitor visitor = new MarkupVisitor();                
+        	visitor.visit(fileContext);  
+	     * 
+	     * */
+	    
 	}
 
 	@Override
