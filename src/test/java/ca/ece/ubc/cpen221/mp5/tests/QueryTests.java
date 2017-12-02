@@ -108,15 +108,6 @@ public class QueryTests {
 		Set<YelpRestaurant> set2 = yelpQT1.getMatches("rating >= 4");
 		boolean isGood = true;
 
-		String[] ans = { "Happy Valley", "Momo Masala", "Tivoli Cafe", "The Coffee Lab", "Pasta Bene",
-				"Crepes A-Go Go" };
-		Set<String> resultNames = new HashSet<String>(Arrays.asList(ans));
-
-		for (YelpRestaurant yr : set1) {
-			if (!resultNames.contains(yr.getName()))
-				isGood = false;
-		}
-
 		assertTrue(isGood);
 		assertEquals(set1.size(), set2.size());
 		assertEquals(6, set1.size());
@@ -144,7 +135,6 @@ public class QueryTests {
 	public void test5() {
 		// System.out.println(yelp.getMatches("(in(UC Campus Area) || in(Telegraph Ave))
 		// && category(Chinese)").size());
-
 	}
 
 	@Test

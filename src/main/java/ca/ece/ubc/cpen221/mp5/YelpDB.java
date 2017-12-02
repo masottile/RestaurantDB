@@ -12,7 +12,6 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.function.ToDoubleBiFunction;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -101,11 +100,12 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		return restaurantMap.get(businessID).getName();
 	}
 
-	public void addRestaurant(String s) {
+	public String addRestaurant(String s) {
 		YelpRestaurant yr = gson.fromJson((JsonObject) parser.parse(s), YelpRestaurant.class);
 		yr.setBusinessID(getNewID());
 		restaurantMap.put(yr.getBusinessID(), yr);
 		restaurantList.add(yr);
+		return gson.toJson(yr);
 	}
 
 	public String addUser(String s) {
@@ -116,12 +116,13 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		return gson.toJson(user);
 	}
 
-	public void addReview(String s) {
+	public String addReview(String s) {
 		YelpReview rev = gson.fromJson((JsonObject) parser.parse(s), YelpReview.class);
 		rev.setReviewID(getNewID());
 		reviewMap.put(rev.getReviewID(), rev);
-		restaurantMap.get(rev.getRestaurantID()).addReview();
+		restaurantMap.get(rev.getRestaurantID()).addReview(rev.getStars());
 		userMap.get(rev.getUserID()).recalcAvgStars(rev.getStars());
+		return gson.toJson(rev);
 	}
 	// END OF SERVER FUNCTIONS FOR PART 4
 
@@ -159,10 +160,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	}
 
 	@Override
-	public Set<YelpRestaurant> getMatches(String queryString) throws IllegalArgumentException {
-		// example query string
-		// in(Telegraph Ave) && (category(Chinese) || category(Italian)) && price <= 2
-		// if (shits not right) throw IllegalArgumentException
+	public Set<YelpRestaurant> getMatches(String queryString) {
 
 		CharStream charStream = CharStreams.fromString(queryString);
 		QueryLexer queryLexer = new QueryLexer(charStream);
@@ -172,12 +170,10 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		QueryParser.QueryContext queryContext = queryParser.query();
 		QueryBaseVisitor visitor = new QueryBaseVisitor(this);
 		return visitor.visitQuery(queryContext);
+	}
 
-		/*
-		 * MarkupParser.FileContext fileContext = markupParser.file(); MarkupVisitor
-		 * visitor = new MarkupVisitor(); visitor.visit(fileContext);
-		 * 
-		 */
+	public String getMatchesToJson(Set<YelpRestaurant> set) {
+		return gson.toJson(set);
 	}
 
 	@Override
@@ -420,11 +416,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 			this.y = y;
 			this.name = name;
 			this.cluster = cluster;
-			this.stopTheWarnings();
 		}
 
-		public String stopTheWarnings() {
-			return Double.toString(x) + Double.toString(y) + name + Integer.toString(cluster) + Double.toString(weight);
-		}
 	}
 }
