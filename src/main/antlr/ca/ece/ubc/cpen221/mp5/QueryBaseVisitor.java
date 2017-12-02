@@ -1,12 +1,14 @@
 // Generated from Query.g4 by ANTLR 4.7
 package ca.ece.ubc.cpen221.mp5;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.abego.treelayout.internal.util.java.lang.string.StringUtil;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
@@ -30,18 +32,6 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 	public QueryBaseVisitor(YelpDB yelpDB) {
 		this.yelpDB = yelpDB;
 	}
-
-	public Set<YelpRestaurant> visitChild(ParserRuleContext cxt) {
-		// TODO
-		return null;
-	}
-
-	@Override
-	public Set<YelpRestaurant> visitChildren(ParserRuleContext cxt) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	// ParserRuleContext has a list<ParseTrees> children as part of spec
 
 	/**
 	 * {@inheritDoc}
@@ -97,6 +87,7 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 	@Override
 	public Set<YelpRestaurant> visitIn(InContext ctx) {
 		String text = ctx.getChild(1).getText();
+
 		Stream<YelpRestaurant> retStream = yelpDB.getRestaurants().stream()
 				.filter(yr -> ArrayContains(yr.getNeighborhoods(), text.substring(1, text.length() - 1)));
 		Set<YelpRestaurant> retSet = retStream.collect(Collectors.toCollection(HashSet::new));
@@ -106,8 +97,13 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 	@Override
 	public Set<YelpRestaurant> visitCategory(CategoryContext ctx) {
 		String text = ctx.getChild(1).getText();
+		int length = text.length();
+		System.err.println(text);
+		String testText = text.replaceAll("(|)|\'", "").trim();
+		System.err.println(testText);
+		
 		Stream<YelpRestaurant> retStream = yelpDB.getRestaurants().stream()
-				.filter(yr -> ArrayContains(yr.getCategories(), text.substring(1, text.length() - 1)));
+				.filter(yr -> new HashSet<String>(Arrays.asList(yr.getCategories())).contains(testText));
 		Set<YelpRestaurant> retSet = retStream.collect(Collectors.toCollection(HashSet::new));
 		return retSet;
 	}
@@ -184,6 +180,17 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 				.filter(predicate);
 		Set<YelpRestaurant> retSet = retStream.collect(Collectors.toCollection(HashSet::new));
 		return retSet;
+	}
+	
+	@Override
+	public Set<YelpRestaurant> defaultResult() {
+		return new HashSet<YelpRestaurant>();
+	}
+	
+	@Override
+	public Set<YelpRestaurant> aggregateResult(Set<YelpRestaurant> aggregate, Set<YelpRestaurant> nextResult){
+		aggregate.addAll(nextResult);
+		return  aggregate;
 	}
 
 	private boolean ArrayContains(String[] arr, String s) {

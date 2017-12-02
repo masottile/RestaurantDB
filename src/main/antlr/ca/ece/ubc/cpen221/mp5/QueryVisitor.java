@@ -69,5 +69,4 @@ public interface QueryVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitPrice(QueryParser.PriceContext ctx);
-	Set<YelpRestaurant> visitChildren(ParserRuleContext cxt);
 }
