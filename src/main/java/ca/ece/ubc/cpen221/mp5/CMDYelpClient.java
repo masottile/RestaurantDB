@@ -70,18 +70,25 @@ public class CMDYelpClient {
 			CMDYelpClient client = new CMDYelpClient(hostname, port);
 
 			while (true) {
-				client.sendRequest(sc.nextLine());
+				System.err.println("What's your next request?");
 
-				if (sc.nextLine().equals("last one")) {
+				String s = sc.nextLine();
+				if (s.equals("last one")) {
+					System.err.println("Okay, send one last request: ");
 					client.sendLastRequest(sc.nextLine());
-					break;
-				}
-
-				if (sc.nextLine().equals("bye")) {
 					sc.close();
 					client.close();
 					break;
 				}
+
+				if (s.equals("bye")) {
+					System.err.println("Bye bye!");
+					sc.close();
+					client.close();
+					break;
+				}
+
+				client.sendRequest(s);
 			}
 
 		} catch (IOException e) {

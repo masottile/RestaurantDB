@@ -6,10 +6,12 @@ import java.net.Socket;
 
 import com.google.gson.JsonParseException;
 
+import ca.ece.ubc.cpen221.mp5.datatypes.YelpUser;
+
 public class YelpDBServer {
 	/** Default port number where the server listens for connections. */
-	public static final int YELP_PORT = 4949;
-
+	public static final int YELP_PORT = 4999;
+	final YelpDB yelp;
 	private ServerSocket serverSocket;
 
 	/**
@@ -20,6 +22,8 @@ public class YelpDBServer {
 	 */
 	public YelpDBServer(int port) throws IOException {
 		serverSocket = new ServerSocket(port);
+		yelp = new YelpDB("data/restaurants.json", "data/reviews.json", "data/users.json");
+
 	}
 
 	/**
@@ -60,9 +64,6 @@ public class YelpDBServer {
 	 *             if connection encounters an error
 	 */
 	private void handle(Socket socket) throws IOException {
-		YelpDB yelp = new YelpDB("data/restaurants.json", "data/reviews.json", "data/users.json");
-
-		// converts socket byte stream to character stream
 		BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
 
@@ -74,7 +75,6 @@ public class YelpDBServer {
 					String info = message[message.length - 1];
 
 					switch (function) {
-
 					case "GETRESTAURANT":
 						try {
 							String name = yelp.getRestNameFromId(info);
@@ -85,10 +85,10 @@ public class YelpDBServer {
 							out.println("ERR: NO_SUCH_RESTAURANT");
 						}
 						break;
-
 					case "ADDUSER":
-						System.err.println(yelp.addUser(info));
-						out.println(yelp.addUser(info));
+						String s = yelp.addUser(info);
+						System.err.println(s);
+						out.println(s);
 						System.err.println("Added the user!");
 						break;
 
@@ -100,6 +100,12 @@ public class YelpDBServer {
 					case "ADDREVIEW":
 						yelp.addReview(info);
 						System.err.println("Added the review!");
+						break;
+						
+					case "GETUSERINFO":
+						YelpUser user = yelp.userMap.get(info);
+						System.err.println("Average stars: " + user.getAverageStars());
+						System.err.println("Number of reviews: " + user.getReviewCount());
 						break;
 
 					case "QUERY":

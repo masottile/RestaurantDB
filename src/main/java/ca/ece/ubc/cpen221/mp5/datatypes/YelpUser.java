@@ -29,10 +29,6 @@ public class YelpUser {
 		this.url = url;
 	}
 
-	public void addReview() {
-		review_count++;
-	}
-
 	public double getAverageStars() {
 		return average_stars;
 	}
@@ -47,6 +43,12 @@ public class YelpUser {
 
 	public Votes getVotes() {
 		return votes;
+	}
+
+	public void recalcAvgStars(double rating) {
+		average_stars = ((average_stars * review_count) + rating) / (review_count + 1);
+		review_count++;
+
 	}
 
 }

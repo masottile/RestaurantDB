@@ -42,7 +42,7 @@ public class YelpDBTests {
 		String preFix = "data/";
 		YelpDB aiya = new YelpDB(preFix + "restaurants.json", preFix + "reviews.json", preFix + "users.json");
 
-		assertEquals(5, aiya.kMeansList(5).size());
+		assertEquals(5, aiya.kMeansList(5).size()); 
 
 		// System.out.println("k-means cluster, k = 5: ");
 		// System.out.println(aiya.kMeansClusters_json(5));

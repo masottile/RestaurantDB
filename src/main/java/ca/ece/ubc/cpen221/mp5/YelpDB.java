@@ -19,7 +19,7 @@ import ca.ece.ubc.cpen221.mp5.datatypes.*;
 public class YelpDB implements MP5Db<YelpRestaurant> {
 
 	private Map<String, YelpRestaurant> restaurantMap = new HashMap<String, YelpRestaurant>();
-	private Map<String, YelpUser> userMap = new HashMap<String, YelpUser>();
+	public Map<String, YelpUser> userMap = new HashMap<String, YelpUser>();
 	private Map<String, YelpReview> reviewMap = new HashMap<String, YelpReview>();
 	public Map<YelpRestaurant, Point> currentState = new HashMap<YelpRestaurant, Point>();
 
@@ -42,44 +42,46 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	 * @throws FileNotFoundException
 	 *             if the method cannot find files from the given file names
 	 */
-	public YelpDB(String restaurantFile, String reviewFile, String userFile) throws FileNotFoundException {
+	public YelpDB(String restaurantFile, String reviewFile, String userFile) {
 
 		gson = new Gson();
 		parser = new JsonParser();
+		try {
+			Scanner restaurantScan = new Scanner(new File(restaurantFile));
+			Scanner reviewScan = new Scanner(new File(reviewFile));
+			Scanner userScan = new Scanner(new File(userFile));
 
-		Scanner restaurantScan = new Scanner(new File(restaurantFile));
-		Scanner reviewScan = new Scanner(new File(reviewFile));
-		Scanner userScan = new Scanner(new File(userFile));
+			while (restaurantScan.hasNext()) {
+				JsonObject obj = (JsonObject) parser.parse(restaurantScan.nextLine());
+				YelpRestaurant yr = gson.fromJson(obj, YelpRestaurant.class);
+				restaurantList.add(yr);
+				yr.setLocation();
+				restaurantMap.put(yr.getBusinessID(), yr);
+			}
 
-		while (restaurantScan.hasNext()) {
-			JsonObject obj = (JsonObject) parser.parse(restaurantScan.nextLine());
-			YelpRestaurant yr = gson.fromJson(obj, YelpRestaurant.class);
-			restaurantList.add(yr);
-			yr.setLocation();
-			restaurantMap.put(yr.getBusinessID(), yr);
+			while (reviewScan.hasNext()) {
+				JsonObject obj = (JsonObject) parser.parse(reviewScan.nextLine());
+				YelpReview yr = gson.fromJson(obj, YelpReview.class);
+				reviewMap.put(yr.getReviewID(), yr);
+			}
+
+			while (userScan.hasNext()) {
+				JsonObject obj = (JsonObject) parser.parse(userScan.nextLine());
+				YelpUser yu = gson.fromJson(obj, YelpUser.class);
+				userMap.put(yu.getUserID(), yu);
+			}
+			restaurantScan.close();
+			reviewScan.close();
+			userScan.close();
+		} catch (FileNotFoundException e) {
 		}
-
-		while (reviewScan.hasNext()) {
-			JsonObject obj = (JsonObject) parser.parse(reviewScan.nextLine());
-			YelpReview yr = gson.fromJson(obj, YelpReview.class);
-			reviewMap.put(yr.getReviewID(), yr);
-		}
-
-		while (userScan.hasNext()) {
-			JsonObject obj = (JsonObject) parser.parse(userScan.nextLine());
-			YelpUser yu = gson.fromJson(obj, YelpUser.class);
-			userMap.put(yu.getUserID(), yu);
-		}
-		restaurantScan.close();
-		reviewScan.close();
-		userScan.close();
 	}
 
 	// BEGINNING OF SERVER FUNCTIONS FOR PART 4
 
 	public String getNewID() {
 		IDcount++;
-		return "Bitch#" + Long.toString(IDcount);
+		return "GenID#" + Long.toString(IDcount);
 	}
 
 	public String newBusinessURL(String ID) {
@@ -114,7 +116,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		rev.setReviewID(getNewID());
 		reviewMap.put(rev.getReviewID(), rev);
 		restaurantMap.get(rev.getRestaurantID()).addReview();
-		userMap.get(rev.getUserID()).addReview();
+		userMap.get(rev.getUserID()).recalcAvgStars(rev.getStars());
 	}
 	// END OF SERVER FUNCTIONS FOR PART 4
 
@@ -138,11 +140,23 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	public Set<YelpUser> getUsers() {
 		return new HashSet<YelpUser>(userMap.values());
 	}
+	
+	public YelpRestaurant getRestaurant(String restID) {
+		return restaurantMap.get(restID);
+	}
+	public YelpReview getReview(String revID) {
+		return reviewMap.get(revID);
+	}
+	public YelpUser getUser(String userID) {
+		return userMap.get(userID);
+	}
 
 	@Override
-	public Set<YelpRestaurant> getMatches(String queryString) {
+	public Set<YelpRestaurant> getMatches(String queryString) throws IllegalArgumentException {
 		// example query string
 		// in(Telegraph Ave) && (category(Chinese) || category(Italian)) && price <= 2
+
+		// if (shits not right) throw IllegalArgumentException
 		return null;
 	}
 

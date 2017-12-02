@@ -12,7 +12,7 @@ public class YelpReview {
 	private String date;
 
 	public String getRestaurantID() {
-		return business_id;
+		return business_id; 
 	}
 
 	public String getReviewID() {
