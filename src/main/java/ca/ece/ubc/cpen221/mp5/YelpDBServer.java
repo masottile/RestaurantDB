@@ -10,7 +10,7 @@ import ca.ece.ubc.cpen221.mp5.datatypes.YelpUser;
 
 public class YelpDBServer {
 	// Default port number where the server listens for connections. 
-	private static final int YELP_PORT = 4999;
+	public static final int YELP_PORT = 4999;
 	private final YelpDB yelp;
 	private ServerSocket serverSocket;
 
@@ -51,6 +51,7 @@ public class YelpDBServer {
 					}
 				}
 			});
+			
 			// starts a thread
 			handler.start();
 		}
