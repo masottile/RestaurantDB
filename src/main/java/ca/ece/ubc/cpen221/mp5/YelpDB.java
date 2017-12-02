@@ -12,14 +12,16 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.function.ToDoubleBiFunction;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import ca.ece.ubc.cpen221.mp5.datatypes.*;
+import ca.ece.ubc.cpen221.mp5.*;
 
 public class YelpDB implements MP5Db<YelpRestaurant> {
 
