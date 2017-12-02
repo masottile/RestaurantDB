@@ -18,7 +18,6 @@ public class YelpClient {
 	 */
 	public YelpClient(String hostname, int port) throws IOException {
 
-		// QUESTION: SHOULD I DO A "THIS.GETREPLY"?
 		socket = new Socket(hostname, port);
 		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -54,7 +53,6 @@ public class YelpClient {
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
 		}
 		in.close();
 		out.close();

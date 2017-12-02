@@ -72,12 +72,12 @@ public class CMDYelpClient {
 			while (true) {
 				client.sendRequest(sc.nextLine());
 
-				if (sc.nextLine() == "last one") {
+				if (sc.nextLine().equals("last one")) {
 					client.sendLastRequest(sc.nextLine());
 					break;
 				}
 
-				if (sc.nextLine() == "bye") {
+				if (sc.nextLine().equals("bye")) {
 					sc.close();
 					client.close();
 					break;

@@ -95,15 +95,15 @@ public class YelpRestaurant {
 		return city;
 	}
 
-	public String getFull_address() {
+	public String getFullAddress() {
 		return full_address;
 	}
 
-	public int getReview_count() {
+	public int getReviewCount() {
 		return review_count;
 	}
 
-	public String getPhoto_url() {
+	public String getPhotoUrl() {
 		return photo_url;
 	}
 

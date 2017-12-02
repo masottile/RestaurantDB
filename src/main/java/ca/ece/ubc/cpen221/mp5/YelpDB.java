@@ -82,22 +82,18 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		return "Bitch#" + Long.toString(IDcount);
 	}
 
-	// TODO: do we even need this?
 	public String newBusinessURL(String ID) {
 		return "http://www.yelp.com/biz/" + ID;
 	}
 
-	// TODO: write test
 	public String newUserURL(String ID) {
 		return "http://www.yelp.com/user_details?userid=" + ID;
 	}
 
-	// TODO: write test
 	public String getRestNameFromId(String businessID) {
 		return restaurantMap.get(businessID).getName();
 	}
 
-	// TODO: write test
 	public void addRestaurant(String s) {
 		YelpRestaurant yr = gson.fromJson((JsonObject) parser.parse(s), YelpRestaurant.class);
 		yr.setBusinessID(getNewID());
@@ -105,7 +101,6 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		restaurantList.add(yr);
 	}
 
-	// TODO: write test
 	public String addUser(String s) {
 		YelpUser user = gson.fromJson((JsonObject) parser.parse(s), YelpUser.class);
 		user.setUserID(getNewID());
@@ -114,7 +109,6 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		return gson.toJson(user);
 	}
 
-	// TODO: write test
 	public void addReview(String s) {
 		YelpReview rev = gson.fromJson((JsonObject) parser.parse(s), YelpReview.class);
 		rev.setReviewID(getNewID());
@@ -147,7 +141,6 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 	@Override
 	public Set<YelpRestaurant> getMatches(String queryString) {
-		// TODO Auto-generated method stub
 		// example query string
 		// in(Telegraph Ave) && (category(Chinese) || category(Italian)) && price <= 2
 		return null;
@@ -162,7 +155,8 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 		double priceMean = 0;
 		double starsMean = 0;
-		double sxx = 0, sxy = 0;
+		double sxx = 0;
+		double sxy = 0;
 		double b, a;
 		int count = 0;
 
@@ -381,15 +375,10 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	}
 
 	private class kMeansToJson {
-		@SuppressWarnings("unused")
 		private double x;
-		@SuppressWarnings("unused")
 		private double y;
-		@SuppressWarnings("unused")
 		private String name;
-		@SuppressWarnings("unused")
 		private int cluster;
-		@SuppressWarnings("unused")
 		private final double weight = 1.0;
 
 		kMeansToJson(double x, double y, String name, int cluster) {
@@ -397,6 +386,11 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 			this.y = y;
 			this.name = name;
 			this.cluster = cluster;
+			this.stopTheWarnings();
+		}
+
+		public String stopTheWarnings() {
+			return Double.toString(x) + Double.toString(y) + name + Integer.toString(cluster) + Double.toString(weight);
 		}
 	}
 }

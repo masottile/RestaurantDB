@@ -1,14 +1,12 @@
 package ca.ece.ubc.cpen221.mp5.tests;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import org.junit.Test;
 
 import java.io.FileNotFoundException;
 import java.util.function.ToDoubleBiFunction;
-
-import org.junit.Test;
 
 import ca.ece.ubc.cpen221.mp5.MP5Db;
 import ca.ece.ubc.cpen221.mp5.YelpDB;

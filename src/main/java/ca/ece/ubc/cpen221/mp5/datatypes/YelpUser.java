@@ -33,7 +33,7 @@ public class YelpUser {
 		review_count++;
 	}
 
-	public double getAverage_stars() {
+	public double getAverageStars() {
 		return average_stars;
 	}
 
