@@ -8,14 +8,14 @@ For the most part, we tried to work on the MP together. For part 1 this was easy
 
 ### Jessica:
 
-- `YelpDB`, `datatypes`, `YelpDBServer`, `Client` (and all other clients)
+- `YelpDB`, `datatypes`, `k-means`, `YelpDBServer`, `Client` (and all other clients)
 - `ServerTests`, `YelpDBTests`, `MoreYelpDBTests`, `QueryTests`, looked over other tests
-- k-means, visualizer for k-means, testing the server from command line
+- visualizer for k-means, testing the server from command line
 
 
 ### Maria:
 
-- `YelpDB`, helped edit `datatypes`, `getPredictorFunction`, `antlr` and particularly `QueryBaseVisitor`
+- `YelpDB`, helped edit `datatypes`, `getPredictorFunction`, helped with `k-means`, `antlr` and particularly `QueryBaseVisitor`
 - `LeastSquaresTests`, `QueryTests`, helped with `YelpDBTests`, `MoreYelpDBTests`
 - looked over code for clean up, specs, RIs, AFs
 
