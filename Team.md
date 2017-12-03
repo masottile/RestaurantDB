@@ -16,7 +16,7 @@ For the most part, we tried to work on the MP together. For part 1 this was easy
 
 ### Maria:
 
-- `YelpDB`, helped edit `datatypes`, `getPredictorFunction`, helped with `k-means`, `antlr`
+- `YelpDB`, `getPredictorFunction`, `antlr`, helped edit `datatypes`, helped with `k-means`
 - `LeastSquaresTests`, `QueryTests`, helped with `YelpDBTests`, `MoreYelpDBTests`
 - looked over code for clean up, specs, RIs, AFs
 - Part V
