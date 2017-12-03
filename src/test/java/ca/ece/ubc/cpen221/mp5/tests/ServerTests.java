@@ -20,8 +20,11 @@ public class ServerTests {
 			System.out.println("created client");
 			client.sendRequest("GETRESTAURANT t-xuA4yR02gud00gTS2iyw");
 			System.out.println("sent request");
+			client.sendLastRequest("ADDUSER {\"name\":\"Jessica\"}");
+			client.close();
 		} catch (IOException e) {
+			System.out.println("IOexception oh oh");
 		}
-		
+
 	}
 }
