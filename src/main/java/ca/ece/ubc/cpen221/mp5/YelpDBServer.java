@@ -14,18 +14,6 @@ public class YelpDBServer {
 	private ServerSocket serverSocket;
 
 	/**
-	 * Start YelpDBServer on the default port
-	 */
-	public static void main(String[] args) {
-		try {
-			YelpDBServer server = new YelpDBServer(YELP_PORT);
-			server.serve();
-		} catch (IOException e) {
-			System.err.println("ERROR CREATING SERVER. Suggestion: check ports");
-		}
-	}
-
-	/**
 	 * Creates a server listening on input port
 	 * 
 	 * @param port
