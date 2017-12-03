@@ -3,8 +3,8 @@ package ca.ece.ubc.cpen221.mp5.datatypes;
 public class Business {
 
 	private String businessID;
-	private String name;
-	private String[] category;
+	private String namee;
+	private String[] categorie;
 
 	/*
 	 * Abstraction Function: a business with an ID, a name, and a set of categories
@@ -15,7 +15,7 @@ public class Business {
 
 	public Business() {
 		businessID = "";
-		name = "";
+		namee = "";
 	}
 
 	public String getBusinessID() {
@@ -23,11 +23,11 @@ public class Business {
 	}
 
 	public String getName() {
-		return name;
+		return namee;
 	}
 
 	public String[] getCategories() {
-		return category;
+		return categorie;
 	}
 
 }

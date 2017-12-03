@@ -3,7 +3,7 @@ package ca.ece.ubc.cpen221.mp5.datatypes;
 public class User {
 
 	private String userID;
-	private String name;
+	private String namee;
 	private int reviewCount;
 
 	/*

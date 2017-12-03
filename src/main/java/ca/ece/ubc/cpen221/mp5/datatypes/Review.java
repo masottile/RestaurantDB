@@ -8,7 +8,7 @@ public class Review {
 	private String reviewID;
 	private String content;
 	private String userID;
-	private Date date;
+	private Date date0;
 
 	/*
 	 * Abstraction Function: a review with the businessID of the business it is
