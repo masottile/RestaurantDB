@@ -16,30 +16,30 @@ import ca.ece.ubc.cpen221.mp5.antlr.QueryParser.*;
 import ca.ece.ubc.cpen221.mp5.datatypes.YelpRestaurant;
 
 /**
- * This class provides an empty implementation of {@link QueryVisitor}, which
- * can be extended to create a visitor which only needs to handle a subset of
- * the available methods.
- *
- * @param <T>
- *            The return type of the visit operation. Use {@link Void} for
- *            operations with no return type.
+ * Edited QueryVisitorBase from the auto-generated class to execute the query
+ * string that was just parsed
  */
 public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestaurant>>
 		implements QueryVisitor<Set<YelpRestaurant>> {
 
 	private YelpDB yelpDB;
 
+	/*
+	 * Abstraction Function: a YelpDB for the visitor to perform the query on
+	 * 
+	 * Rep Invariant: yelpDB is not null
+	 */
+
 	public QueryBaseVisitor(YelpDB yelpDB) {
 		this.yelpDB = yelpDB;
 	}
 
 	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>
-	 * The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.
-	 * </p>
+	 * Figures out what type of child it needs to visit next
+	 * 
+	 * @param ctx
+	 *            context of this query base node
+	 * @return the return value of the child it visits
 	 */
 	@Override
 	public Set<YelpRestaurant> visitQuery(QueryParser.QueryContext ctx) {
@@ -54,7 +54,9 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 	}
 
 	/**
-	 * Computes the union of all the andExpr children
+	 * @param ctx
+	 *            context of this node
+	 * @return union of the return values of the children
 	 */
 	@Override
 	public Set<YelpRestaurant> visitOrExpr(QueryParser.OrExprContext ctx) {
@@ -67,7 +69,9 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 	}
 
 	/**
-	 * Computes the intersection of all the atom children
+	 * @param ctx
+	 *            context of this node
+	 * @return the intersection of return values of the children
 	 */
 	@Override
 	public Set<YelpRestaurant> visitAndExpr(QueryParser.AndExprContext ctx) {
@@ -80,7 +84,11 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 	}
 
 	/**
-	 * passes the operation onto the appropriate child
+	 * Figures out the type of child and visits that child
+	 * 
+	 * @param ctx
+	 *            context of this node
+	 * @return the return value of the child that it visits
 	 */
 	@Override
 	public Set<YelpRestaurant> visitAtom(QueryParser.AtomContext ctx) {
@@ -103,6 +111,14 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 			return visitOrExpr((OrExprContext) ctx.getChild(1));
 	}
 
+	/**
+	 * Filters the set of all restaurants in the database to just those in the
+	 * neighborhood specified by the node context
+	 * 
+	 * @param ctx
+	 *            the context of this node
+	 * @return set of yelp restaurants in the specified neighborhood
+	 */
 	@Override
 	public Set<YelpRestaurant> visitIn(InContext ctx) {
 		String text = ctx.getChild(1).getText();
@@ -115,6 +131,14 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 		return retSet;
 	}
 
+	/**
+	 * Filters the set of restaurants contained in yelpDB to just those that fit
+	 * into the category specified by ctx
+	 * 
+	 * @param ctx
+	 *            the context of this node
+	 * @return set of yelp restaurants that fall under the specified category
+	 */
 	@Override
 	public Set<YelpRestaurant> visitCategory(CategoryContext ctx) {
 		String text = ctx.getChild(1).getText();
@@ -127,6 +151,13 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 		return retSet;
 	}
 
+	/**
+	 * Finds the restaurant(s) with the name specified by ctx
+	 * 
+	 * @param ctx
+	 *            the context of this node
+	 * @return set of yelp restaurants whose name matches the specified name
+	 */
 	@Override
 	public Set<YelpRestaurant> visitName(NameContext ctx) {
 		String text = ctx.getChild(1).getText();
@@ -138,6 +169,14 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 		return retSet;
 	}
 
+	/**
+	 * Filters all restaurants in the yelpDB to just those whose ratings fit in the
+	 * range specified by ctx
+	 * 
+	 * @param ctx
+	 *            the context of this node
+	 * @return set of yelp restaurants that fall under the specified rating range
+	 */
 	@Override
 	public Set<YelpRestaurant> visitRating(RatingContext ctx) {
 
@@ -170,6 +209,14 @@ public class QueryBaseVisitor extends AbstractParseTreeVisitor<Set<YelpRestauran
 		return retSet;
 	}
 
+	/**
+	 * Filters all restaurants in yelpDB to just those whose pricing is in the range
+	 * specified by ctx
+	 * 
+	 * @param ctx
+	 *            context of this node
+	 * @return set of yelp restaurants whose pricing falls under the specified range
+	 */
 	@Override
 	public Set<YelpRestaurant> visitPrice(PriceContext ctx) {
 		String text = ctx.getChild(2).getText();
