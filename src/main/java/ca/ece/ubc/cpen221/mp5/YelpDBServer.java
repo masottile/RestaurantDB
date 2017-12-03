@@ -3,7 +3,6 @@ package ca.ece.ubc.cpen221.mp5;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.CountDownLatch;
 
 import com.google.gson.JsonParseException;
 import ca.ece.ubc.cpen221.mp5.datatypes.*;
@@ -26,6 +25,7 @@ public class YelpDBServer {
 		}
 		try {
 			serverSocket = new ServerSocket(port);
+			serve();
 		} catch (IOException e) {
 			System.out.println("ERROR CREATING SERVER. Suggestion: check ports");
 		}
@@ -37,7 +37,7 @@ public class YelpDBServer {
 	 * @throws IOException
 	 *             if the main server socket is broken
 	 */
-	public void serve() throws IOException {
+	private void serve() throws IOException {
 		while (true) {
 			final Socket socket = serverSocket.accept();
 			Thread handler = new Thread(new Runnable() {

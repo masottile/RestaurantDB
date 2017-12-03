@@ -5,8 +5,10 @@ import java.net.Socket;
 import java.util.Scanner;
 
 /**
- * "open" until the close() method is called, at which point it is "closed" and
- * may not be used further.
+ * Pretty much the same format as Client and Client2, except this will take in
+ * input from the console/command line and has some interactive text. Again, we
+ * kept this in here just in case it might be useful for getting to know our
+ * implementation of the server.
  */
 public class CMDYelpClient {
 	private Socket socket;
@@ -73,6 +75,7 @@ public class CMDYelpClient {
 				System.err.println("What's your next request?");
 				String s = sc.nextLine();
 
+				// indicate this will be the last request
 				if (s.equals("last one")) {
 					System.err.println("Okay, send one last request: ");
 					client.sendLastRequest(sc.nextLine());
@@ -80,6 +83,8 @@ public class CMDYelpClient {
 					client.close();
 					break;
 				}
+
+				// end the thread without sending one last request
 				if (s.equals("bye")) {
 					System.err.println("Bye bye!");
 					sc.close();

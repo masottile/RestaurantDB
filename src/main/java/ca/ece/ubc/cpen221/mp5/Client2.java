@@ -62,7 +62,8 @@ public class Client2 {
 			Client2 client = new Client2("localhost", YelpDBServer.YELP_PORT);
 			client.sendRequest("QUERY in(Telegraph Ave) && category(Chinese)");
 			System.err.println(client.getReply());
-			client.sendLastRequest("QUERY price <= 2 && rating > 4");
+			client.sendRequest("QUERY price <= 2 && rating > 4");
+			System.err.println(client.getReply());
 			client.close();
 		} catch (IOException e) {
 			e.printStackTrace();

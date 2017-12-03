@@ -4,8 +4,8 @@ import java.io.*;
 import java.net.Socket;
 
 /**
- * "open" until the close() method is called, at which point it is "closed" and
- * may not be used further.
+ * This was created to help us test the server and check that it can accept multiple clients at once 
+ * We've decided to keep it in here just in case you would like to use it to test out the server.
  */
 public class Client {
 	private Socket socket;
@@ -70,7 +70,7 @@ public class Client {
 			client.sendRequest("ADDUSER {\"review_count\": 5, \"name\": \"De Silva C.\"}");
 			client.sendRequest("ADDUSER {\"name\": \"ddd\", \"review_count\": 5}");
 			client.sendRequest("ADDUSER {\"name\": \"ccc\", \"review_count\": 5}");
-			client.sendLastRequest(
+			client.sendRequest(
 					"ADDRESTAURANT {\"open\": true, \"longitude\": -420.000, \"neighborhoods\": [\"Telegraph Ave\", \"UC Campus Area\"], \"name\": \"Da Cribbb\", \"categories\": [\"Korean\", \"Restaurants\"], \"state\": \"CA\", \"type\": \"business\", \"stars\": 3.5, \"city\": \"Berkeley\", \"full_address\": \"2521 Durant Ave\\nSte F\\nTelegraph Ave\\nBerkeley, CA 94704\", \"schools\": [\"University of California at Berkeley\"], \"latitude\": 66.00, \"price\": 2}\r\n");
 			client.close();
 		} catch (IOException e) {
