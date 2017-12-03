@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
-import org.antlr.v4.runtime.tree.RuleNode;
 
 import ca.ece.ubc.cpen221.mp5.YelpDB;
 import ca.ece.ubc.cpen221.mp5.antlr.QueryParser.*;

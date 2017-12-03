@@ -1,8 +1,8 @@
 package ca.ece.ubc.cpen221.mp5.datatypes;
 
 public class Point {
-	double x;
-	double y;
+	private double x;
+	private double y;
 
 	/*
 	 * Abstraction Function: a point such as could be modeled on a 2D graph with x

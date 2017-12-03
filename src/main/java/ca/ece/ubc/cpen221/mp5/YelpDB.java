@@ -260,7 +260,8 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		double starsMean = 0;
 		double sxx = 0;
 		double sxy = 0;
-		double b, a;
+		double b;
+		double a;
 		int count = 0;
 
 		// Picks out the reviews made by the given user and saves data on price of
@@ -538,7 +539,8 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	 * @return the mean location
 	 */
 	private Point calculateMean(Set<YelpRestaurant> yRSet) {
-		double x = 0, y = 0;
+		double x = 0;
+		double y = 0;
 		for (YelpRestaurant yr : yRSet) {
 			x += yr.getLatitude();
 			y += yr.getLongitude();

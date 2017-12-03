@@ -18,16 +18,5 @@ public class Business {
 		name = "";
 	}
 
-	public String getBusinessID() {
-		return business_id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String[] getCategories() {
-		return categories;
-	}
 
 }

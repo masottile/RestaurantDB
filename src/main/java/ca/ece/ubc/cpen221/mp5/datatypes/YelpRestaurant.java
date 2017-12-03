@@ -74,9 +74,6 @@ public class YelpRestaurant extends Business {
 		return this.location;
 	}
 
-	public String getUrl() {
-		return url;
-	}
 
 	public double getLongitude() {
 		return longitude;
@@ -114,8 +111,5 @@ public class YelpRestaurant extends Business {
 		return review_count;
 	}
 
-	public String[] getSchools() {
-		return schools;
-	}
 
 }

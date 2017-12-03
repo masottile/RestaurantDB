@@ -20,9 +20,7 @@ import ca.ece.ubc.cpen221.mp5.datatypes.YelpRestaurant;
 
 public class YelpDBTests {
 
-	static Gson gson = new Gson();
-	static String preFix = "data/";
-	YelpDB aiya;
+	private YelpDB aiya;
 
 	@Test
 	public void test0() {

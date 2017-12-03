@@ -2,16 +2,6 @@
 package ca.ece.ubc.cpen221.mp5.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
-import ca.ece.ubc.cpen221.mp5.antlr.QueryParser.AndExprContext;
-import ca.ece.ubc.cpen221.mp5.antlr.QueryParser.AtomContext;
-import ca.ece.ubc.cpen221.mp5.antlr.QueryParser.CategoryContext;
-import ca.ece.ubc.cpen221.mp5.antlr.QueryParser.InContext;
-import ca.ece.ubc.cpen221.mp5.antlr.QueryParser.NameContext;
-import ca.ece.ubc.cpen221.mp5.antlr.QueryParser.OrExprContext;
-import ca.ece.ubc.cpen221.mp5.antlr.QueryParser.PriceContext;
-import ca.ece.ubc.cpen221.mp5.antlr.QueryParser.QueryContext;
-import ca.ece.ubc.cpen221.mp5.antlr.QueryParser.RatingContext;
-
 /**
  * This interface defines a complete listener for a parse tree produced by
  * {@link QueryParser}.

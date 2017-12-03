@@ -39,19 +39,5 @@ public class YelpReview extends Review {
 		return stars;
 	}
 
-	public String getDate() {
-		return date;
-	}
 
-	public String getText() {
-		return text;
-	}
-
-	public Votes getVotes() {
-		return votes;
-	}
-
-	public String getType() {
-		return type;
-	}
 }
