@@ -31,11 +31,6 @@ public class CMDYelpClient {
 		out.flush();
 	}
 
-	public void sendLastRequest(String s) throws IOException {
-		out.print(s);
-		out.flush();
-	}
-
 	public String getReply() throws IOException {
 		String reply = in.readLine();
 		if (reply == null) {
@@ -72,19 +67,10 @@ public class CMDYelpClient {
 			CMDYelpClient client = new CMDYelpClient(hostname, port);
 
 			while (true) {
-				System.err.println("What's your next request?");
+				System.out.println("What's your next request?");
 				String s = sc.nextLine();
 
-				// indicate this will be the last request
-				if (s.equals("last one")) {
-					System.err.println("Okay, send one last request: ");
-					client.sendLastRequest(sc.nextLine());
-					sc.close();
-					client.close();
-					break;
-				}
-
-				// end the thread without sending one last request
+				// end the thread
 				if (s.equals("bye")) {
 					System.err.println("Bye bye!");
 					sc.close();
@@ -92,10 +78,11 @@ public class CMDYelpClient {
 					break;
 				}
 				client.sendRequest(s);
+				System.out.println(client.getReply());
 			}
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println("ERROR: Connection not made. Check that someone is listening to port " + port);
 		}
 	}
 }

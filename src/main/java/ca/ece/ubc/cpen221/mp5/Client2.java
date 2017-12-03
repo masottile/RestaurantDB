@@ -27,11 +27,6 @@ public class Client2 {
 		out.flush();
 	}
 
-	public void sendLastRequest(String s) throws IOException {
-		out.print(s);
-		out.flush();
-	}
-
 	public String getReply() throws IOException {
 		String reply = in.readLine();
 		if (reply == null) {
@@ -61,9 +56,9 @@ public class Client2 {
 		try {
 			Client2 client = new Client2("localhost", YelpDBServer.YELP_PORT);
 			client.sendRequest("QUERY in(Telegraph Ave) && category(Chinese)");
-			System.err.println(client.getReply());
+			System.out.println(client.getReply());
 			client.sendRequest("QUERY price <= 2 && rating > 4");
-			System.err.println(client.getReply());
+			System.out.println(client.getReply());
 			client.close();
 		} catch (IOException e) {
 			e.printStackTrace();
