@@ -48,7 +48,7 @@ public class Client2 {
 	public void close() throws IOException {
 		try {
 			Thread.sleep(1000);
-		} catch (InterruptedException e) {
+		} catch (InterruptedException e) { 
 		}
 		in.close();
 		out.close();

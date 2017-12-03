@@ -67,7 +67,7 @@ public class CMDYelpClient {
 			CMDYelpClient client = new CMDYelpClient(hostname, port);
 
 			while (true) {
-				System.out.println("What's your next request?");
+				System.out.println("What's your next request?"); 
 				String s = sc.nextLine();
 
 				// end the thread

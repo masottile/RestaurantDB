@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
+//import java.util.concurrent.CountDownLatch;
 
 import com.google.gson.JsonParseException;
 import ca.ece.ubc.cpen221.mp5.datatypes.*;
@@ -13,8 +13,6 @@ public class YelpDBServer {
 	public static final int YELP_PORT = 4949;
 	private YelpDB yelp;
 	private ServerSocket serverSocket;
-
-	private CountDownLatch addCount = new CountDownLatch(1);
 
 	/**
 	 * Creates a server listening on input port
@@ -25,7 +23,6 @@ public class YelpDBServer {
 	public YelpDBServer(int port) {
 		try {
 			yelp = new YelpDB("data/restaurants.json", "data/reviews.json", "data/users.json");
-			addCount.countDown();
 		} catch (FileNotFoundException e1) {
 		}
 		try {
@@ -87,71 +84,36 @@ public class YelpDBServer {
 					switch (function) {
 					case "GETRESTAURANT":
 						try {
-							addCount.await();
-						} catch (InterruptedException e) {
-							System.out.println("aiyaa");
-						}
-						try {
 							out.print(yelp.getRestNameFromId(info));
 							out.flush();
 						} catch (NullPointerException e) {
 							out.println("ERR: NO_SUCH_RESTAURANT");
 							out.flush();
-						} finally {
-							addCount = new CountDownLatch(1);
-							addCount.countDown();
 						}
 						break;
 
 					case "ADDUSER":
-						try {
-							addCount.await();
-						} catch (InterruptedException e) {
-						}
-						addCount = new CountDownLatch(1);
 						String s = yelp.addUser(info);
 						out.println(s);
 						out.flush();
-						addCount.countDown();
 						break;
 
 					case "GETUSER":
-						try {
-							addCount.await();
-						} catch (InterruptedException e) {
-						}
 						out.println(yelp.getUser(info).getName());
 						out.flush();
-						addCount.countDown();
 						break;
-						
+
 					case "ADDRESTAURANT":
-						try {
-							addCount.await();
-						} catch (InterruptedException e) {
-						}
-						addCount = new CountDownLatch(1);
 						String y = yelp.addRestaurant(info);
 						out.println(y);
 						out.flush();
-						addCount.countDown();
 						break;
 
 					case "ADDREVIEW":
-						try {
-							addCount.await();
-						} catch (InterruptedException e) {
-						}
-						addCount = new CountDownLatch(1);
 						out.println(yelp.addReview(info));
-						addCount.countDown();
 						break;
 
 					case "QUERY":
-						try {
-							addCount.await();
-						} catch (InterruptedException e) {
-						}
 						Set<YelpRestaurant> results = yelp.getMatches(info);
 						if (results.isEmpty())
 							out.println("ERR: NO_MATCH");
