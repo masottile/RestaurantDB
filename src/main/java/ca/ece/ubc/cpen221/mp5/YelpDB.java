@@ -290,7 +290,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 				a = starsMean - b * priceMean;
 
 				returnFunction = (dataBase, restaurantID) -> {
-					int price = ((YelpDB) dataBase).restaurantMap.get(restaurantID).getPrice();
+					double price = ((YelpDB) dataBase).restaurantMap.get(restaurantID).getPrice();
 					return Math.min(5, Math.max(1, b * price + a));
 				};
 
