@@ -4,22 +4,26 @@ import java.util.Date;
 
 public class Review {
 
-	// TODO: Make this extendable for YelpReview
-	public String businessID;
-	public String reviewID;
-	public String content;
-	public String userID;
-	public Date date;
+	private String businessID;
+	private String reviewID;
+	private String content;
+	private String userID;
+	private Date date;
 
-	Review(String content) {
+	/*
+	 * Abstraction Function: a review with the businessID of the business it is
+	 * reviewing, the reviewID, the userID of the user who made the review, the
+	 * content of the review, and the date the review was made
+	 * 
+	 * Rep Invariant: no field is null
+	 */
+
+	public Review(String content) {
 
 		this.content = content;
-		reviewID = this.createReviewID();
+		reviewID = "";
+		userID = "";
+		businessID = "";
+		date = new Date();
 	}
-
-	private String createReviewID() {
-		String newID = "o";
-		return newID;
-	}
-
 }

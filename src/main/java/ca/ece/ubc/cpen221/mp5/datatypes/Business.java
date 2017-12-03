@@ -4,27 +4,33 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Business {
-	// TODO: Make this extendable for YelpRestaurant
+
 	private String businessID;
 	private String name;
 	private Set<String> category;
-	
+
+	/*
+	 * Abstraction Function: a business with an ID, a name, and a set of categories
+	 * it falls under
+	 * 
+	 * Rep Invariant: no fields are null
+	 */
+
 	public Business() {
-		
 		businessID = "";
 		name = "";
 		category = new HashSet<String>();
 	}
-	
+
 	public String getBusinessID() {
 		return businessID;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
-	
-	public Set<String> getCategories(){
+
+	public Set<String> getCategories() {
 		return new HashSet<String>(category);
 	}
 

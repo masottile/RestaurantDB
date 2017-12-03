@@ -4,6 +4,13 @@ public class Point {
 	double x;
 	double y;
 
+	/*
+	 * Abstraction Function: a point such as could be modeled on a 2D graph with x
+	 * as the x coordinate and y as the y coordinate
+	 * 
+	 * Rep Invariant: fields are not null
+	 */
+
 	public Point(double x, double y) {
 		this.x = x;
 		this.y = y;
@@ -18,6 +25,8 @@ public class Point {
 	}
 
 	/**
+	 * calculates the distance from this to p
+	 * 
 	 * @param p
 	 *            a point that is not null
 	 * @return the distance from this to p
@@ -29,8 +38,12 @@ public class Point {
 		return Math.sqrt(xDiffsq + yDiffsq);
 	}
 
-	public boolean equals(Point p) {
-		return this.getX() == p.getX() && this.getY() == p.getY();
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Point)
+			return (this.getX() == ((Point) obj).getX() && this.getY() == ((Point) obj).getY());
+		else
+			return false;
 	}
-	
+
 }
