@@ -8,6 +8,9 @@ public class ThrowingErrorListener extends BaseErrorListener {
 
 	public static final ThrowingErrorListener INSTANCE = new ThrowingErrorListener();
 
+	// replaces the default action to throw an unchecked exception instead of
+	// printing out the error to the console
+	
 	@Override
 	public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine,
 			String msg, RecognitionException e) throws IllegalArgumentException {

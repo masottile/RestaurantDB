@@ -17,6 +17,18 @@ public class YelpDBServer {
 	private CountDownLatch addCount = new CountDownLatch(1);
 
 	/**
+	 * Start YelpDBServer on the default port
+	 */
+	public static void main(String[] args) {
+		try {
+			YelpDBServer server = new YelpDBServer(YELP_PORT);
+			server.serve();
+		} catch (IOException e) {
+			System.err.println("ERROR CREATING SERVER. Suggestion: check ports");
+		}
+	}
+
+	/**
 	 * Creates a server listening on input port
 	 * 
 	 * @param port
@@ -26,13 +38,13 @@ public class YelpDBServer {
 		try {
 			yelp = new YelpDB("data/restaurants.json", "data/reviews.json", "data/users.json");
 			addCount.countDown();
-		} catch (FileNotFoundException e1) {
-		}
-		try {
 			serverSocket = new ServerSocket(port);
+			
+		} catch (FileNotFoundException e1) {
+			
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.out.println("ERROR CREATING SERVER. Suggestion: check ports");
+			System.err.println("ERROR CREATING SERVER. Suggestion: check ports");
 		}
 	}
 
@@ -124,7 +136,7 @@ public class YelpDBServer {
 						out.flush();
 						addCount.countDown();
 						break;
-						
+
 					case "ADDRESTAURANT":
 						try {
 							addCount.await();
@@ -177,15 +189,4 @@ public class YelpDBServer {
 		}
 	}
 
-	/**
-	 * Start YelpDBServer on the default port
-	 */
-	public static void main(String[] args) {
-		try {
-			YelpDBServer server = new YelpDBServer(YELP_PORT);
-			server.serve();
-		} catch (IOException e) {
-			System.err.println("ERROR CREATING SERVER. Suggestion: check ports");
-		}
-	}
 }
