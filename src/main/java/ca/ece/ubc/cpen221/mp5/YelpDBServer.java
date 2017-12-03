@@ -107,7 +107,7 @@ public class YelpDBServer {
 						break;
 
 					case "GETUSERRATINGINFO":
-						YelpUser user = yelp.userMap.get(info);
+						YelpUser user = yelp.getUserMap().get(info);
 						out.println(user.getAverageStars());
 						out.flush();
 						break;

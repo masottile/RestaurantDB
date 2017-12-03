@@ -37,7 +37,8 @@ public class LeastSquaresTests {
 			fail();
 
 		} catch (IllegalArgumentException e) {
-			assertTrue(true);
+		}catch(FileNotFoundException e) {
+			fail();
 		}
 	}
 
@@ -52,7 +53,8 @@ public class LeastSquaresTests {
 			fail();
 
 		} catch (IllegalArgumentException e) {
-			assertTrue(true);
+		}catch(FileNotFoundException e) {
+			fail();
 		}
 	}
 
@@ -67,7 +69,8 @@ public class LeastSquaresTests {
 			fail();
 
 		} catch (IllegalArgumentException e) {
-			assertTrue(true);
+		}catch(FileNotFoundException e) {
+			fail();
 		}
 	}
 
@@ -82,7 +85,8 @@ public class LeastSquaresTests {
 			fail();
 
 		} catch (IllegalArgumentException e) {
-			assertTrue(true);
+		}catch (FileNotFoundException e) {
+			fail();
 		}
 	}
 
@@ -91,6 +95,7 @@ public class LeastSquaresTests {
 	// correct. Also tests using a different database than the one used to generate
 	// the function
 	public void test4() {
+		try {
 		theStuff = new YelpDB("data/testRest.json", "data/reviewsTest.json", "data/usersTest.json");
 		String preFix = "data/";
 		YelpDB aiya = new YelpDB(preFix + "restaurants.json", preFix + "reviews.json", preFix + "users.json");
@@ -100,5 +105,8 @@ public class LeastSquaresTests {
 
 		assertEquals(1.7, predictorFn.applyAsDouble(theStuff, "gclB3ED6uk6viWlolSb_uA"), TOLERANCE);
 		assertEquals(5, predictorFn.applyAsDouble(aiya, "XD5ybqI0BHcTj5cLQyIPLA"), TOLERANCE);
+		}catch(FileNotFoundException e) {
+			fail();
+		}
 	}
 }

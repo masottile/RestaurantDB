@@ -10,7 +10,7 @@ import ca.ece.ubc.cpen221.mp5.datatypes.YelpRestaurant;
 
 public class DatatypesTests {
 
-	YelpDB yelp = new YelpDB("data/testRest.json", "data/reviewsTest.json", "data/usersTest.json");
+	//YelpDB yelp = new YelpDB("data/testRest.json", "data/reviewsTest.json", "data/usersTest.json");
 	String user_id = "QScfKdcxsa7t5qfE0Ev0Cw";
 	String review_id = "5kugWMfr3517UddJMrQCRg";
 	String business_id = "FWadSZw0G7HsgKXq7gHTnw";

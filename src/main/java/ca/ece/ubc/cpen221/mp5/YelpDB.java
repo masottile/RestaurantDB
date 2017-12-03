@@ -21,22 +21,18 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import ca.ece.ubc.cpen221.mp5.datatypes.*;
-import ca.ece.ubc.cpen221.mp5.*;
-import ca.ece.ubc.cpen221.mp5.antlr.QueryBaseVisitor;
-import ca.ece.ubc.cpen221.mp5.antlr.QueryLexer;
-import ca.ece.ubc.cpen221.mp5.antlr.QueryParser;
-import ca.ece.ubc.cpen221.mp5.antlr.ThrowingErrorListener;
+import ca.ece.ubc.cpen221.mp5.antlr.*;
 
 public class YelpDB implements MP5Db<YelpRestaurant> {
 
 	private Map<String, YelpRestaurant> restaurantMap = new HashMap<String, YelpRestaurant>();
-	public Map<String, YelpUser> userMap = new HashMap<String, YelpUser>();
+	private Map<String, YelpUser> userMap = new HashMap<String, YelpUser>();
 	private Map<String, YelpReview> reviewMap = new HashMap<String, YelpReview>();
-	public Map<YelpRestaurant, Point> currentState = new HashMap<YelpRestaurant, Point>();
+	private Map<YelpRestaurant, Point> currentState = new HashMap<YelpRestaurant, Point>();
 
-	public List<YelpRestaurant> restaurantList = new ArrayList<YelpRestaurant>();
+	private List<YelpRestaurant> restaurantList = new ArrayList<YelpRestaurant>();
 
-	public long IDcount = 0;
+	private long IDcount = 0;
 
 	private Gson gson;
 	private JsonParser parser;
@@ -53,39 +49,39 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	 * @throws FileNotFoundException
 	 *             if the method cannot find files from the given file names
 	 */
-	public YelpDB(String restaurantFile, String reviewFile, String userFile) {
+	public YelpDB(String restaurantFile, String reviewFile, String userFile) throws FileNotFoundException {
 
 		gson = new Gson();
 		parser = new JsonParser();
-		try {
-			Scanner restaurantScan = new Scanner(new File(restaurantFile));
-			Scanner reviewScan = new Scanner(new File(reviewFile));
-			Scanner userScan = new Scanner(new File(userFile));
 
-			while (restaurantScan.hasNext()) {
-				JsonObject obj = (JsonObject) parser.parse(restaurantScan.nextLine());
-				YelpRestaurant yr = gson.fromJson(obj, YelpRestaurant.class);
-				restaurantList.add(yr);
-				yr.setLocation();
-				restaurantMap.put(yr.getBusinessID(), yr);
-			}
+		Scanner restaurantScan = new Scanner(new File(restaurantFile));
+		Scanner reviewScan = new Scanner(new File(reviewFile));
+		Scanner userScan = new Scanner(new File(userFile));
 
-			while (reviewScan.hasNext()) {
-				JsonObject obj = (JsonObject) parser.parse(reviewScan.nextLine());
-				YelpReview yr = gson.fromJson(obj, YelpReview.class);
-				reviewMap.put(yr.getReviewID(), yr);
-			}
-
-			while (userScan.hasNext()) {
-				JsonObject obj = (JsonObject) parser.parse(userScan.nextLine());
-				YelpUser yu = gson.fromJson(obj, YelpUser.class);
-				userMap.put(yu.getUserID(), yu);
-			}
-			restaurantScan.close();
-			reviewScan.close();
-			userScan.close();
-		} catch (FileNotFoundException e) {
+		while (restaurantScan.hasNext()) {
+			JsonObject obj = (JsonObject) parser.parse(restaurantScan.nextLine());
+			YelpRestaurant yr = gson.fromJson(obj, YelpRestaurant.class);
+			restaurantList.add(yr);
+			yr.setLocation();
+			restaurantMap.put(yr.getBusinessID(), yr);
 		}
+
+		while (reviewScan.hasNext()) {
+			JsonObject obj = (JsonObject) parser.parse(reviewScan.nextLine());
+			YelpReview yr = gson.fromJson(obj, YelpReview.class);
+			reviewMap.put(yr.getReviewID(), yr);
+		}
+
+		while (userScan.hasNext()) {
+			JsonObject obj = (JsonObject) parser.parse(userScan.nextLine());
+			YelpUser yu = gson.fromJson(obj, YelpUser.class);
+			userMap.put(yu.getUserID(), yu);
+		}
+
+		restaurantScan.close();
+		reviewScan.close();
+		userScan.close();
+
 	}
 
 	// BEGINNING OF SERVER FUNCTIONS FOR PART 4
@@ -164,6 +160,19 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 	public YelpUser getUser(String userID) {
 		return userMap.get(userID);
+	}
+
+	public Map<String, YelpUser> getUserMap() {
+		return new HashMap<String, YelpUser>(userMap);
+	}
+
+	/**
+	 * Should only be called after Kmeans has been run
+	 * 
+	 * @return a map of all YelpRestaurants to the nearest centroid
+	 */
+	public Map<YelpRestaurant, Point> getCurrentState() {
+		return new HashMap<YelpRestaurant, Point>(currentState);
 	}
 
 	@Override
