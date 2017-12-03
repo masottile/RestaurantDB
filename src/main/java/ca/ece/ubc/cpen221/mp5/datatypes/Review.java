@@ -1,14 +1,13 @@
 package ca.ece.ubc.cpen221.mp5.datatypes;
 
-import java.util.Date;
 
 public class Review {
 
-	private String businessID;
-	private String reviewID;
-	private String content;
-	private String userID;
-	private Date date0;
+	protected String business_id;
+	protected String review_id;
+	protected String text;
+	protected String user_id;
+	protected String date;
 
 	/*
 	 * Abstraction Function: a review with the businessID of the business it is

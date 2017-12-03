@@ -4,10 +4,7 @@ public class YelpUser extends User {
 
 	private String url;
 	private Votes votes = new Votes();
-	private int review_count = 0;
 	private final String type = "user";
-	private String user_id;
-	private String name;
 	private double average_stars = 0;
 
 	/*
