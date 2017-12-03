@@ -28,6 +28,6 @@ Part II took around 20-25 hours over about a week
 
 Part III took around 10 hours over a couple of days
 
-Part IV took at least 14 hours over several days
+Part IV took at least 14-20 hours over several days
 
-Part V took at least 24 hours over several days
+Part V took at least 24-30 hours over several days
