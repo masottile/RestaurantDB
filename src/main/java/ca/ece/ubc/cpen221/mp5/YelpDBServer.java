@@ -3,45 +3,43 @@ package ca.ece.ubc.cpen221.mp5;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.CountDownLatch;
 
 import com.google.gson.JsonParseException;
-
 import ca.ece.ubc.cpen221.mp5.datatypes.*;
 
 public class YelpDBServer {
-	// Default port number where the server listens for connections.
 	public static final int YELP_PORT = 4999;
-	private final YelpDB yelp;
+	private YelpDB yelp;
 	private ServerSocket serverSocket;
 
 	/**
-	 * Makes server that listens for connections on some input port\
+	 * Creates a server listening on input port
 	 * 
 	 * @param port
-	 *            0 <= port <= 65535
+	 *            number of port to listen to RI: 0 <= port <= 65535
 	 */
 	public YelpDBServer(int port) {
-		yelp = new YelpDB("data/restaurants.json", "data/reviews.json", "data/users.json");
+		try {
+			yelp = new YelpDB("data/restaurants.json", "data/reviews.json", "data/users.json");
+		} catch (FileNotFoundException e1) {
+		}
 		try {
 			serverSocket = new ServerSocket(port);
 		} catch (IOException e) {
 			System.out.println("ERROR CREATING SERVER. Suggestion: check ports");
 		}
-
 	}
 
 	/**
-	 * Run the server, listening for connections and handling them.
+	 * Creates threads and runs the server and processes requests
 	 * 
 	 * @throws IOException
 	 *             if the main server socket is broken
 	 */
 	public void serve() throws IOException {
 		while (true) {
-			// waits for a client to connect
 			final Socket socket = serverSocket.accept();
-
-			// create a new thread to handle that client
 			Thread handler = new Thread(new Runnable() {
 				public void run() {
 					try {
@@ -51,12 +49,9 @@ public class YelpDBServer {
 							socket.close();
 						}
 					} catch (IOException e) {
-						e.printStackTrace();
 					}
 				}
 			});
-
-			// starts a thread
 			handler.start();
 		}
 	}
@@ -98,7 +93,9 @@ public class YelpDBServer {
 						break;
 
 					case "ADDRESTAURANT":
-						System.err.println(yelp.addRestaurant(info));
+						String y = yelp.addRestaurant(info);
+						System.err.print(y);
+						out.println(y);
 						out.flush();
 						break;
 
