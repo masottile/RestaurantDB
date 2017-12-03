@@ -2,13 +2,14 @@ package ca.ece.ubc.cpen221.mp5.datatypes;
 
 public class User {
 
-	public String userID;
-	public String name;
-	public int reviewCount;
+	private String userID;
+	private String name;
+	private int reviewCount;
 
-	User(String name, String ID) {
-		this.name = name;
-		this.userID = ID;
-	}
-
+	/*
+	 * Abstraction Function: a user with a userID, name, and number of reviews they
+	 * have created
+	 * 
+	 * Rep Invariant: no Field is null
+	 */
 }

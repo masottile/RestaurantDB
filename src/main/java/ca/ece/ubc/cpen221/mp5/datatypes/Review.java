@@ -17,13 +17,4 @@ public class Review {
 	 * 
 	 * Rep Invariant: no field is null
 	 */
-
-	public Review(String content) {
-
-		this.content = content;
-		reviewID = "";
-		userID = "";
-		businessID = "";
-		date = new Date();
-	}
 }

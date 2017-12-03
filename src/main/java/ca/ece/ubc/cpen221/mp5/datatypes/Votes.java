@@ -1,9 +1,15 @@
 package ca.ece.ubc.cpen221.mp5.datatypes;
 
 public class Votes {
-	public int cool = 0;
-	public int useful = 0;
-	public int funny = 0;
+	private int cool = 0;
+	private int useful = 0;
+	private int funny = 0;
+
+	/*
+	 * Abstraction Function: a record of the number of votes for what type of vote
+	 * 
+	 * Rep Invariant: all fields are non negative integers
+	 */
 
 	public void addCool() {
 		cool++;
