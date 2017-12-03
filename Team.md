@@ -26,7 +26,7 @@ For the most part, we tried to work on the MP together. For part 1 this was easy
 
 Part I took around 5 hours in about a day or two, but was edited throughout
 
-Part II took around 20-25 hours over about a week
+Part II took around 20 hours over about a week
 
 Part III took around 10 hours over a couple of days
 
