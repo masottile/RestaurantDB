@@ -2,7 +2,6 @@ package ca.ece.ubc.cpen221.mp5.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
@@ -26,7 +25,7 @@ public class ServerTests {
 		});
 		testServer.start();
 
-		Thread client2Test = new Thread(new Runnable() {
+		Thread client1Test = new Thread(new Runnable() {
 			public void run() {
 				try {
 					Client client1 = new Client("localhost", 4949);
@@ -35,11 +34,30 @@ public class ServerTests {
 							"{\"url\":\"http://www.yelp.com/user_details?userid\\u003dGenID#1\",\"votes\":{\"cool\":0,\"useful\":0,\"funny\":0},\"review_count\":0,\"type\":\"user\",\"user_id\":\"GenID#1\",\"name\":\"Jessica\",\"average_stars\":0.0}",
 							client1.getReply());
 					client1.sendRequest("ADDUSER {\"name\":\"Maria\"}");
-					client1.getReply();
-					client1.sendRequest("GETUSER GenID#2");
+					assertTrue(client1.getReply() != null);
+					client1.sendRequest("GETUSER GenID#1");
 					assertEquals("Maria", client1.getReply());
 					client1.close();
-				} catch (IOException e) { 
+				} catch (IOException e) {
+				}
+			}
+
+		});
+		client1Test.start();
+		client1Test.join();
+
+		Thread client2Test = new Thread(new Runnable() {
+			public void run() {
+				try {
+					Client client2 = new Client("localhost", 4949);
+					client2.sendRequest("ADDUSER {ddd}");
+					assertEquals(client2.getReply(), "ERR: INVALID_JSON_STRING");
+					client2.sendRequest("jkjk");
+					assertEquals(client2.getReply(), "ERR: ILLEGAL_REQUEST");
+					client2.sendRequest("QUERY in(China)");
+					assertEquals(client2.getReply(), "ERR: NO_MATCH");
+					client2.close();
+				} catch (IOException e) {
 				}
 			}
 

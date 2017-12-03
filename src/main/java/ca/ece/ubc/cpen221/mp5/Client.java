@@ -61,7 +61,7 @@ public class Client {
 	public static void main(String[] args) {
 		try {
 			Client client = new Client("localhost", YelpDBServer.YELP_PORT);
-			client.sendRequest("GETRESTAURANT 93sW9Y_3rJQn305_n8epng");// Racha Cafe
+			client.sendRequest("GETRESTAURANT 93sW9Y_3rJQn305_n8epng");// Racha Cafe 
 			System.out.println(client.getReply());
 			client.sendRequest("GETRESTAURANT MjHULXYJDc9XMM2r24oddg");// Berkeley Floor Cafe
 			System.out.println(client.getReply());
