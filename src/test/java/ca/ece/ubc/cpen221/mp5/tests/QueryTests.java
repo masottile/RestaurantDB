@@ -188,6 +188,7 @@ public class QueryTests {
 		}
 	}
 
+	@Test
 	public void test4() {
 		try {
 			YelpDB yelp = new YelpDB("data/restaurants.json", "data/reviews.json", "data/users.json");
@@ -195,6 +196,17 @@ public class QueryTests {
 			
 			fail();
 		} catch (IllegalArgumentException e) {
+		} catch (FileNotFoundException e) {
+			fail();
+		}
+	}
+	
+	@Test
+	public void test5() {
+		try {
+			YelpDB yelp = new YelpDB("data/restaurants.json", "data/reviews.json", "data/users.json");
+			assertTrue(yelp.getMatches("name(Cream)").isEmpty());
+
 		} catch (FileNotFoundException e) {
 			fail();
 		}

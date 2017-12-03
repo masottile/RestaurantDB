@@ -45,7 +45,7 @@ public class YelpUser {
 		return votes;
 	}
 
-	public void recalcAvgStars(double rating) {
+	public void addReview(double rating) {
 		average_stars = ((average_stars * review_count) + rating) / (review_count + 1);
 		review_count++;
 
