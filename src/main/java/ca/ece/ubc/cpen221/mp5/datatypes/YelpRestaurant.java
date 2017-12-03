@@ -47,6 +47,10 @@ public class YelpRestaurant {
 	public String getUrl() {
 		return url;
 	}
+	
+	public void setUrl(String URL) {
+		url=URL;
+	}
 
 	public double getLongitude() {
 		return longitude;
