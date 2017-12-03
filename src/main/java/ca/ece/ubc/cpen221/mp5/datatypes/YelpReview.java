@@ -3,13 +3,8 @@ package ca.ece.ubc.cpen221.mp5.datatypes;
 public class YelpReview extends Review {
 
 	private String type = "review";
-	private String business_id;
-	private String review_id;
 	private Votes votes;
-	private String text;
 	private double stars;
-	private String user_id;
-	private String date;
 
 	/*
 	 * Abstraction Function: A review, with the id of the business it is reviewing,

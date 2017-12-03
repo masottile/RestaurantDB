@@ -14,6 +14,18 @@ public class YelpDBServer {
 	private ServerSocket serverSocket;
 
 	/**
+	 * Start YelpDBServer on the default port
+	 */
+	public static void main(String[] args) {
+		try {
+			YelpDBServer server = new YelpDBServer(YELP_PORT);
+			server.serve();
+		} catch (IOException e) {
+			System.err.println("ERROR CREATING SERVER. Suggestion: check ports");
+		}
+	}
+
+	/**
 	 * Creates a server listening on input port
 	 * 
 	 * @param port
@@ -22,12 +34,13 @@ public class YelpDBServer {
 	public YelpDBServer(int port) {
 		try {
 			yelp = new YelpDB("data/restaurants.json", "data/reviews.json", "data/users.json");
-		} catch (FileNotFoundException e1) {
-		}
-		try {
 			serverSocket = new ServerSocket(port);
+
+		} catch (FileNotFoundException e1) {
+			
 		} catch (IOException e) {
-			System.out.println("ERROR CREATING SERVER. Suggestion: check ports");
+			e.printStackTrace();
+			System.err.println("ERROR CREATING SERVER. Suggestion: check ports");
 		}
 	}
 
@@ -141,4 +154,5 @@ public class YelpDBServer {
 			System.err.println("ERROR CREATING SERVER. Suggestion: check ports");
 		}
 	}*/
+
 }

@@ -6,9 +6,6 @@ public class YelpRestaurant extends Business {
 	private String url;
 	private double longitude;
 	private String[] neighborhoods;
-	private String business_id;
-	private String name;
-	private String[] categories;
 	private String state;
 	private String type = "business";
 	private double stars;
@@ -64,7 +61,7 @@ public class YelpRestaurant extends Business {
 	// SETTER METHODS
 	
 	public void setBusinessID(String ID) {
-		business_id = ID;
+		super.business_id = ID;
 	}
 	
 	public void setUrl(String URL) {
