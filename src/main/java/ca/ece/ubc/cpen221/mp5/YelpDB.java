@@ -67,8 +67,8 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	public YelpDB(String restaurantFile, String reviewFile, String userFile) throws FileNotFoundException {
 
 		gson = new Gson();
-		parser = new JsonParser(); 
- 
+		parser = new JsonParser();
+
 		IDcount = 0;
 
 		restaurantMap = new HashMap<String, YelpRestaurant>();
@@ -114,6 +114,9 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	public String addRestaurant(String s) {
 		YelpRestaurant yr = gson.fromJson((JsonObject) parser.parse(s), YelpRestaurant.class);
 
+		if (yr.getReviewCount() != 0 || yr.getName() == null || yr.getPrice() > 5 || yr.getPrice() < 1)
+			return "ERR: INVALID_RESTAURANT_STRING";
+		yr.setLocation();
 		yr.setBusinessID(getNewID());
 		yr.setUrl(newBusinessURL(yr.getBusinessID()));
 
@@ -147,7 +150,7 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 			return "ERR: NO_SUCH_RESTAURANT";
 
 		else if (getUser(rev.getUserID()) == null)
-			return "ERR: NO_SUCH_USER"; 
+			return "ERR: NO_SUCH_USER";
 
 		rev.setReviewID(getNewID());
 
@@ -194,9 +197,9 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 		return restaurantMap.get(restID);
 	}
 
-	public YelpReview getReview(String revID) {
-		return reviewMap.get(revID);
-	}
+//	public YelpReview getReview(String revID) {
+	//	return reviewMap.get(revID);
+	//}
 
 	public YelpUser getUser(String userID) {
 		return userMap.get(userID);

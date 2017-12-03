@@ -74,10 +74,11 @@ public class Client {
 			System.out.println(client.getReply());
 			client.sendRequest("ADDUSER {\"name\": \"Slim Shady\", \"review_count\": 5}");
 			System.out.println(client.getReply());
-			client.sendRequest("ADDUSER {\"name\": \"The Real Slim Shady\", \"review_count\": 5}");
+			client.sendRequest("ADDUSER {\"review_count\": 5}");
 			System.out.println(client.getReply());
 			client.sendRequest(
 					"ADDRESTAURANT {\"open\": true, \"longitude\": -420.000, \"neighborhoods\": [\"Telegraph Ave\", \"UC Campus Area\"], \"name\": \"Da Cribbb\", \"categories\": [\"Korean\", \"Restaurants\"], \"state\": \"CA\", \"type\": \"business\", \"stars\": 3.5, \"city\": \"Berkeley\", \"full_address\": \"2521 Durant Ave\\nSte F\\nTelegraph Ave\\nBerkeley, CA 94704\", \"schools\": [\"University of California at Berkeley\"], \"latitude\": 66.00, \"price\": 2}\r\n");
+			System.out.println(client.getReply());
 			client.close();
 		} catch (IOException e) {
 			System.err.println("ERROR CREATING SERVER. Suggestion: check ports");

@@ -2,8 +2,8 @@ package ca.ece.ubc.cpen221.mp5.datatypes;
 
 public class YelpRestaurant extends Business {
 
-	private boolean open;
-	private String url;
+	private boolean open = true;
+	private String url="";
 	private double longitude;
 	private String[] neighborhoods;
 	private String state;
