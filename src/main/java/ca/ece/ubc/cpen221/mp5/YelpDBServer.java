@@ -4,7 +4,6 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Set;
-//import java.util.concurrent.CountDownLatch;
 
 import com.google.gson.JsonParseException;
 import ca.ece.ubc.cpen221.mp5.datatypes.*;
@@ -28,7 +27,6 @@ public class YelpDBServer {
 		try {
 			serverSocket = new ServerSocket(port);
 		} catch (IOException e) {
-			e.printStackTrace();
 			System.out.println("ERROR CREATING SERVER. Suggestion: check ports");
 		}
 	}
@@ -58,10 +56,6 @@ public class YelpDBServer {
 		}
 	}
 
-	public YelpDB getYelpDB() {
-		return this.yelp;
-	}
-
 	/**
 	 * Handle one client connection. Returns when client disconnects.
 	 * 
@@ -84,7 +78,7 @@ public class YelpDBServer {
 					switch (function) {
 					case "GETRESTAURANT":
 						try {
-							out.print(yelp.getRestNameFromId(info));
+							out.println(yelp.getRestNameFromId(info));
 							out.flush();
 						} catch (NullPointerException e) {
 							out.println("ERR: NO_SUCH_RESTAURANT");
@@ -93,8 +87,7 @@ public class YelpDBServer {
 						break;
 
 					case "ADDUSER":
-						String s = yelp.addUser(info);
-						out.println(s);
+						out.println(yelp.addUser(info));
 						out.flush();
 						break;
 
@@ -129,8 +122,6 @@ public class YelpDBServer {
 					}
 				} catch (JsonParseException e) {
 					out.println("ERR: INVALID_JSON_STRING");
-				} catch (ArrayIndexOutOfBoundsException a) {
-					out.println("ERR: INVALID_REQUEST");
 				}
 			}
 		} finally {
@@ -140,14 +131,14 @@ public class YelpDBServer {
 	}
 
 	/**
-	 * Start YelpDBServer on the default port
+	 * Start YelpDBServer on the default port: uncomment to run main
 	 */
-	public static void main(String[] args) {
+/*	public static void main(String[] args) {
 		try {
 			YelpDBServer server = new YelpDBServer(YELP_PORT);
 			server.serve();
 		} catch (IOException e) {
 			System.err.println("ERROR CREATING SERVER. Suggestion: check ports");
 		}
-	}
+	}*/
 }
