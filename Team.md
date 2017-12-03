@@ -11,7 +11,7 @@ For the most part, we tried to work on the MP together. For part 1 this was easy
 - `YelpDB`, `datatypes`, `k-means`, `YelpDBServer`, `Client` (and all other clients)
 - `ServerTests`, `YelpDBTests`, `MoreYelpDBTests`, `QueryTests`, looked over other tests
 - visualizer for k-means, testing the server from command line
-- Part III and IV
+- Part III and IV, server implementation of Part V
 
 
 ### Maria:
@@ -30,6 +30,6 @@ Part II took around 20 hours over about a week
 
 Part III took around 10 hours over a couple of days
 
-Part IV took at least 14-20 hours over several days
+Part IV took at least 14 hours over several days
 
-Part V took at least 24-30 hours over several days
+Part V took at least 25-30 hours over several days
