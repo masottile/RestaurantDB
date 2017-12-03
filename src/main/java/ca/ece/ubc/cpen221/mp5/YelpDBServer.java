@@ -4,14 +4,17 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 
 import com.google.gson.JsonParseException;
 import ca.ece.ubc.cpen221.mp5.datatypes.*;
 
 public class YelpDBServer {
-	public static final int YELP_PORT = 4999;
+	public static final int YELP_PORT = 4949;
 	private YelpDB yelp;
 	private ServerSocket serverSocket;
+
+	private CountDownLatch addCount = new CountDownLatch(1);
 
 	/**
 	 * Creates a server listening on input port
@@ -22,11 +25,13 @@ public class YelpDBServer {
 	public YelpDBServer(int port) {
 		try {
 			yelp = new YelpDB("data/restaurants.json", "data/reviews.json", "data/users.json");
+			addCount.countDown();
 		} catch (FileNotFoundException e1) {
 		}
 		try {
 			serverSocket = new ServerSocket(port);
 		} catch (IOException e) {
+			e.printStackTrace();
 			System.out.println("ERROR CREATING SERVER. Suggestion: check ports");
 		}
 	}
@@ -56,6 +61,10 @@ public class YelpDBServer {
 		}
 	}
 
+	public YelpDB getYelpDB() {
+		return this.yelp;
+	}
+
 	/**
 	 * Handle one client connection. Returns when client disconnects.
 	 * 
@@ -78,41 +87,74 @@ public class YelpDBServer {
 					switch (function) {
 					case "GETRESTAURANT":
 						try {
+							addCount.await();
+						} catch (InterruptedException e) {
+							System.out.println("aiyaa");
+						}
+						try {
 							out.print(yelp.getRestNameFromId(info));
 							out.flush();
 						} catch (NullPointerException e) {
 							out.println("ERR: NO_SUCH_RESTAURANT");
 							out.flush();
+						} finally {
+							addCount = new CountDownLatch(1);
+							addCount.countDown();
 						}
 						break;
 
 					case "ADDUSER":
+						try {
+							addCount.await();
+						} catch (InterruptedException e) {
+						}
+						addCount = new CountDownLatch(1);
 						String s = yelp.addUser(info);
 						out.println(s);
 						out.flush();
+						addCount.countDown();
 						break;
 
+					case "GETUSER":
+						try {
+							addCount.await();
+						} catch (InterruptedException e) {
+						}
+						out.println(yelp.getUser(info).getName());
+						out.flush();
+						addCount.countDown();
+						break;
+						
 					case "ADDRESTAURANT":
+						try {
+							addCount.await();
+						} catch (InterruptedException e) {
+						}
+						addCount = new CountDownLatch(1);
 						String y = yelp.addRestaurant(info);
 						out.println(y);
 						out.flush();
+						addCount.countDown();
 						break;
 
 					case "ADDREVIEW":
+						try {
+							addCount.await();
+						} catch (InterruptedException e) {
+						}
+						addCount = new CountDownLatch(1);
 						out.println(yelp.addReview(info));
-						break;
-
-					case "GETUSERRATINGINFO":
-						YelpUser user = yelp.getUserMap().get(info);
-						out.print(
-								"average stars: " + user.getAverageStars() + "total reviews: " + user.getReviewCount());
-						out.flush();
+						addCount.countDown();
 						break;
 
 					case "QUERY":
+						try {
+							addCount.await();
+						} catch (InterruptedException e) {
+						}
 						Set<YelpRestaurant> results = yelp.getMatches(info);
 						if (results.isEmpty())
-							out.println("ERR: NO MATCH");
+							out.println("ERR: NO_MATCH");
 						else
 							out.println(yelp.getMatchesToJson(yelp.getMatches(info)));
 						out.flush();
@@ -124,7 +166,7 @@ public class YelpDBServer {
 						break;
 					}
 				} catch (JsonParseException e) {
-					out.println("ERR: INVALID_STRING");
+					out.println("ERR: INVALID_JSON_STRING");
 				} catch (ArrayIndexOutOfBoundsException a) {
 					out.println("ERR: INVALID_REQUEST");
 				}
@@ -143,7 +185,7 @@ public class YelpDBServer {
 			YelpDBServer server = new YelpDBServer(YELP_PORT);
 			server.serve();
 		} catch (IOException e) {
-			System.out.println("ERROR CREATING SERVER. Suggestion: check ports");
+			System.err.println("ERROR CREATING SERVER. Suggestion: check ports");
 		}
 	}
 }

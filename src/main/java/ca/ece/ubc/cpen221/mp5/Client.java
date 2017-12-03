@@ -25,11 +25,13 @@ public class Client {
 
 	}
 
+	// sends a request
 	public void sendRequest(String s) throws IOException {
 		out.print(s + "\n");
-		out.flush(); // important! make sure s actually gets sent
+		out.flush();
 	}
 
+	// obtains response from the server
 	public String getReply() throws IOException {
 		String reply = in.readLine();
 		if (reply == null) {
@@ -39,8 +41,7 @@ public class Client {
 	}
 
 	/**
-	 * Closes the client's connection to the server. This client is now "closed".
-	 * Requires this is "open".
+	 * closes connection to server: presumes the server is open when called
 	 * 
 	 * @throws IOException
 	 *             if close fails
@@ -55,6 +56,8 @@ public class Client {
 		socket.close();
 	}
 
+	// performs a series of requests and prints out the response of each
+
 	public static void main(String[] args) {
 		try {
 			Client client = new Client("localhost", YelpDBServer.YELP_PORT);
@@ -62,22 +65,22 @@ public class Client {
 			System.out.println(client.getReply());
 			client.sendRequest("GETRESTAURANT MjHULXYJDc9XMM2r24oddg");// Berkeley Floor Cafe
 			System.out.println(client.getReply());
-			client.sendRequest("ADDUSER {\"name\": \"De Silva C.\"}");
+			client.sendRequest("ADDUSER {\"name\": \"A. Marziali\"}");
 			System.out.println(client.getReply());
 			client.sendRequest(
-					"ADDREVIEW {\"type\": \"review\", \"business_id\": \"1CBs84C-a-cuA3vncXVSAw\", \"text\": \"I'm sick o dis shit\", \"stars\": 2, \"user_id\": \"90wm_01FAIqhcgV_mPON9Q\", \"date\": \"2006-07-26\"}");
+					"ADDREVIEW {\"type\": \"review\", \"business_id\": \"1CBs84C-a-cuA3vncXVSAw\", \"text\": \"These violent delights have violent ends, and in their triumph die, like fire and powder.\", \"stars\": 2, \"user_id\": \"90wm_01FAIqhcgV_mPON9Q\", \"date\": \"2006-07-26\"}");
 			System.out.println(client.getReply());
-			client.sendRequest("ADDUSER {\"review_count\": 5, \"name\": \"De Silva C.\"}");
+			client.sendRequest("ADDUSER {\"review_count\": 5, \"name\": \"Ali G.\"}");
 			System.out.println(client.getReply());
-			client.sendRequest("ADDUSER {\"name\": \"ddd\", \"review_count\": 5}");
+			client.sendRequest("ADDUSER {\"name\": \"Slim Shady\", \"review_count\": 5}");
 			System.out.println(client.getReply());
-			client.sendRequest("ADDUSER {\"name\": \"ccc\", \"review_count\": 5}");
+			client.sendRequest("ADDUSER {\"name\": \"The Real Slim Shady\", \"review_count\": 5}");
 			System.out.println(client.getReply());
 			client.sendRequest(
 					"ADDRESTAURANT {\"open\": true, \"longitude\": -420.000, \"neighborhoods\": [\"Telegraph Ave\", \"UC Campus Area\"], \"name\": \"Da Cribbb\", \"categories\": [\"Korean\", \"Restaurants\"], \"state\": \"CA\", \"type\": \"business\", \"stars\": 3.5, \"city\": \"Berkeley\", \"full_address\": \"2521 Durant Ave\\nSte F\\nTelegraph Ave\\nBerkeley, CA 94704\", \"schools\": [\"University of California at Berkeley\"], \"latitude\": 66.00, \"price\": 2}\r\n");
 			client.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println("ERROR CREATING SERVER. Suggestion: check ports");
 		}
 	}
 }

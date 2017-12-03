@@ -4,8 +4,11 @@ import java.io.*;
 import java.net.Socket;
 
 /**
- * "open" until the close() method is called, at which point it is "closed" and
- * may not be used further.
+ * Another Client class just for testing purposes, which we thought we'd leave
+ * in just in case it was of any use to you
+ * 
+ * This one has queries, which shouldn't affect the ID generating function
+ * counter
  */
 public class Client2 {
 	private Socket socket;
@@ -61,7 +64,7 @@ public class Client2 {
 			System.out.println(client.getReply());
 			client.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println("ERROR CREATING SERVER. Suggestion: check ports");
 		}
 	}
 }

@@ -126,6 +126,9 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	public String addUser(String s) {
 		YelpUser user = gson.fromJson((JsonObject) parser.parse(s), YelpUser.class);
 
+		if (user.getName() == null)
+			return "ERR: INVALID_USER_STRING";
+
 		user.setUserID(getNewID());
 		user.setUrl(newUserURL(user.getUserID()));
 
@@ -136,6 +139,15 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 
 	public String addReview(String s) {
 		YelpReview rev = gson.fromJson((JsonObject) parser.parse(s), YelpReview.class);
+
+		if (rev.getStars() < 1 || rev.getStars() > 5)
+			return "ERR: INVALID_REVIEW_STRING";
+
+		else if (getRestaurant(rev.getRestaurantID()) == null)
+			return "ERR: NO_SUCH_RESTAURANT";
+
+		else if (getUser(rev.getUserID()) == null)
+			return "ERR: NO_SUCH_USER";
 
 		rev.setReviewID(getNewID());
 
@@ -199,7 +211,6 @@ public class YelpDB implements MP5Db<YelpRestaurant> {
 	public Map<YelpRestaurant, Point> getCurrentState() {
 		return new HashMap<YelpRestaurant, Point>(currentState);
 	}
-
 	// END NECESSARY GETTER METHODS
 
 	@Override

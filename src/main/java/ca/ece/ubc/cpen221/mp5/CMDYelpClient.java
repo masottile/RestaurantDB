@@ -72,7 +72,7 @@ public class CMDYelpClient {
 
 				// end the thread
 				if (s.equals("bye")) {
-					System.err.println("Bye bye!");
+					System.out.println("Bye bye!");
 					sc.close();
 					client.close();
 					break;
@@ -82,7 +82,7 @@ public class CMDYelpClient {
 			}
 
 		} catch (IOException e) {
-			System.err.println("ERROR: Connection not made. Check that someone is listening to port " + port);
+			System.err.println("ERROR CREATING SERVER. Suggestion: check ports");
 		}
 	}
 }
