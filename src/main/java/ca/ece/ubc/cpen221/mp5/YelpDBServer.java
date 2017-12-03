@@ -3,6 +3,7 @@ package ca.ece.ubc.cpen221.mp5;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Set;
 
 import com.google.gson.JsonParseException;
 import ca.ece.ubc.cpen221.mp5.datatypes.*;
@@ -25,7 +26,6 @@ public class YelpDBServer {
 		}
 		try {
 			serverSocket = new ServerSocket(port);
-			serve();
 		} catch (IOException e) {
 			System.out.println("ERROR CREATING SERVER. Suggestion: check ports");
 		}
@@ -37,7 +37,7 @@ public class YelpDBServer {
 	 * @throws IOException
 	 *             if the main server socket is broken
 	 */
-	private void serve() throws IOException {
+	public void serve() throws IOException {
 		while (true) {
 			final Socket socket = serverSocket.accept();
 			Thread handler = new Thread(new Runnable() {
@@ -88,29 +88,33 @@ public class YelpDBServer {
 
 					case "ADDUSER":
 						String s = yelp.addUser(info);
-						System.err.println(s);
 						out.println(s);
+						out.flush();
 						break;
 
 					case "ADDRESTAURANT":
 						String y = yelp.addRestaurant(info);
-						System.err.print(y);
 						out.println(y);
 						out.flush();
 						break;
 
 					case "ADDREVIEW":
-						System.err.println(yelp.addReview(info));
+						out.println(yelp.addReview(info));
 						break;
 
 					case "GETUSERRATINGINFO":
 						YelpUser user = yelp.getUserMap().get(info);
-						out.println(user.getAverageStars());
+						out.print(
+								"average stars: " + user.getAverageStars() + "total reviews: " + user.getReviewCount());
 						out.flush();
 						break;
 
 					case "QUERY":
-						out.println(yelp.getMatchesToJson(yelp.getMatches(info)));
+						Set<YelpRestaurant> results = yelp.getMatches(info);
+						if (results.isEmpty())
+							out.println("ERR: NO MATCH");
+						else
+							out.println(yelp.getMatchesToJson(yelp.getMatches(info)));
 						out.flush();
 						break;
 
@@ -120,10 +124,8 @@ public class YelpDBServer {
 						break;
 					}
 				} catch (JsonParseException e) {
-					System.err.println("ERR: INVALID_STRING");
 					out.println("ERR: INVALID_STRING");
 				} catch (ArrayIndexOutOfBoundsException a) {
-					System.err.println("ERR: INVALID_REQUEST");
 					out.println("ERR: INVALID_REQUEST");
 				}
 			}

@@ -49,7 +49,7 @@ public class QueryTests {
 
 			assertEquals(5, predictedSet.size());
 			assertEquals(predictedSet, result);
-			
+
 		} catch (FileNotFoundException e) {
 			fail();
 		}
@@ -67,7 +67,7 @@ public class QueryTests {
 
 			assertEquals(1, predictedSet.size());
 			assertEquals(predictedSet, result);
-			
+
 		} catch (FileNotFoundException e) {
 			fail();
 		}
@@ -86,7 +86,7 @@ public class QueryTests {
 
 			assertEquals(7, predictedSet.size());
 			assertEquals(predictedSet, result);
-			
+
 		} catch (FileNotFoundException e) {
 			fail();
 		}
@@ -98,12 +98,12 @@ public class QueryTests {
 
 			YelpDB yelpQT1 = new YelpDB("data/QueryTest1.json", "data/reviews.json", "data/users.json");
 			Set<YelpRestaurant> set1 = yelpQT1.getMatches(
-					"(category(Chinese) && rating < 4) || ((category(Cafe) || category(Italian)) && price =2)");
+					"(category(Chinese) && rating < 4) || ((category(Cafes) || category(Italian)) && price =2)");
 
 			Predicate<YelpRestaurant> predicate1 = (yr -> yr.getStars() < 4
 					&& new HashSet<String>(Arrays.asList(yr.getCategories())).contains("Chinese"));
 			Predicate<YelpRestaurant> predicate2 = (yr -> new HashSet<String>(Arrays.asList(yr.getCategories()))
-					.contains("Cafe") || new HashSet<String>(Arrays.asList(yr.getCategories())).contains("Italian"));
+					.contains("Cafes") || new HashSet<String>(Arrays.asList(yr.getCategories())).contains("Italian"));
 
 			Stream<YelpRestaurant> predictedStream1 = yelpQT1.getRestaurants().stream().filter(predicate2)
 					.filter(yr -> yr.getPrice() == 2);
@@ -113,7 +113,7 @@ public class QueryTests {
 			predictedSet.addAll(predictedStream2.collect(Collectors.toCollection(HashSet::new)));
 
 			assertEquals(predictedSet, set1);
-			
+
 		} catch (FileNotFoundException e) {
 			fail();
 		}
@@ -125,9 +125,9 @@ public class QueryTests {
 		try {
 			YelpDB yelpQT1 = new YelpDB("data/QueryTest1.json", "data/reviews.json", "data/users.json");
 			Set<YelpRestaurant> set1 = yelpQT1.getMatches("rating > 4 && rating < 2");
-			
+
 			assertTrue(set1.isEmpty());
-			
+
 		} catch (FileNotFoundException e) {
 			fail();
 		}
@@ -156,7 +156,7 @@ public class QueryTests {
 			assertEquals(set1.size(), set2.size());
 			assertEquals(6, set1.size());
 			assertFalse(set1.retainAll(set2));
-			
+
 		} catch (FileNotFoundException e) {
 			fail();
 		}
@@ -171,9 +171,9 @@ public class QueryTests {
 			YelpDB yelpQT1 = new YelpDB("data/QueryTest1.json", "data/reviews.json", "data/users.json");
 			Set<YelpRestaurant> set1 = yelpQT1
 					.getMatches("(in(UC Campus Area) || in(Telegraph Ave)) && category(Chinese)");
-			
+
 			String[] ans = { "Peking Express", "Sun Hong Kong Restaurant", "Happy Valley" };
-			
+
 			Set<String> resultNames = new HashSet<String>(Arrays.asList(ans));
 
 			for (YelpRestaurant yr : set1) {
@@ -193,7 +193,7 @@ public class QueryTests {
 		try {
 			YelpDB yelp = new YelpDB("data/restaurants.json", "data/reviews.json", "data/users.json");
 			yelp.getMatches("in UC Berkeley Area & Chinese");
-			
+
 			fail();
 		} catch (IllegalArgumentException e) {
 		} catch (FileNotFoundException e) {
